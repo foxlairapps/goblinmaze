@@ -1,12 +1,12 @@
 {
-  "name": "GoblinsMaze – testovací hra",
+  "name": "GoblinsMaze",
   "short_name": "GoblinsMaze",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "orientation": "landscape",
   "background_color": "#101923",
   "theme_color": "#172533",
+  "orientation": "landscape",
   "icons": [
     {
       "src": "icon-192.png",
