@@ -246,7 +246,7 @@ function stateOfWork(){
 }
 function refreshUI(){
  const status=stateOfWork();$confirm.disabled=status!=='valid'||lost;
- $('statusText').textContent=lost?'Konec hry':status==='valid'?'Lze položit · potvrď ✓':status==='invalid'?'Kolize nebo mimo pole':status==='floating'?'Chybí opora':inHand?'Klepni nebo táhni po mapě':'Klepni na aktuální dílek';
+ $('statusText').textContent=lost?'Konec hry':status==='valid'?'Lze položit · potvrď ✓':status==='invalid'?'Kolize nebo mimo pole':status==='floating'?'Chybí opora':inHand?'Klepni na mapu; potom tažením posouvej relativně':'Klepni na aktuální dílek';
  $('mobileRound').textContent=`${selected===null?pieces.length:selected+1} / ${pieces.length}`;
  const a=analyze(occupancy());$('mobileGold').textContent=a.treasures;$('mobileEnemy').textContent=a.enemies;
  $('mobileScore').textContent=(a.score>=0?'+':'')+a.score;
@@ -285,33 +285,57 @@ $('rotateMobile').addEventListener('click',()=>rotate(1));
 $('settingsBtn').addEventListener('click',()=>{$settings.hidden=false});
 $('closeSettings').addEventListener('click',()=>{$settings.hidden=true});
 $('generate').addEventListener('click',()=>{$settings.hidden=true;history.length=0;extraEnemies=new Set();});
-let dragging=false,dragMoved=false,startX=0,startY=0,boardDown=false;
-function pointerCoord(e){const r=canvas.getBoundingClientRect();return {x:Math.floor((e.clientX-r.left)*BW*S/r.width/S),y:Math.floor((e.clientY-r.top)*BH*S/r.height/S)};}
+let dragging=false,dragMoved=false,startX=0,startY=0,dragOrigin=null,dragPointer=null,firstPlacement=false;
+function pointerCoord(e){const r=canvas.getBoundingClientRect();return {x:Math.floor((e.clientX-r.left)*BW/r.width),y:Math.floor((e.clientY-r.top)*BH/r.height)};}
 function positionPiece(e){
  const p=pointerCoord(e);if(selected===null)return;
- // Poloha je určena dotknutým políčkem; větší dílky mohou přesahovat vpravo/dolů.
  workPos=p;hover=p;drawBoard();refreshUI();
 }
-// Dotyk: klepnutí položí pracovní náhled, tažení ho přesouvá.
-// Myš: pohybem se ukazuje náhled a levým klikem se hned položí (původní ovládání).
+function relativeMove(e){
+ if(!dragOrigin||!dragPointer)return;
+ const r=canvas.getBoundingClientRect();
+ // Posun je relativní vůči bodu dotyku, nikoli absolutní poloha prstu.
+ // Zaokrouhlení zabraňuje poskakování dílku mezi dvěma sousedními poli.
+ const dx=Math.round((e.clientX-dragPointer.x)*BW/r.width);
+ const dy=Math.round((e.clientY-dragPointer.y)*BH/r.height);
+ workPos={x:dragOrigin.x+dx,y:dragOrigin.y+dy};hover=workPos;
+ drawBoard();refreshUI();
+}
 const mouseInput=e=>e.pointerType==='mouse';
 canvas.addEventListener('pointerdown',e=>{
  if(e.button!==0||selected===null||lost)return;
  if(!inHand)inHand=true;
  dragging=true;dragMoved=false;startX=e.clientX;startY=e.clientY;
- canvas.setPointerCapture(e.pointerId);positionPiece(e);
+ firstPlacement=!workPos||mouseInput(e);
+ dragOrigin=workPos?{...workPos}:null;
+ dragPointer={x:e.clientX,y:e.clientY};
+ canvas.setPointerCapture(e.pointerId);
+ // Myš zůstává jako v původním desktopovém prototypu.
+ // Dotyk při již existujícím náhledu dílek nepřemístí.
+ if(firstPlacement)positionPiece(e);
 });
 canvas.addEventListener('pointermove',e=>{
  if(selected===null||lost)return;
- if(dragging){if(Math.abs(e.clientX-startX)+Math.abs(e.clientY-startY)>6)dragMoved=true;positionPiece(e)}
- else if(mouseInput(e)&&inHand){positionPiece(e)}
+ if(dragging){
+  if(Math.hypot(e.clientX-startX,e.clientY-startY)>5)dragMoved=true;
+  if(mouseInput(e)||firstPlacement)positionPiece(e);else relativeMove(e);
+ }else if(mouseInput(e)&&inHand){positionPiece(e)}
 });
 canvas.addEventListener('pointerup',e=>{
- if(!dragging)return;dragging=false;positionPiece(e);
- if(mouseInput(e)&&stateOfWork()==='valid')commit();
- refreshUI();
+ if(!dragging)return;
+ dragging=false;
+ if(mouseInput(e)){
+  positionPiece(e);
+  if(stateOfWork()==='valid')commit();
+ }else if(firstPlacement){
+  positionPiece(e);
+ }else{
+  // Krátké klepnutí na mapu při existujícím dílku nic neposouvá.
+  relativeMove(e);
+ }
+ dragOrigin=null;dragPointer=null;refreshUI();
 });
-canvas.addEventListener('pointercancel',()=>{dragging=false;refreshUI()});
+canvas.addEventListener('pointercancel',()=>{dragging=false;dragOrigin=null;dragPointer=null;refreshUI()});
 canvas.addEventListener('pointerleave',e=>{if(!dragging&&mouseInput(e)){workPos=null;hover=null;drawBoard();refreshUI()}});
 let prevTapPos=null;
 $('takePiece').addEventListener('pointerdown',e=>{if(!inHand)takePiece();});
