@@ -1,19 +1,19 @@
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#172533"><title>Dungeon Workshop – mobilní prototyp 008</title>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#172533"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.png"><title>Dungeon Workshop – mobilní prototyp 002</title>
 <style>
 :root{color-scheme:dark;--bg:#101923;--card:#1a2938;--edge:#344f5f;--text:#f0eee8;--sub:#b0c0cb;--teal:#7ad6bf;--pink:#e98481;--gold:#e6c16d}
 *{box-sizing:border-box}body{margin:0;background:#101923;color:var(--text);font:14px system-ui,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:#edf4f4;background:#314a5b;border:1px solid #587384;border-radius:8px;padding:8px}button:disabled{opacity:.36;cursor:default}label{display:inline-flex;align-items:center;gap:5px}input[type=number]{width:64px;color:white;background:#243a4d;border:1px solid #547080;border-radius:5px;padding:5px}select{background:#243a4d;color:white;border:1px solid #547080;padding:5px}h2{font-size:17px;margin:8px 0}.small,.info{font-size:12px;color:#b8c6cf}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.controls{display:flex;gap:11px;align-items:center;flex-wrap:wrap;background:#142536;padding:9px;border-radius:8px;margin:6px 0}.primary{background:#237e75}.danger{border-color:#98696e}
 #game{width:100%;max-width:1450px;margin:auto;display:flex;gap:8px;padding:6px;align-items:stretch;min-height:240px}#mapPanel{flex:1;min-width:0;display:flex;flex-direction:column;background:#25323c;border:1px solid #4a5a62;border-radius:9px;padding:5px}#mapHeader{height:40px;flex-shrink:0;display:flex;align-items:center;gap:10px}#confirmMove{width:46px;height:38px;font-size:25px;padding:0;background:#247d67;border:1px solid #88c6ae}#statusText{font-size:11px;color:#c7d4d7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#boardBox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}#board{display:block;width:auto;max-width:100%;max-height:calc(100dvh - 62px);height:auto;object-fit:contain;aspect-ratio: var(--board-ratio, 1.6);touch-action:none;cursor:crosshair}
-#side{width:clamp(132px,20%,220px);min-width:132px;display:flex;flex-direction:column;gap:6px}#sideHead{height:40px;display:flex;align-items:center;justify-content:space-between;font-size:12px}#settingsBtn{font-size:22px;min-width:42px;min-height:38px;padding:2px}#takePiece{background:#263b4a;border:1px solid #577081;border-radius:9px;min-width:0;width:100%;flex:1;min-height:84px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center}#takePiece canvas{max-width:100%;height:clamp(70px,16vh,130px);object-fit:contain}#takePiece span{font-size:11px}#takePiece.activeCard{outline:2px solid #81cfba}#nextPreview{display:none}#sideStats{display:flex;gap:5px}#sideStats div{flex:1;text-align:center;padding:5px 0;background:#304456;border-radius:5px;font-size:15px}#sideStats strong{display:block}#discard{min-height:40px}#sideActions{display:flex;gap:5px}#sideActions button{flex:1}#mobileScore{color:#e9ce82}
+#side{width:clamp(166px,26%,250px);min-width:166px;display:flex;flex-direction:column;gap:6px}#sideHead{height:40px;display:flex;align-items:center;justify-content:space-between;font-size:12px}#settingsBtn{font-size:22px;min-width:42px;min-height:38px;padding:2px}#sideHead #confirmMove{background:#207e67;border:1px solid #8bd4bb}#takePiece.activeCard{outline:none}#takePiece{background:#263b4a;border:1px solid #577081;border-radius:9px;min-width:0;width:100%;flex:1;min-height:84px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center}#takePiece canvas{max-width:100%;width:100%;height:clamp(80px,23vh,155px);object-fit:contain}#takePiece span{display:none}#rotateMobile{background:#287f76;border-color:#8cd9c4;font-weight:800;font-size:30px;min-height:48px}#mobileUndo{font-size:24px;min-width:48px}#sideActions{margin-top:auto}#sideHead #confirmMove{margin-left:auto}#takePiece.activeCard{outline:none}#nextPreview{display:none}#sideStats{display:flex;gap:5px}#sideStats div{flex:1;text-align:center;padding:5px 0;background:#304456;border-radius:5px;font-size:15px}#sideStats strong{display:block}#discard{min-height:40px}#sideActions{display:flex;gap:5px}#sideActions button{flex:1}#mobileScore{color:#e9ce82}
 #settingsPanel{position:fixed;inset:0;z-index:4;background:#0a121bdd;overflow:auto;padding:12px}#settingsPanel[hidden]{display:none}#settingsInner{max-width:900px;margin:0 auto;background:#1a2938;padding:16px;border:1px solid #536878;border-radius:12px}#settingsHeader{display:flex;justify-content:space-between;align-items:center}#settingsHeader button{min-height:40px}#generate{margin-top:9px;padding:10px 16px}#entries,#exits{display:flex;flex-wrap:wrap;gap:4px}.ports label{flex-direction:column;font-size:10px}#extraTools{display:none}
 @media(orientation:portrait) and (max-width:700px){#game{display:none}#portraitHint{display:flex!important}}#portraitHint{display:none;min-height:90dvh;align-items:center;justify-content:center;text-align:center;padding:28px;font-size:22px}
-@media(max-height:420px){#game{height:100dvh}#mapHeader,#sideHead{height:33px}#confirmMove{height:32px;width:40px}#settingsBtn{height:32px;min-height:32px}#board{max-height:calc(100dvh - 50px)}#takePiece canvas{height:clamp(57px,15vh,90px)}#side{gap:3px}#discard{min-height:35px}#sideStats div{padding:2px 0}}@media(min-width:900px){#game{height:min(95dvh,750px)}#board{max-height:calc(95dvh - 60px)}}
+@media(max-height:420px){#game{height:100dvh}#mapHeader,#sideHead{height:33px}#confirmMove{height:32px;width:40px}#settingsBtn{height:32px;min-height:32px}#board{max-height:calc(100dvh - 50px)}#takePiece canvas{height:clamp(80px,22vh,110px)}#side{gap:3px}#discard{min-height:35px}#sideStats div{padding:2px 0}}@media(min-width:900px){#game{height:min(95dvh,750px)}#board{max-height:calc(95dvh - 60px)}}
 </style></head><body>
 <div id="portraitHint">↻<p>Otoč telefon na šířku.<br>Podzemí je připravené.</p></div>
-<main id="game"><section id="mapPanel"><div id="mapHeader"><button id="confirmMove" disabled aria-label="Potvrdit položení">✓</button><span id="statusText">Vyber dílek</span></div><div id="boardBox"><canvas id="board" width="640" height="400"></canvas></div></section>
-<aside id="side"><div id="sideHead"><span>TAH <b id="mobileRound">1 / 28</b></span><button id="settingsBtn" title="Nastavení" aria-label="Nastavení">⚙</button></div>
-<button id="takePiece" aria-label="Aktuální dílek"><canvas id="currentTile" width="168" height="102"></canvas><span id="takeLabel">Vzít dílek</span></button>
+<main id="game"><section id="mapPanel"><div id="mapHeader"><button id="settingsBtn" title="Nastavení" aria-label="Nastavení">⚙</button><span id="statusText">Vyber dílek</span></div><div id="boardBox"><canvas id="board" width="640" height="400"></canvas></div></section>
+<aside id="side"><div id="sideHead"><span>TAH <b id="mobileRound">1 / 28</b></span><button id="confirmMove" disabled aria-label="Potvrdit položení">✓</button></div>
+<button id="takePiece" aria-label="Aktuální dílek"><canvas id="currentTile" width="168" height="102"></canvas><span id="takeLabel" hidden></span></button>
 <div id="sideStats"><div>★ <strong id="mobileGold">0</strong></div><div>☠ <strong id="mobileEnemy">0</strong></div><div>Σ <strong id="mobileScore">0</strong></div></div>
-<div id="sideActions"><button id="rotateMobile" title="Otočit">↻</button><button id="mobileUndo" title="Zpět">↶</button></div><button id="discard">🗑 Odhodit</button></aside></main>
+<div id="sideActions"><button id="mobileUndo" title="Zpět">↶</button><button id="rotateMobile" title="Otočit">↻</button></div></aside></main>
 <div id="settingsPanel" hidden><div id="settingsInner"><div id="settingsHeader"><h2>⚙ Nastavení podzemí</h2><button id="closeSettings">✕ Zavřít</button></div>
 <p class="small">Změny se projeví až po stisknutí tlačítka Vygenerovat podzemí.</p>
 <div class="controls"><b>Hrací pole</b><label>Šířka <input id="width" type="number" min="8" max="30" value="20"></label><label>Výška <input id="height" type="number" min="6" max="16" value="8"></label><button id="preset12">12 × 10</button><button id="preset16">16 × 10</button><button id="preset20">20 × 10</button></div>
@@ -21,8 +21,8 @@
 <div class="controls"><b>Pevné prvky</b><label>Skály <input id="obstacleCount" type="number" min="0" max="300" value="4"></label><label>Líhně <input id="lairCount" type="number" min="0" max="300" value="2"></label></div>
 <div class="controls"><b>Dílky</b><label>Počet <input id="pieceCount" type="number" min="1" max="120" value="30"></label><label>Zaplnění <input id="fillPercent" type="number" min="10" max="95" value="80"> %</label><button id="useRecommended">Použít doporučení</button><span id="capacityInfo" class="small"></span></div>
 <div class="controls"><b>Obsah</b><label>Generování <select id="mode"><option value="cells">Po políčkách</option><option value="whole">Po dílcích</option></select></label><label>Průchozí <input id="chance" type="number" min="0" max="100" value="65"> %</label><label>Nestvůry <input id="enemy" type="number" min="0" max="480" value="10"></label><label>Poklady <input id="gold" type="number" min="0" max="480" value="10"></label></div>
-<p id="obstacleInfo" class="small"></p><button id="generate" class="primary">Vygenerovat podzemí</button><button id="clear">Vyčistit rozmístění</button>
-<p class="small">Ovládání: klepni na kartu, poté do mapy. Tažením přesuň pracovní náhled, tlačítkem ↻ otoč a ✓ v levém horním rohu potvrď. Odhodit přivolá gobliny do dosažitelného podzemí.</p>
+<p id="obstacleInfo" class="small"></p><button id="generate" class="primary">Vygenerovat podzemí</button><button id="clear">Vyčistit rozmístění</button><button id="discard">🗑 Odhodit aktuální dílek</button>
+<p class="small">Ovládání: dílek je aktivní automaticky. Na mobilu klepni nebo táhni po mapě, ↻ otočí, ✓ vpravo nahoře potvrdí. Na PC pohyb myší ukazuje náhled, levý klik položí, pravý otočí. Odhodit přivolá gobliny do dosažitelného podzemí.</p>
 </div></div>
 <div id="extraTools" aria-hidden="true"><span id="pieceNow"></span><canvas id="nextTile" width="168" height="102"></canvas><span id="nextLabel"></span><button id="putBack"></button><div id="palette"></div><span id="count"></span><span id="taken"></span><span id="passable"></span><span id="access"></span><span id="enemies"></span><span id="treasures"></span><span id="won"></span><span id="score"></span><span id="result"></span><span id="note"></span><button id="undo"></button><button id="rotL"></button><button id="rotR"></button></div>
 <script>
@@ -31,7 +31,7 @@ const S=40,DIR=[[1,0],[-1,0],[0,1],[0,-1]];
 const SHAPES={I:[[0,0],[1,0],[2,0],[3,0]],O:[[0,0],[1,0],[0,1],[1,1]],T:[[0,0],[1,0],[2,0],[1,1]],L:[[0,0],[0,1],[0,2],[1,2]],J:[[1,0],[1,1],[1,2],[0,2]],S:[[1,0],[2,0],[0,1],[1,1]],Z:[[0,0],[1,0],[1,1],[2,1]]};
 const $=id=>document.getElementById(id);
 const canvas=$('board'),ctx=canvas.getContext('2d');
-let animating=false, animationFrame=0, inHand=false, workPos=null, discarded=0, lost=false;
+let animating=false, animationFrame=0, inHand=true, workPos=null, discarded=0, lost=false;
 let liveEntry=new Set([1,4,7]),liveExit=new Set([1,4,7]);
 let BW=16,BH=10,pieces=[],placements=[],obstacles=new Set(),lairs=new Set(),selected=null,turn=0,hover=null,entry=new Set([1,4,7]),exit=new Set([1,4,7]);
 const randint=n=>Math.floor(Math.random()*n);
@@ -41,7 +41,7 @@ function generate(){if(animating)return;
  BW=integerInput('width',8,30);BH=integerInput('height',6,16);
  canvas.width=BW*S;canvas.height=BH*S;canvas.style.setProperty('--board-ratio',`${BW}/${BH}`);
  // Nejdříve rozmístíme skály, pak teprve sestavíme balíček dílků.
- placements=[];obstacles.clear();lairs.clear();selected=null;turn=0;hover=null;workPos=null;discarded=0;lost=false;inHand=false;
+ placements=[];obstacles.clear();lairs.clear();selected=null;turn=0;hover=null;workPos=null;discarded=0;lost=false;inHand=true;
  entry=new Set([...entry].filter(y=>y<BH));exit=new Set([...exit].filter(y=>y<BH));
  if(!entry.size)entry.add(Math.floor((BH-1)/2));
  if(!exit.size)exit.add(Math.floor((BH-1)/2));
@@ -62,7 +62,7 @@ function generate(){if(animating)return;
  for(let i=0;i<actualEnemy;i++)available[i].type='enemy';
  for(let i=actualEnemy;i<actualEnemy+actualGold;i++)available[i].type='gold';
  if(actualEnemy<enemies||actualGold<treasures)$('obstacleInfo').textContent+=` Pozor: z ${enemies} nestvůr a ${treasures} pokladů se vešlo jen ${actualEnemy} a ${actualGold}.`;
- selected=pieces.length?0:null;inHand=false;edges();renderAll();
+ selected=pieces.length?0:null;inHand=true;edges();renderAll();
 }
 function rotated(piece,n){let cells=piece.cells.map(c=>({...c}));for(let k=0;k<n;k++){const h=Math.max(...cells.map(c=>c.y))+1;cells=cells.map(c=>({...c,x:h-1-c.y,y:c.x}));}const mx=Math.min(...cells.map(c=>c.x)),my=Math.min(...cells.map(c=>c.y));return cells.map(c=>({...c,x:c.x-mx,y:c.y-my}));}
 function occupancy(){
@@ -113,11 +113,11 @@ function drawBoard(falling=null){
 function drawSmallTile(id,piece,orientation=0){
  const cv=$(id),c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);
  if(!piece)return;
- const cells=rotated(piece,orientation),s=24,w=(Math.max(...cells.map(a=>a.x))+1)*s,h=(Math.max(...cells.map(a=>a.y))+1)*s;
+ const cells=rotated(piece,orientation),cols=Math.max(...cells.map(a=>a.x))+1,rows=Math.max(...cells.map(a=>a.y))+1,s=Math.floor(Math.min((cv.width-8)/cols,(cv.height-8)/rows)),w=cols*s,h=rows*s;
  const ox=(cv.width-w)/2,oy=(cv.height-h)/2;
  for(const q of cells){let x=ox+q.x*s,y=oy+q.y*s;
   c.fillStyle=q.type==='rock'?'#3c4858':'#c6c3ad';c.fillRect(x+1,y+1,s-2,s-2);
-  if(q.type==='enemy'||q.type==='gold'){c.fillStyle=q.type==='enemy'?'#c45560':'#efc65c';c.beginPath();c.arc(x+s/2,y+s/2,8,0,2*Math.PI);c.fill();}
+  if(q.type==='enemy'||q.type==='gold'){c.fillStyle=q.type==='enemy'?'#c45560':'#efc65c';c.beginPath();c.arc(x+s/2,y+s/2,s*.30,0,2*Math.PI);c.fill();}
   c.strokeStyle='#152332';c.lineWidth=1;c.strokeRect(x+.5,y+.5,s-1,s-1);
  }
 }
@@ -126,9 +126,9 @@ function renderPalette(){
  $('pieceNow').textContent=selected===null?'Všechny dílky vyřešeny':`Aktuální ${selected+1}/${pieces.length} · ${inHand?'v ruce':'na stole'}`;
  drawSmallTile('currentTile',selected===null?null:pieces[selected],turn);
  drawSmallTile('nextTile',selected===null||selected+1>=pieces.length?null:pieces[selected+1]);
- $('takeLabel').textContent=selected===null?'Hotovo':inHand?'Dílek je v ruce':`Vzít dílek ${selected+1}`;
+ $('takeLabel').textContent='';
  $('nextLabel').textContent=selected===null||selected+1>=pieces.length?'Žádný další':`Dílek ${selected+2}`;
- $('takePiece').disabled=selected===null||inHand;
+ $('takePiece').disabled=selected===null;
  $('putBack').disabled=selected===null||!inHand;
  for(const p of pieces){const used=placements.some(x=>x.id===p.id),b=document.createElement('button');b.className='piece'+(used?' placed':'')+(selected===p.id?' selected':'');b.disabled=used||p.id!==selected;b.title=`Dílek ${p.id+1} · ${p.name}`;
  const cv=document.createElement('canvas');cv.width=72;cv.height=60;const c=cv.getContext('2d'),cc=p.cells,s=13,ox=(72-(Math.max(...cc.map(q=>q.x))+1)*s)/2,oy=(60-(Math.max(...cc.map(q=>q.y))+1)*s)/2;
@@ -145,7 +145,7 @@ function metrics(){updateCapacity();const a=analyze(occupancy());const done=sele
  $('note').textContent=done?'Všechny dílky jsou položeny. '+result:selected===null?'Vygeneruj podzemí.':`Dílek ${selected+1} (${pieces[selected].name}) ${inHand?'je v ruce – umísti ho na podepřené místo.':'čeká na stole – klikni na něj.'}`;
 }
 function renderAll(){renderPalette();drawBoard();metrics();refreshUI();}
-function rotate(n){if(selected===null||!inHand)return;turn=(turn+n+4)%4;drawBoard();metrics();}
+function rotate(n){if(selected===null||!inHand)return;turn=(turn+n+4)%4;drawBoard();metrics();refreshUI();}
 function coord(e){const b=canvas.getBoundingClientRect();return {x:Math.floor((e.clientX-b.left)*canvas.width/b.width/S),y:Math.floor((e.clientY-b.top)*canvas.height/b.height/S)};}
 function takePiece(){if(selected===null||inHand)return;inHand=true;hover=null;workPos=null;renderAll();}
 function putBack(){if(!inHand)return;inHand=false;hover=null;workPos=null;renderAll();}
@@ -154,8 +154,8 @@ $('takePiece').onclick=takePiece;
 $('putBack').onclick=putBack;
 canvas.addEventListener('contextmenu',e=>{e.preventDefault();rotate(1)});
 $('generate').onclick=()=>{if(placements.length&&!confirm('Vygenerovat nové podzemí? Současná hra se vymaže.'))return;generate()};
-$('clear').onclick=()=>{if(animating)return;if(placements.length&&!confirm('Vyčistit plochu?'))return;placements=[];selected=pieces.length?0:null;turn=0;inHand=false;hover=null;workPos=null;discarded=0;lost=false;renderAll()};
-$('undo').onclick=()=>{if(animating||!placements.length)return;const p=placements.pop();selected=p.id;turn=p.rot;inHand=false;hover=null;renderAll()};
+$('clear').onclick=()=>{if(animating)return;if(placements.length&&!confirm('Vyčistit plochu?'))return;placements=[];selected=pieces.length?0:null;turn=0;inHand=true;hover=null;workPos=null;discarded=0;lost=false;renderAll()};
+$('undo').onclick=()=>{if(animating||!placements.length)return;const p=placements.pop();selected=p.id;turn=p.rot;inHand=true;hover=null;renderAll()};
 $('rotL').onclick=()=>rotate(-1);$('rotR').onclick=()=>rotate(1);
 function edges(){renderPortInputs(BH)}
 function renderPortInputs(rowCount){for(const [id,set] of [['entries',entry],['exits',exit]]){const box=$(id);box.replaceChildren();for(let y=0;y<rowCount;y++){const label=document.createElement('label');label.style.cssText='display:inline-flex;flex-direction:column;align-items:center;font-size:10px;gap:0';label.textContent=y+1;const check=document.createElement('input');check.type='checkbox';check.checked=set.has(y);check.setAttribute('aria-label',`${id==='entries'?'Vstup':'Výstup'} řádek ${y+1}`);check.addEventListener('change',()=>{if(check.checked)set.add(y);else if(set.size>1)set.delete(y);else check.checked=true});label.append(check);box.append(label)}}}
@@ -223,7 +223,7 @@ function rocksWith(rocks,key){const next=new Set(rocks);next.add(key);return nex
 
 function updateCapacity(){
  const width=Math.max(8,Math.min(30,Number($('width').value)||16)),height=Math.max(6,Math.min(16,Number($('height').value)||10));
- const total=width*height,fixed=Math.max(0,Math.min(total,Number($('obstacleCount').value)||0));
+ const total=width*height,fixed=Math.max(0,Math.min(total,(Number($('obstacleCount').value)||0)+(Number($('lairCount').value)||0)));
  const target=Math.max(10,Math.min(95,Number($('fillPercent').value)||75));
  const recommended=Math.max(1,Math.floor((total*target/100-fixed)/4));
  $('capacityInfo').textContent=`Odhad: ${recommended} dílků pro ${target}% obsazení při ${fixed} pevných objektech. Skutečný počet může být nižší.`;
@@ -252,18 +252,18 @@ function refreshUI(){
  $('mobileScore').textContent=(a.score>=0?'+':'')+a.score;
  $('discard').disabled=selected===null||lost;
  $('confirmMove').style.opacity=$confirm.disabled?'.4':'1';
- $('takePiece').classList.toggle('activeCard',inHand);
+ $('takePiece').classList.toggle('activeCard',false);
 }
 function commit(){if(stateOfWork()!=='valid')return;
  remember();placements.push({id:selected,x:workPos.x,y:workPos.y,rot:turn});
  selected=selected+1<pieces.length?selected+1:null;
- inHand=false;hover=null;workPos=null;turn=0;renderAll();
+ inHand=selected!==null;hover=null;workPos=null;turn=0;renderAll();
 }
 $confirm.addEventListener('click',commit);
 $('mobileUndo').addEventListener('click',()=>{
  const p=history.pop();if(!p)return;
  placements=p.placements;selected=p.selected;turn=p.turn;discarded=p.discarded;lost=p.lost;extraEnemies=p.extraEnemies;
- inHand=false;hover=null;workPos=null;renderAll();
+ inHand=selected!==null;hover=null;workPos=null;renderAll();
 });
 // Goblini se přidávají natrvalo na dosud prázdná dosažitelná průchozí políčka.
 const oldOccupancy=occupancy;
@@ -276,8 +276,8 @@ function discardCard(){if(selected===null||lost)return;
  if(candidates.length<amount){lost=true;inHand=false;workPos=null;renderAll();$('statusText').textContent=`Nedostatek volných prostorů: ${amount} goblinů, ${candidates.length} míst. Prohra.`;return;}
  for(let i=candidates.length-1;i>0;i--){const j=randint(i+1);[candidates[i],candidates[j]]=[candidates[j],candidates[i]];}
  for(let i=0;i<amount;i++)extraEnemies.add(candidates[i]);
- discarded++;selected=selected+1<pieces.length?selected+1:null;
- inHand=false;workPos=null;hover=null;turn=0;renderAll();
+ discarded++;$settings.hidden=true;selected=selected+1<pieces.length?selected+1:null;
+ inHand=selected!==null;workPos=null;hover=null;turn=0;renderAll();
 }
 $discard.addEventListener('click',discardCard);
 $('rotateMobile').addEventListener('click',()=>rotate(1));
@@ -292,27 +292,28 @@ function positionPiece(e){
  // Poloha je určena dotknutým políčkem; větší dílky mohou přesahovat vpravo/dolů.
  workPos=p;hover=p;drawBoard();refreshUI();
 }
+// Dotyk: klepnutí položí pracovní náhled, tažení ho přesouvá.
+// Myš: pohybem se ukazuje náhled a levým klikem se hned položí (původní ovládání).
+const mouseInput=e=>e.pointerType==='mouse';
 canvas.addEventListener('pointerdown',e=>{
- if(selected===null||lost)return;
- if(!inHand)takePiece();boardDown=true;dragging=true;dragMoved=false;startX=e.clientX;startY=e.clientY;
+ if(e.button!==0||selected===null||lost)return;
+ if(!inHand)inHand=true;
+ dragging=true;dragMoved=false;startX=e.clientX;startY=e.clientY;
  canvas.setPointerCapture(e.pointerId);positionPiece(e);
 });
 canvas.addEventListener('pointermove',e=>{
- if(!dragging)return;
- if(Math.abs(e.clientX-startX)+Math.abs(e.clientY-startY)>7)dragMoved=true;
- positionPiece(e);
+ if(selected===null||lost)return;
+ if(dragging){if(Math.abs(e.clientX-startX)+Math.abs(e.clientY-startY)>6)dragMoved=true;positionPiece(e)}
+ else if(mouseInput(e)&&inHand){positionPiece(e)}
 });
 canvas.addEventListener('pointerup',e=>{
- if(!dragging)return;dragging=false;boardDown=false;
- if(!dragMoved&&workPos&&inHand){ // Druhé klepnutí na pracovní dílek otočí; první pouze nastaví polohu.
-  const now=pointerCoord(e);
-  if(prevTapPos&&prevTapPos.x===now.x&&prevTapPos.y===now.y){rotate(1);prevTapPos=null;}else prevTapPos=now;
- }else prevTapPos=null;
+ if(!dragging)return;dragging=false;positionPiece(e);
+ if(mouseInput(e)&&stateOfWork()==='valid')commit();
  refreshUI();
 });
-canvas.addEventListener('pointercancel',()=>{dragging=false;boardDown=false});
+canvas.addEventListener('pointercancel',()=>{dragging=false;refreshUI()});
+canvas.addEventListener('pointerleave',e=>{if(!dragging&&mouseInput(e)){workPos=null;hover=null;drawBoard();refreshUI()}});
 let prevTapPos=null;
-// Umožní přetáhnout dílek přímo z pravého panelu přes mapu, bez nutnosti dlouhého přejezdu.
 $('takePiece').addEventListener('pointerdown',e=>{if(!inHand)takePiece();});
 const originalGenerate=generate;
 generate=function(){extraEnemies=new Set();discarded=0;lost=false;history.length=0;originalGenerate();};
