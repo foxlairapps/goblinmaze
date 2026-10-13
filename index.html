@@ -3,10 +3,10 @@
 :root{color-scheme:dark;--bg:#101923;--card:#1a2938;--edge:#344f5f;--text:#f0eee8;--sub:#b0c0cb;--teal:#7ad6bf;--pink:#e98481;--gold:#e6c16d}
 *{box-sizing:border-box}body{margin:0;background:#101923;color:var(--text);font:14px system-ui,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:#edf4f4;background:#314a5b;border:1px solid #587384;border-radius:8px;padding:8px}button:disabled{opacity:.36;cursor:default}label{display:inline-flex;align-items:center;gap:5px}input[type=number]{width:64px;color:white;background:#243a4d;border:1px solid #547080;border-radius:5px;padding:5px}select{background:#243a4d;color:white;border:1px solid #547080;padding:5px}h2{font-size:17px;margin:8px 0}.small,.info{font-size:12px;color:#b8c6cf}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.controls{display:flex;gap:11px;align-items:center;flex-wrap:wrap;background:#142536;padding:9px;border-radius:8px;margin:6px 0}.primary{background:#237e75}.danger{border-color:#98696e}
 #game{width:100%;max-width:1450px;margin:auto;display:flex;gap:8px;padding:6px;align-items:stretch;min-height:240px}#mapPanel{flex:1;min-width:0;display:flex;flex-direction:column;background:#25323c;border:1px solid #4a5a62;border-radius:9px;padding:5px}#mapHeader{height:40px;flex-shrink:0;display:flex;align-items:center;gap:10px}#confirmMove{width:46px;height:38px;font-size:25px;padding:0;background:#247d67;border:1px solid #88c6ae}#statusText{font-size:11px;color:#c7d4d7;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#boardBox{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}#board{display:block;width:auto;max-width:100%;max-height:calc(100dvh - 62px);height:auto;object-fit:contain;aspect-ratio: var(--board-ratio, 1.6);touch-action:none;cursor:crosshair}
-#side{width:clamp(166px,26%,250px);min-width:166px;display:flex;flex-direction:column;gap:6px}#sideHead{height:40px;display:flex;align-items:center;justify-content:space-between;font-size:12px}#settingsBtn{font-size:22px;min-width:42px;min-height:38px;padding:2px}#sideHead #confirmMove{background:#207e67;border:1px solid #8bd4bb}#takePiece.activeCard{outline:none}#takePiece{background:#263b4a;border:1px solid #577081;border-radius:9px;min-width:0;width:100%;flex:1;min-height:84px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center}#takePiece canvas{max-width:100%;width:100%;height:clamp(80px,23vh,155px);object-fit:contain}#takePiece span{display:none}#rotateMobile{background:#287f76;border-color:#8cd9c4;font-weight:800;font-size:30px;min-height:48px}#mobileUndo{font-size:24px;min-width:48px}#sideActions{margin-top:auto}#sideHead #confirmMove{margin-left:auto}#takePiece.activeCard{outline:none}#nextPreview{display:none}#sideStats{display:flex;gap:5px}#sideStats div{flex:1;text-align:center;padding:5px 0;background:#304456;border-radius:5px;font-size:15px}#sideStats strong{display:block}#discard{min-height:40px}#sideActions{display:flex;gap:5px}#sideActions button{flex:1}#mobileScore{color:#e9ce82}
+#side{width:clamp(166px,26%,250px);min-width:166px;display:flex;flex-direction:column;gap:6px}#sideHead{height:40px;display:flex;align-items:center;justify-content:space-between;font-size:12px}#settingsBtn{font-size:22px;min-width:42px;min-height:38px;padding:2px}#sideHead #confirmMove{background:#207e67;border:1px solid #8bd4bb}#takePiece.activeCard{outline:none}#takePiece{touch-action:none;user-select:none;-webkit-user-select:none;background:#263b4a;border:1px solid #577081;border-radius:9px;min-width:0;width:100%;flex:0 1 52%;min-height:94px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center}#takePiece canvas{max-width:100%;width:100%;height:100%;min-height:92px;object-fit:contain;pointer-events:none}#takePiece span{display:none}#rotateMobile{background:#287f76;border-color:#8cd9c4;font-weight:800;font-size:30px;min-height:48px}#mobileUndo{font-size:24px;min-width:48px}#sideActions{margin-top:auto}#sideHead #confirmMove{margin-left:auto}#takePiece.activeCard{outline:none}#nextPreview{display:none}#sideStats{display:flex;gap:5px}#sideStats div{flex:1;text-align:center;padding:5px 0;background:#304456;border-radius:5px;font-size:15px}#sideStats strong{display:block}#discard{min-height:40px}#sideActions{display:flex;gap:5px}#sideActions button{flex:1}#mobileScore{color:#e9ce82}
 #settingsPanel{position:fixed;inset:0;z-index:4;background:#0a121bdd;overflow:auto;padding:12px}#settingsPanel[hidden]{display:none}#settingsInner{max-width:900px;margin:0 auto;background:#1a2938;padding:16px;border:1px solid #536878;border-radius:12px}#settingsHeader{display:flex;justify-content:space-between;align-items:center}#settingsHeader button{min-height:40px}#generate{margin-top:9px;padding:10px 16px}#entries,#exits{display:flex;flex-wrap:wrap;gap:4px}.ports label{flex-direction:column;font-size:10px}#extraTools{display:none}
 @media(orientation:portrait) and (max-width:700px){#game{display:none}#portraitHint{display:flex!important}}#portraitHint{display:none;min-height:90dvh;align-items:center;justify-content:center;text-align:center;padding:28px;font-size:22px}
-@media(max-height:420px){#game{height:100dvh}#mapHeader,#sideHead{height:33px}#confirmMove{height:32px;width:40px}#settingsBtn{height:32px;min-height:32px}#board{max-height:calc(100dvh - 50px)}#takePiece canvas{height:clamp(80px,22vh,110px)}#side{gap:3px}#discard{min-height:35px}#sideStats div{padding:2px 0}}@media(min-width:900px){#game{height:min(95dvh,750px)}#board{max-height:calc(95dvh - 60px)}}
+@media(max-height:420px){#game{height:100dvh}#mapHeader,#sideHead{height:33px}#confirmMove{height:32px;width:40px}#settingsBtn{height:32px;min-height:32px}#board{max-height:calc(100dvh - 50px)}#takePiece canvas{height:100%;min-height:92px}#side{gap:3px}#discard{min-height:35px}#sideStats div{padding:2px 0}}@media(min-width:900px){#game{height:min(95dvh,750px)}#board{max-height:calc(95dvh - 60px)}}
 </style></head><body>
 <div id="portraitHint">↻<p>Otoč telefon na šířku.<br>Podzemí je připravené.</p></div>
 <main id="game"><section id="mapPanel"><div id="mapHeader"><button id="settingsBtn" title="Nastavení" aria-label="Nastavení">⚙</button><span id="statusText">Vyber dílek</span></div><div id="boardBox"><canvas id="board" width="640" height="400"></canvas></div></section>
@@ -113,7 +113,20 @@ function drawBoard(falling=null){
 function drawSmallTile(id,piece,orientation=0){
  const cv=$(id),c=cv.getContext('2d');c.clearRect(0,0,cv.width,cv.height);
  if(!piece)return;
- const cells=rotated(piece,orientation),cols=Math.max(...cells.map(a=>a.x))+1,rows=Math.max(...cells.map(a=>a.y))+1,s=Math.floor(Math.min((cv.width-8)/cols,(cv.height-8)/rows)),w=cols*s,h=rows*s;
+ let cells=rotated(piece,orientation);
+ if(id==='currentTile'){
+   // Na odkládacím stole dílek vždy leží naležato; v mapě to rotaci nemění.
+   let best=null;
+   for(let r=0;r<4;r++){
+     const cs=rotated(piece,r),w=Math.max(...cs.map(a=>a.x))+1,h=Math.max(...cs.map(a=>a.y))+1;
+     const value=h*100-w;
+     if(best===null||value<best.value)best={cs,value};
+   }
+   cells=best.cs;
+ }
+ const cols=Math.max(...cells.map(a=>a.x))+1,rows=Math.max(...cells.map(a=>a.y))+1;
+ const s=Math.floor(id==='currentTile'?Math.min((cv.width-6)/5,(cv.height-6)/Math.max(2,rows)):Math.min((cv.width-8)/cols,(cv.height-8)/rows));
+ const w=cols*s,h=rows*s;
  const ox=(cv.width-w)/2,oy=(cv.height-h)/2;
  for(const q of cells){let x=ox+q.x*s,y=oy+q.y*s;
   c.fillStyle=q.type==='rock'?'#3c4858':'#c6c3ad';c.fillRect(x+1,y+1,s-2,s-2);
@@ -124,7 +137,7 @@ function drawSmallTile(id,piece,orientation=0){
 function renderPalette(){
  const palette=$('palette');palette.replaceChildren();
  $('pieceNow').textContent=selected===null?'Všechny dílky vyřešeny':`Aktuální ${selected+1}/${pieces.length} · ${inHand?'v ruce':'na stole'}`;
- drawSmallTile('currentTile',selected===null?null:pieces[selected],turn);
+ drawSmallTile('currentTile',selected===null?null:pieces[selected],0);
  drawSmallTile('nextTile',selected===null||selected+1>=pieces.length?null:pieces[selected+1]);
  $('takeLabel').textContent='';
  $('nextLabel').textContent=selected===null||selected+1>=pieces.length?'Žádný další':`Dílek ${selected+2}`;
@@ -246,7 +259,7 @@ function stateOfWork(){
 }
 function refreshUI(){
  const status=stateOfWork();$confirm.disabled=status!=='valid'||lost;
- $('statusText').textContent=lost?'Konec hry':status==='valid'?'Lze položit · potvrď ✓':status==='invalid'?'Kolize nebo mimo pole':status==='floating'?'Chybí opora':inHand?'Klepni na mapu; potom tažením posouvej relativně':'Klepni na aktuální dílek';
+ $('statusText').textContent=lost?'Konec hry':status==='valid'?'Lze položit · potvrď ✓':status==='invalid'?'Kolize nebo mimo pole':status==='floating'?'Chybí opora':inHand?'Posouvej dílek po pravém touchpadu':'Klepni na aktuální dílek';
  $('mobileRound').textContent=`${selected===null?pieces.length:selected+1} / ${pieces.length}`;
  const a=analyze(occupancy());$('mobileGold').textContent=a.treasures;$('mobileEnemy').textContent=a.enemies;
  $('mobileScore').textContent=(a.score>=0?'+':'')+a.score;
@@ -338,7 +351,38 @@ canvas.addEventListener('pointerup',e=>{
 canvas.addEventListener('pointercancel',()=>{dragging=false;dragOrigin=null;dragPointer=null;refreshUI()});
 canvas.addEventListener('pointerleave',e=>{if(!dragging&&mouseInput(e)){workPos=null;hover=null;drawBoard();refreshUI()}});
 let prevTapPos=null;
-$('takePiece').addEventListener('pointerdown',e=>{if(!inHand)takePiece();});
+// Pravá oblast se zásobou současně slouží jako dotykový touchpad.
+// Pohyb je relativní; prst nikdy nezakrývá umisťovaný dílek v mapě.
+const pad=$('takePiece');
+let padPointer=null,padStart=null,padOrigin=null;
+function ensureWorkingPosition(){
+ if(workPos||selected===null)return;
+ const cells=rotated(pieces[selected],turn);
+ const maxX=Math.max(...cells.map(c=>c.x)),maxY=Math.max(...cells.map(c=>c.y));
+ // Umístění přibližně do středu mapy, ne nutně platné: lze dál posunovat.
+ workPos={x:Math.floor((BW-maxX-1)/2),y:Math.floor((BH-maxY-1)/2)};
+ hover=workPos;
+}
+pad.addEventListener('pointerdown',e=>{
+ if(selected===null||lost||e.button!==0)return;
+ e.preventDefault();
+ ensureWorkingPosition();
+ padPointer=e.pointerId;padStart={x:e.clientX,y:e.clientY};padOrigin={...workPos};
+ pad.setPointerCapture(e.pointerId);drawBoard();refreshUI();
+});
+pad.addEventListener('pointermove',e=>{
+ if(e.pointerId!==padPointer||!padStart||!padOrigin)return;
+ e.preventDefault();
+ const r=canvas.getBoundingClientRect();
+ const cellX=r.width/BW,cellY=r.height/BH;
+ const dx=Math.round((e.clientX-padStart.x)/cellX);
+ const dy=Math.round((e.clientY-padStart.y)/cellY);
+ workPos={x:padOrigin.x+dx,y:padOrigin.y+dy};hover=workPos;
+ drawBoard();refreshUI();
+});
+function padEnd(e){if(e.pointerId!==padPointer)return;padPointer=null;padStart=null;padOrigin=null;}
+pad.addEventListener('pointerup',padEnd);pad.addEventListener('pointercancel',padEnd);
+
 const originalGenerate=generate;
 generate=function(){extraEnemies=new Set();discarded=0;lost=false;history.length=0;originalGenerate();};
 setPorts(4);entry=new Set([Math.floor((Number($('height').value)-1)/2)]);renderPortInputs(Number($('height').value));updateCapacity();generate();
