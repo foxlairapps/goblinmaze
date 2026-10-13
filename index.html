@@ -1,4 +1,4 @@
-<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#172533"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.png"><title>Dungeon Workshop – mobilní prototyp 005</title>
+<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#172533"><link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon.png"><title>Dungeon Workshop – mobilní prototyp 006</title>
 <style>
 :root{color-scheme:dark;--bg:#101923;--card:#1a2938;--edge:#344f5f;--text:#f0eee8;--sub:#b0c0cb;--teal:#7ad6bf;--pink:#e98481;--gold:#e6c16d}
 *{box-sizing:border-box}body{margin:0;background:#101923;color:var(--text);font:14px system-ui,Arial,sans-serif}button,input,select{font:inherit}button{cursor:pointer;color:#edf4f4;background:#314a5b;border:1px solid #587384;border-radius:8px;padding:8px}button:disabled{opacity:.36;cursor:default}label{display:inline-flex;align-items:center;gap:5px}input[type=number]{width:64px;color:white;background:#243a4d;border:1px solid #547080;border-radius:5px;padding:5px}select{background:#243a4d;color:white;border:1px solid #547080;padding:5px}h2{font-size:17px;margin:8px 0}.small,.info{font-size:12px;color:#b8c6cf}.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.controls{display:flex;gap:11px;align-items:center;flex-wrap:wrap;background:#142536;padding:9px;border-radius:8px;margin:6px 0}.primary{background:#237e75}.danger{border-color:#98696e}
@@ -6,17 +6,17 @@
 #side{width:clamp(166px,26%,250px);min-width:166px;display:flex;flex-direction:column;gap:6px}#sideHead{height:40px;display:flex;align-items:center;justify-content:space-between;font-size:12px}#settingsBtn{font-size:22px;min-width:42px;min-height:38px;padding:2px}#sideHead #confirmMove{background:#207e67;border:1px solid #8bd4bb}#takePiece.activeCard{outline:none}#takePiece{touch-action:none;user-select:none;-webkit-user-select:none;background:#263b4a;border:1px solid #577081;border-radius:9px;min-width:0;width:100%;flex:0 1 52%;min-height:94px;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:center}#takePiece canvas{max-width:100%;width:100%;height:100%;min-height:92px;object-fit:contain;pointer-events:none}#takePiece span{display:none}#rotateMobile{background:#287f76;border-color:#8cd9c4;font-weight:800;font-size:30px;min-height:48px}#mobileUndo{font-size:24px;min-width:48px}#sideActions{margin-top:auto}#sideHead #confirmMove{margin-left:auto}#takePiece.activeCard{outline:none}#nextPreview{display:none}#sideStats{display:flex;gap:5px}#sideStats div{flex:1;text-align:center;padding:5px 0;background:#304456;border-radius:5px;font-size:15px}#sideStats strong{display:block}#discard{min-height:40px}#sideActions{display:flex;gap:5px}#sideActions button{flex:1}#mobileScore{color:#e9ce82}
 #settingsPanel{position:fixed;inset:0;z-index:4;background:#0a121bdd;overflow:auto;padding:12px}#settingsPanel[hidden]{display:none}#settingsInner{max-width:900px;margin:0 auto;background:#1a2938;padding:16px;border:1px solid #536878;border-radius:12px}#settingsHeader{display:flex;justify-content:space-between;align-items:center}#settingsHeader button{min-height:40px}#generate{margin-top:9px;padding:10px 16px}#entries,#exits{display:flex;flex-wrap:wrap;gap:4px}.ports label{flex-direction:column;font-size:10px}#extraTools{display:none}
 @media(orientation:portrait) and (max-width:700px){#game{display:none}#portraitHint{display:flex!important}}#portraitHint{display:none;min-height:90dvh;align-items:center;justify-content:center;text-align:center;padding:28px;font-size:22px}
-@media(max-height:420px){#game{height:100dvh}#mapHeader,#sideHead{height:33px}#confirmMove{height:32px;width:40px}#settingsBtn{height:32px;min-height:32px}#board{max-height:calc(100dvh - 50px)}#takePiece canvas{height:100%;min-height:92px}#side{gap:3px}#discard{min-height:35px}#sideStats div{padding:2px 0}}@media(min-width:900px){#game{height:min(95dvh,750px)}#board{max-height:calc(95dvh - 60px)}}
+@media(max-height:420px){#game{height:100dvh}#mapHeader,#sideHead{height:33px}#confirmMove{height:32px;width:40px}#settingsBtn{height:32px;min-height:32px}#board{max-height:calc(100dvh - 50px)}#takePiece canvas{height:100%;min-height:92px}#side{gap:3px}#discard{min-height:35px}#sideStats div{padding:2px 0}}@media(min-width:900px){#game{height:min(96dvh,900px)}#board{max-height:calc(95dvh - 60px)}}
 
-/* Mobilní rozvržení 005: panel cca 30 fyzických mm (CSS mm jsou přibližné). */
+/* Mobilní rozvržení 006: panel cca 30 fyzických mm (CSS mm jsou přibližné). */
 #game{width:100%;max-width:none;gap:5px;padding:5px;overflow:hidden}
 #mapPanel{min-width:0;flex:1;padding:3px}
 #mapHeader{height:29px;gap:5px;flex-shrink:0;justify-content:space-between}
 #statusText{font-size:11px}
 #turnHeader{font-size:10px;white-space:nowrap;color:#dce5e7}
 #boardBox{justify-content:center;align-items:flex-end;min-height:0;overflow:hidden}
-#board{max-height:calc(100dvh - 45px);max-width:100%;height:auto;width:auto}
-#side{width:30mm;min-width:30mm;max-width:30mm;flex-shrink:0;display:flex;gap:5px;min-height:0}
+#board{max-height:none;max-width:none;height:auto;width:auto;flex:none}
+#side{width:45mm;min-width:45mm;max-width:45mm;flex-shrink:0;display:flex;gap:5px;min-height:0}
 #sideHead{height:42px;min-height:42px;flex-shrink:0;gap:3px;display:grid;grid-template-columns:1fr 1fr 2fr}
 #sideHead button{height:100%;min-width:0;min-height:0;padding:0;border-radius:5px}
 #settingsBtn,#mobileUndo{font-size:23px}
@@ -27,8 +27,8 @@
 #sideStats div{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;padding:1px;font-size:17px;line-height:1.1}
 #sideStats strong{font-size:18px;margin-top:3px}
 #sideActions,#rotateMobile{display:none}
-@media(max-height:420px){#game{height:100dvh}#mapHeader{height:22px}#board{max-height:calc(100dvh - 37px)}#sideHead{height:38px;min-height:38px}#sideStats{height:45px;min-height:45px;flex-basis:45px}#sideStats div{font-size:14px}#sideStats strong{font-size:16px}#takePiece canvas{min-height:0;height:100%}}
-@media(min-width:900px){#game{height:min(95dvh,750px)}#board{max-height:calc(95dvh - 43px)}}
+@media(max-height:420px){#game{height:100dvh}#mapHeader{height:22px}#board{max-height:none}#sideHead{height:38px;min-height:38px}#sideStats{height:45px;min-height:45px;flex-basis:45px}#sideStats div{font-size:14px}#sideStats strong{font-size:16px}#takePiece canvas{min-height:0;height:100%}}
+@media(min-width:900px){#game{height:min(96dvh,900px)}#board{max-height:none}}
 </style></head><body>
 <div id="portraitHint">↻<p>Otoč telefon na šířku.<br>Podzemí je připravené.</p></div>
 <main id="game"><section id="mapPanel"><div id="mapHeader"><span id="statusText">Připrav podzemí</span><span id="turnHeader">TAH <b id="mobileRound">1 / 28</b></span></div><div id="boardBox"><canvas id="board" width="640" height="400"></canvas></div></section>
@@ -61,7 +61,7 @@ function integerInput(id,min,max){const n=Number($(id).value);const value=Number
 function pct(id){const x=Number($(id).value);return Number.isFinite(x)?Math.min(100,Math.max(0,x))/100:0;}
 function generate(){if(animating)return;
  BW=integerInput('width',8,30);BH=integerInput('height',6,16);
- canvas.width=BW*S;canvas.height=BH*S;canvas.style.setProperty('--board-ratio',`${BW}/${BH}`);
+ canvas.width=BW*S;canvas.height=BH*S;canvas.style.setProperty('--board-ratio',`${BW}/${BH}`);if(typeof fitBoardToSpace==='function')requestAnimationFrame(fitBoardToSpace);
  // Nejdříve rozmístíme skály, pak teprve sestavíme balíček dílků.
  placements=[];obstacles.clear();lairs.clear();selected=null;turn=0;hover=null;workPos=null;discarded=0;lost=false;inHand=true;
  entry=new Set([...entry].filter(y=>y<BH));exit=new Set([...exit].filter(y=>y<BH));
@@ -413,6 +413,20 @@ pad.addEventListener('pointerup',padEnd);pad.addEventListener('pointercancel',pa
 
 const originalGenerate=generate;
 generate=function(){extraEnemies=new Set();discarded=0;lost=false;history.length=0;originalGenerate();};
-window.addEventListener('resize',()=>{drawSmallTile('currentTile',selected===null?null:pieces[selected],0);drawBoard();});
+window.addEventListener('resize',()=>{fitBoardToSpace();drawSmallTile('currentTile',selected===null?null:pieces[selected],0);drawBoard();});
 setPorts(4);entry=new Set([Math.floor((Number($('height').value)-1)/2)]);renderPortInputs(Number($('height').value));updateCapacity();generate();
+
+// Responsive canvas: scale the entire grid to the available playfield area,
+// rather than keeping its internal bitmap dimensions as CSS pixels.
+function fitBoardToSpace(){
+ const box=document.getElementById('boardBox');
+ const availableW=box.clientWidth,availableH=box.clientHeight;
+ if(availableW<1||availableH<1)return;
+ const scale=Math.min(availableW/BW,availableH/BH);
+ canvas.style.width=Math.floor(scale*BW)+'px';
+ canvas.style.height=Math.floor(scale*BH)+'px';
+}
+const boardSizer=new ResizeObserver(()=>fitBoardToSpace());
+boardSizer.observe(document.getElementById('boardBox'));
+fitBoardToSpace();
 </script></body></html>
