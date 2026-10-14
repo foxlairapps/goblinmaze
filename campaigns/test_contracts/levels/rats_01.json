@@ -1,0 +1,75 @@
+{
+  "id": "rats_01",
+  "name": "Deratizace sýpky",
+  "description": "Propojené krysy získávají body. Zasažené zásoby je ubírají.",
+  "theme": "granary",
+  "board": {
+    "width": 16,
+    "height": 10
+  },
+  "start": {
+    "side": "left",
+    "position": 4
+  },
+  "exits": [
+    {
+      "id": "out",
+      "side": "right",
+      "position": 5
+    }
+  ],
+  "pieces": {
+    "count": 31,
+    "passablePercent": 75,
+    "reward": {
+      "count": 14,
+      "name": "Krysy",
+      "icon": "rat",
+      "score": 2
+    },
+    "penalty": {
+      "count": 8,
+      "name": "Zásoby",
+      "icon": "supplies",
+      "score": -2
+    }
+  },
+  "fixedObjects": {
+    "rocks": {
+      "randomCount": 3,
+      "positions": []
+    },
+    "lairs": {
+      "randomCount": 1,
+      "positions": []
+    },
+    "pointsOfInterest": [
+      {
+        "id": "food_store",
+        "name": "Sklad",
+        "icon": "barn",
+        "placement": {
+          "type": "fixed",
+          "x": 8,
+          "y": 5
+        },
+        "score": {
+          "found": 5,
+          "missed": 0
+        },
+        "mode": "required",
+        "onFound": {
+          "title": "Objeveno: Sklad",
+          "text": "Místo je nyní propojené s výchozí cestou."
+        }
+      }
+    ]
+  },
+  "discard": {
+    "mode": "disabled"
+  },
+  "success": {
+    "minimumScore": 8,
+    "useCampaignReserve": false
+  }
+}

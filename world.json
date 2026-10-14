@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "0.1",
+  "campaigns": [
+    {
+      "id": "test_contracts",
+      "file": "campaigns/test_contracts/campaign.json"
+    }
+  ]
+}

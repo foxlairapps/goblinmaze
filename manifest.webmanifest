@@ -1,12 +1,11 @@
 {
-  "name": "GoblinsMaze",
-  "short_name": "GoblinsMaze",
+  "name": "Mercenary Tales",
+  "short_name": "Mercenary Tales",
   "start_url": "./",
-  "scope": "./",
   "display": "standalone",
+  "orientation": "landscape",
   "background_color": "#101923",
   "theme_color": "#172533",
-  "orientation": "landscape",
   "icons": [
     {
       "src": "icon-192.png",
