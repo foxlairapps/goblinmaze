@@ -1,9 +1,30 @@
 {
-  "schemaVersion": "0.1",
+  "schemaVersion": "0.2",
+  "locations": [
+    {
+      "id": "village",
+      "name": "Vesnice",
+      "description": "Práce pro vesničany"
+    },
+    {
+      "id": "town",
+      "name": "Město",
+      "description": "Městské zakázky"
+    },
+    {
+      "id": "castle",
+      "name": "Hrad",
+      "description": "Královské zakázky"
+    }
+  ],
   "campaigns": [
     {
-      "id": "test_contracts",
-      "file": "campaigns/test_contracts/campaign.json"
+      "id": "goblin_hill",
+      "file": "campaigns/goblin_hill/campaign.json"
+    },
+    {
+      "id": "old_mill",
+      "file": "campaigns/old_mill/campaign.json"
     }
   ]
 }

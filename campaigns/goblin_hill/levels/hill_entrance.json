@@ -1,0 +1,73 @@
+{
+  "id": "hill_entrance",
+  "name": "Vchod do jeskyně",
+  "description": "Najdi vstup do spodních komor.",
+  "theme": "dungeon",
+  "board": {
+    "width": 16,
+    "height": 10
+  },
+  "start": {
+    "side": "left",
+    "position": 4
+  },
+  "exits": [
+    {
+      "id": "deep",
+      "side": "right",
+      "position": 2,
+      "next": {
+        "level": "hill_treasure"
+      }
+    },
+    {
+      "id": "side",
+      "side": "right",
+      "position": 7,
+      "next": {
+        "level": "hill_treasure"
+      }
+    }
+  ],
+  "pieces": {
+    "count": 24,
+    "passablePercent": 65,
+    "reward": {
+      "count": 15,
+      "name": "Poklady",
+      "icon": "treasure",
+      "score": 1
+    },
+    "penalty": {
+      "count": 5,
+      "name": "Goblini",
+      "icon": "goblin",
+      "score": -1
+    }
+  },
+  "fixedObjects": {
+    "rocks": {
+      "randomCount": 4,
+      "positions": []
+    },
+    "lairs": {
+      "randomCount": 2,
+      "positions": []
+    },
+    "pointsOfInterest": []
+  },
+  "discard": {
+    "mode": "penalty"
+  },
+  "success": {
+    "minimumScore": -8,
+    "useCampaignReserve": true
+  },
+  "intro": {
+    "title": "Kamenné chodby",
+    "text": "Vstupuješ do opuštěného dolu. V dálce slyšíš gobliny."
+  },
+  "failTarget": {
+    "level": "hill_entrance"
+  }
+}

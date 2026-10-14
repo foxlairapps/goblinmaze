@@ -1,0 +1,65 @@
+{
+  "id": "mill_cellar",
+  "name": "Sýpka",
+  "description": "Pobij krysy a spoj cestu do podzemí.",
+  "theme": "granary",
+  "board": {
+    "width": 16,
+    "height": 10
+  },
+  "start": {
+    "side": "left",
+    "position": 4
+  },
+  "exits": [
+    {
+      "id": "down",
+      "side": "right",
+      "position": 5,
+      "next": {
+        "level": "mill_nest"
+      }
+    }
+  ],
+  "pieces": {
+    "count": 21,
+    "passablePercent": 75,
+    "reward": {
+      "count": 14,
+      "name": "Krysy",
+      "icon": "rat",
+      "score": 2
+    },
+    "penalty": {
+      "count": 8,
+      "name": "Zásoby",
+      "icon": "supplies",
+      "score": -2
+    }
+  },
+  "fixedObjects": {
+    "rocks": {
+      "randomCount": 3,
+      "positions": []
+    },
+    "lairs": {
+      "randomCount": 1,
+      "positions": []
+    },
+    "pointsOfInterest": []
+  },
+  "discard": {
+    "mode": "free"
+  },
+  "success": {
+    "minimumScore": -10,
+    "useCampaignReserve": false
+  },
+  "intro": {
+    "title": "Ve staré sýpce",
+    "text": "V prachu jsou vidět čerstvé stopy. Mlýn musíš prozkoumat odshora dolů."
+  },
+  "failTarget": {
+    "level": "mill_cellar"
+  }
+}

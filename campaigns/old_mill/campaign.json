@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "0.1",
+  "themes": {
+    "dungeon": {
+      "tiles": {
+        "default": "dungeon_default",
+        "corridor": "dungeon_corridor",
+        "path": "dungeon_path",
+        "barrier": "dungeon_barrier"
+      }
+    },
+    "forest": {
+      "tiles": {
+        "default": "forest_default",
+        "corridor": "forest_corridor",
+        "path": "forest_path",
+        "barrier": "forest_barrier"
+      }
+    },
+    "granary": {
+      "tiles": {
+        "default": "dungeon_default",
+        "corridor": "dungeon_corridor",
+        "path": "dungeon_path",
+        "barrier": "dungeon_barrier"
+      }
+    }
+  },
+  "tokens": {
+    "goblin": {
+      "active": "goblin_active",
+      "available": "goblin_available"
+    },
+    "treasure": {
+      "active": "treasure_active",
+      "available": "treasure_available"
+    },
+    "rat": {
+      "active": "goblin_active",
+      "available": "goblin_available"
+    },
+    "supplies": {
+      "active": "treasure_active",
+      "available": "treasure_available"
+    },
+    "wolf": {
+      "active": "goblin_active",
+      "available": "goblin_available"
+    }
+  },
+  "id": "old_mill",
+  "name": "Krysy ve starém mlýně",
+  "description": "Vesnický mlynář žádá pomoc. V sýpce mizí obilí a pod mlýnem se něco hýbe.",
+  "category": "village",
+  "difficulty": 2,
+  "reward": {
+    "crowns": 5
+  },
+  "startLevel": "mill_cellar",
+  "intro": {
+    "title": "Krysy ve starém mlýně",
+    "text": "Mlynář si tě najal, abys zbavil jeho mlýn krys. Dávej pozor na zásoby obilí."
+  },
+  "reserve": {
+    "enabled": false,
+    "name": "Zásoby",
+    "icon": "supplies"
+  },
+  "levels": [
+    {
+      "id": "mill_cellar",
+      "file": "levels/mill_cellar.json"
+    },
+    {
+      "id": "mill_nest",
+      "file": "levels/mill_nest.json"
+    }
+  ],
+  "finals": [
+    {
+      "id": "success",
+      "minScore": 10,
+      "title": "Hrdina mlýna",
+      "text": "Mlynář ti děkuje. O tvém úspěchu mluví celá vesnice!"
+    },
+    {
+      "id": "success",
+      "title": "Zachráněný mlýn",
+      "text": "Krysy jsou pryč a mlýn může znovu pracovat."
+    },
+    {
+      "id": "fail",
+      "title": "Nevydařená zakázka",
+      "text": "Mlýn se ti zatím nepodařilo zachránit."
+    }
+  ],
+  "endIntro": {
+    "title": "Konec dobrodružství"
+  }
+}

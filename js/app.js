@@ -182,7 +182,7 @@ function metrics(){updateCapacity();const a=analyze(occupancy());const done=sele
  $('undo').disabled=true;$('rotL').disabled=selected===null||!inHand;$('rotR').disabled=selected===null||!inHand;
  $('note').textContent=done?'Všechny dílky jsou položeny. '+result:selected===null?'Vygeneruj podzemí.':`Dílek ${selected+1} (${pieces[selected].name}) ${inHand?'je v ruce – umísti ho na podepřené místo.':'čeká na stole – klikni na něj.'}`;
 }
-function renderAll(){renderPalette();drawBoard();metrics();refreshUI();if((selected===null||lost)&&!levelFinished){levelFinished=true;const a=analyze(occupancy());const ok=!lost&&!a.forbidden&&a.win&&a.mandatory&&a.finalScore>=(currentLevel?.success?.minimumScore??0);$('finishTitle').textContent=ok?'✓ Úroveň splněna':'✕ Úroveň nesplněna';$('finishText').textContent=$('result').textContent+` · Dosažené body ${a.finalScore}.`+(endReason&&endReason.includes('POI')?' '+endReason:'');$('finishPanel').hidden=false;}}
+function renderAll(){renderPalette();drawBoard();metrics();refreshUI();if((selected===null||lost)&&!levelFinished){levelFinished=true;const a=analyze(occupancy());const ok=!lost&&!a.forbidden&&a.win&&a.mandatory&&a.finalScore>=(currentLevel?.success?.minimumScore??0);$('finishTitle').textContent=ok?'✓ Úroveň splněna':'✕ Úroveň nesplněna';$('finishText').textContent=$('result').textContent+` · Dosažené body ${a.finalScore}.`+(endReason&&endReason.includes('POI')?' '+endReason:'');$('finishPanel').hidden=false;onLevelEnd(ok,a);}}
 function rotate(n){if(selected===null||!inHand)return;turn=(turn+n+4)%4;drawBoard();metrics();refreshUI();}
 function coord(e){const b=canvas.getBoundingClientRect();const px=(e.clientX-b.left)*canvas.width/b.width-BOARD_PAD_X;const py=(e.clientY-b.top)*canvas.height/b.height-BOARD_PAD_Y;return {x:Math.floor(px/S),y:Math.floor(py/S)};}
 function takePiece(){if(selected===null||inHand)return;inHand=true;hover=null;workPos=null;renderAll();}
@@ -329,7 +329,7 @@ function discardCard(){if(selected===null||lost)return;
 $discard.addEventListener('click',discardCard);
 
 
-$('finishRestart').onclick=()=>{generate();$('finishPanel').hidden=true};$('finishClose').onclick=()=>{$('finishPanel').hidden=true};
+$('finishRestart').onclick=()=>{if(inCampaign){$('finishPanel').hidden=true;chooseLevel(currentLevel.id)}else{generate();$('finishPanel').hidden=true}};$('finishClose').onclick=()=>{if(inCampaign){handleContinue()}else{$('finishPanel').hidden=true;showWorld()}};
 $('surrender').addEventListener('click',()=>{if(!lost&&!levelFinished&&confirm('Vzdát úroveň? Tento pokus bude neúspěšný.')){lost=true;inHand=false;workPos=null;$settings.hidden=true;renderAll();}});
 $('settingsBtn').addEventListener('click',()=>{$settings.hidden=false});
 $('closeSettings').addEventListener('click',()=>{$settings.hidden=true});
@@ -471,7 +471,7 @@ function chooseLevel(id){
  entry=new Set([d.start.position]);exit=new Set(d.exits.map(e=>e.position));renderPortInputs(d.board.height);
  $('levelDescription').textContent=`${d.name} — ${d.description||''} · minimum ${d.success?.minimumScore??0} · koš: ${d.discard.mode}`;
  $('scoreSummary').title='Rozpis skóre';$('poiSummary').title='Body zájmu';
- $('levelSelect').value=id;generate();
+ $('levelSelect').value=id;generate();if(inCampaign)showLevelIntro(d);
 }
 function setupPOI(){
  poi=[];const defs=currentLevel?.fixedObjects?.pointsOfInterest||[];
@@ -494,7 +494,7 @@ function showLoadError(e){console.error('Nepodařilo se načíst data hry:',e);$
 }
 async function loadCatalog(){
  try{
-  const world=await loadJSON('world.json');
+  const world=await loadJSON('world.json');window.worldLocations=world.locations;
   if(!Array.isArray(world.campaigns)||!world.campaigns.length)throw Error('world.json neobsahuje kampaně');
   const collected=[];campaignCatalog.clear();
   for(const ref of world.campaigns){
@@ -516,7 +516,7 @@ async function loadCatalog(){
   levelCatalog=collected;
   const sel=$('levelSelect');sel.replaceChildren();
   for(const lvl of levelCatalog){const opt=document.createElement('option');opt.value=lvl.id;opt.textContent=`${lvl._campaignName} / ${lvl.name}`;sel.append(opt)}
-  chooseLevel(levelCatalog[0].id);
+  initWorld();
  }catch(e){showLoadError(e)}
 }
 $('loadLevel').onclick=()=>{if(placements.length&&!confirm('Načíst novou úroveň a zahodit současný pokus?'))return;chooseLevel($('levelSelect').value);$settings.hidden=true};
@@ -539,3 +539,40 @@ function fitBoardToSpace(){
 const boardSizer=new ResizeObserver(()=>fitBoardToSpace());
 boardSizer.observe(document.getElementById('boardBox'));
 fitBoardToSpace();
+
+
+// ---- Svět a průběh kampaně ----
+let inCampaign=false,activeRun=null,pendingEnd=null,selectedOffer=null,selectedLocation='village';
+const progressKey='mercenary-tales-progress-v1';
+function readProgress(){try{return JSON.parse(localStorage.getItem(progressKey))||{crowns:0,completed:{}}}catch{return {crowns:0,completed:{}}}}
+function saveProgress(data){localStorage.setItem(progressKey,JSON.stringify(data))}
+function showWorld(){inCampaign=false;activeRun=null;pendingEnd=null;$('finishPanel').hidden=true;$('settingsPanel').hidden=true;$('game').hidden=true;$('worldScreen').hidden=false;$('offerOverlay').hidden=true;renderWorld()}
+function initWorld(){showWorld()}
+function renderWorld(){const progress=readProgress();$('crownTotal').textContent=progress.crowns||0;const locations=window.worldLocations||[{id:'village',name:'Vesnice'},{id:'town',name:'Město'},{id:'castle',name:'Hrad'}];
+ $('worldLocations').innerHTML='';for(const l of locations){const b=document.createElement('button');b.textContent=l.name;b.className=l.id===selectedLocation?'active':'';b.onclick=()=>{selectedLocation=l.id;renderWorld()};$('worldLocations').append(b)}
+ $('worldOffers').innerHTML='';const entries=[...campaignCatalog.values()].filter(c=>(c.category||'village')===selectedLocation);
+ if(!entries.length){$('worldOffers').innerHTML='<p>Prozatím zde nejsou dostupné zakázky.</p>';return}
+ for(const c of entries){const count=c.levels.length,done=progress.completed?.[c.id]||0;const b=document.createElement('button');b.className='offerCard';b.innerHTML=`<h3>${safeText(c.name)} ${done?'✓':''}</h3><small>${'★'.repeat(Math.max(1,Math.min(5,c.difficulty||1)))}${'☆'.repeat(5-Math.max(1,Math.min(5,c.difficulty||1)))} · ${count} úrovně · ${c.reward?.crowns||0} 👑</small><p>${safeText(c.description||'')}</p>`;b.onclick=()=>openOffer(c);$('worldOffers').append(b)}
+}
+function openOffer(c){selectedOffer=c;$('offerTitle').textContent=c.name;$('offerDescription').textContent=c.description||'';const done=(readProgress().completed||{})[c.id]||0;$('offerInfo').textContent=`Úrovně: ${c.levels.length} · Obtížnost: ${'★'.repeat(c.difficulty||1)}${'☆'.repeat(5-(c.difficulty||1))} · Odměna: ${done?Math.floor((c.reward?.crowns||0)/2):(c.reward?.crowns||0)} 👑${done?' (opakování, poloviční odměna)':''}`;$('offerOverlay').hidden=false}
+$('offerCancel').onclick=()=>{$('offerOverlay').hidden=true};$('offerAccept').onclick=()=>{if(!selectedOffer)return;const c=selectedOffer;$('offerOverlay').hidden=true;inCampaign=true;activeRun={campaignId:c.id,levelId:c.startLevel||c.levels[0].id,visited:0};reserve=0;$('worldScreen').hidden=true;$('game').hidden=false;detailOpen(c.intro?.title||c.name,`<p>${safeText(c.intro?.text||c.description||'')}</p>`,()=>{chooseLevel(activeRun.levelId)})};
+function showLevelIntro(d){if(!d.intro)return;detailOpen(d.intro.title||d.name,`<p>${safeText(d.intro.text||d.description||'')}</p><p class="muted">Minimum: ${d.success?.minimumScore??0} · ${d.fixedObjects?.pointsOfInterest?.filter(o=>o.mode==='required').length||0} povinných míst</p>`)}
+function findFinal(c,id,score){return (c.finals||[]).find(f=>f.id===id&&(f.minScore===undefined||score>=f.minScore))||{title:'Konec zakázky',text:'Dobrodružství je u konce.'}}
+function resolveTarget(target){if(!target)return {final:'fail'};if(target.level)return target;if(target.final)return target;return {final:'fail'}}
+function onLevelEnd(ok,a){if(!inCampaign||!activeRun)return;const level=currentLevel;if(ok&&level.success?.useCampaignReserve)reserve=a.finalScore;
+ const reached=level.exits.filter(e=>a.visited.has(`${BW-1},${e.position}`));
+ let target;
+ if(ok){if(reached.length>1){pendingEnd={kind:'select',exits:reached,score:a.finalScore};$('finishText').textContent+=' · Vyber další cestu.';return}target=resolveTarget(reached[0]?.next)}
+ else target=resolveTarget(a.forbidden?.failTarget||level.failTarget);
+ pendingEnd={kind:'target',target,score:a.finalScore};
+}
+function handleContinue(){if(!inCampaign||!pendingEnd){$('finishPanel').hidden=true;showWorld();return}
+ $('finishPanel').hidden=true;const p=pendingEnd;pendingEnd=null;
+ if(p.kind==='select'){const list=p.exits.map((e,i)=>`<button data-exit="${i}">${safeText(e.name||e.id||'Východ '+(i+1))}</button>`).join(' ');detailOpen('Vyber cestu',`<p>Kterým dosaženým východem chceš pokračovat?</p><div class="storyActions">${list}</div>`);$('detailBody').querySelectorAll('[data-exit]').forEach(b=>b.onclick=()=>{const e=p.exits[Number(b.dataset.exit)];$('detailPanel').hidden=true;goTarget(resolveTarget(e.next),p.score)});return}
+ goTarget(p.target,p.score);
+}
+function goTarget(target,score){if(target.level){const found=levelCatalog.find(x=>x.id===target.level&&x._campaignId===activeRun.campaignId);if(!found){detailOpen('Chyba návaznosti','<p>Navazující úroveň neexistuje.</p>',showWorld);return}activeRun.levelId=target.level;activeRun.visited++;if(activeRun.visited>30){detailOpen('Příliš mnoho přechodů','<p>Výprava se opakovaně vrací mezi úrovněmi.</p>',showWorld);return}chooseLevel(target.level);return}
+ const c=campaignCatalog.get(activeRun.campaignId);const id=target.final||'fail';const f=findFinal(c,id,score);const success=!!f.success||(!/^fail/i.test(id)&&id!=='failFlee');let award=0;
+ if(success){const progress=readProgress();const seen=progress.completed[c.id]||0;award=seen?Math.floor((c.reward?.crowns||0)/2):(c.reward?.crowns||0);progress.crowns=(progress.crowns||0)+award;progress.completed[c.id]=seen+1;saveProgress(progress)}
+ detailOpen(f.title||'Konec kampaně',`<p>${safeText(f.text||'')}</p><p>${success?`Získáváš ${award} 👑.`:'Tentokrát bez odměny.'}</p>`,showWorld);
+}

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": "0.1",
+  "themes": {
+    "dungeon": {
+      "tiles": {
+        "default": "dungeon_default",
+        "corridor": "dungeon_corridor",
+        "path": "dungeon_path",
+        "barrier": "dungeon_barrier"
+      }
+    },
+    "forest": {
+      "tiles": {
+        "default": "forest_default",
+        "corridor": "forest_corridor",
+        "path": "forest_path",
+        "barrier": "forest_barrier"
+      }
+    },
+    "granary": {
+      "tiles": {
+        "default": "dungeon_default",
+        "corridor": "dungeon_corridor",
+        "path": "dungeon_path",
+        "barrier": "dungeon_barrier"
+      }
+    }
+  },
+  "tokens": {
+    "goblin": {
+      "active": "goblin_active",
+      "available": "goblin_available"
+    },
+    "treasure": {
+      "active": "treasure_active",
+      "available": "treasure_available"
+    },
+    "rat": {
+      "active": "goblin_active",
+      "available": "goblin_available"
+    },
+    "supplies": {
+      "active": "treasure_active",
+      "available": "treasure_available"
+    },
+    "wolf": {
+      "active": "goblin_active",
+      "available": "goblin_available"
+    }
+  },
+  "id": "goblin_hill",
+  "name": "Poklad pod kopcem",
+  "description": "Za vesnicí se rozléhají gobliní jeskyně. Získej poklad a vrať se.",
+  "category": "village",
+  "difficulty": 3,
+  "reward": {
+    "crowns": 8
+  },
+  "startLevel": "hill_entrance",
+  "intro": {
+    "title": "Poklad pod kopcem",
+    "text": "Starosta slibuje odměnu za bezpečný průchod gobliními chodbami. Co odneseš, to si musíš zasloužit."
+  },
+  "reserve": {
+    "enabled": true,
+    "name": "Poklady",
+    "icon": "treasure"
+  },
+  "levels": [
+    {
+      "id": "hill_entrance",
+      "file": "levels/hill_entrance.json"
+    },
+    {
+      "id": "hill_treasure",
+      "file": "levels/hill_treasure.json"
+    }
+  ],
+  "finals": [
+    {
+      "id": "success",
+      "minScore": 15,
+      "title": "Bohatý návrat",
+      "text": "Vrátil ses s pořádným pokladem. Vesnice ti provolává slávu!"
+    },
+    {
+      "id": "success",
+      "title": "Návrat z jeskyně",
+      "text": "Dokázal jsi projít nebezpečné podzemí. Starosta ti děkuje."
+    },
+    {
+      "id": "fail",
+      "title": "Podzemí zvítězilo",
+      "text": "Tentokrát tě jeskyně přemohly."
+    }
+  ],
+  "endIntro": {
+    "title": "Konec dobrodružství"
+  }
+}

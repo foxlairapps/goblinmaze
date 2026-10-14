@@ -37,23 +37,23 @@
   "tokens": {
     "goblin": {
       "active": "goblin_active",
-      "available": "goblin_idle"
+      "available": "goblin_available"
     },
     "treasure": {
       "active": "treasure_active",
-      "available": "treasure_idle"
+      "available": "treasure_available"
     },
     "rat": {
       "active": "goblin_active",
-      "available": "goblin_idle"
+      "available": "goblin_available"
     },
     "supplies": {
       "active": "treasure_active",
-      "available": "treasure_idle"
+      "available": "treasure_available"
     },
     "wolf": {
       "active": "goblin_active",
-      "available": "goblin_idle"
+      "available": "goblin_available"
     }
   },
   "levels": [
@@ -70,5 +70,8 @@
       "file": "levels/forest_01.json"
     }
   ],
-  "finals": []
+  "finals": [],
+  "enabled": false,
+  "category": "village",
+  "difficulty": 1
 }

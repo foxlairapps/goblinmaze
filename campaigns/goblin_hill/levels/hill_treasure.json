@@ -1,0 +1,83 @@
+{
+  "id": "hill_treasure",
+  "name": "Pokladnice",
+  "description": "Propoj pokladnici a vrať se domů.",
+  "theme": "dungeon",
+  "board": {
+    "width": 16,
+    "height": 10
+  },
+  "start": {
+    "side": "left",
+    "position": 4
+  },
+  "exits": [
+    {
+      "id": "return",
+      "side": "right",
+      "position": 7,
+      "next": {
+        "final": "success"
+      }
+    }
+  ],
+  "pieces": {
+    "count": 26,
+    "passablePercent": 65,
+    "reward": {
+      "count": 14,
+      "name": "Poklady",
+      "icon": "treasure",
+      "score": 1
+    },
+    "penalty": {
+      "count": 7,
+      "name": "Goblini",
+      "icon": "goblin",
+      "score": -1
+    }
+  },
+  "fixedObjects": {
+    "rocks": {
+      "randomCount": 4,
+      "positions": []
+    },
+    "lairs": {
+      "randomCount": 2,
+      "positions": []
+    },
+    "pointsOfInterest": [
+      {
+        "id": "cache",
+        "name": "Pokladnice",
+        "icon": "chest",
+        "placement": {
+          "type": "random"
+        },
+        "score": {
+          "found": 4,
+          "missed": 0
+        },
+        "mode": "required",
+        "onFound": {
+          "title": "Objeveno: Pokladnice",
+          "text": "Místo je nyní propojené s výchozí cestou."
+        }
+      }
+    ]
+  },
+  "discard": {
+    "mode": "penalty"
+  },
+  "success": {
+    "minimumScore": 0,
+    "useCampaignReserve": true
+  },
+  "intro": {
+    "title": "Sál pokladů",
+    "text": "Za temnou chodbou se třpytí truhla. Nenech se uvěznit mezi gobliny."
+  },
+  "failTarget": {
+    "level": "hill_entrance"
+  }
+}
