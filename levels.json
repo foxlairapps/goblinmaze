@@ -1,0 +1,275 @@
+{
+  "schemaVersion": "0.1",
+  "levels": [
+    {
+      "id": "dungeon_01",
+      "name": "Podzemní zakázka",
+      "description": "Získej poklady, vyhni se goblinům a projdi východem.",
+      "theme": "dungeon",
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "start": {
+        "side": "left",
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "east_north",
+          "side": "right",
+          "position": 2
+        },
+        {
+          "id": "east_south",
+          "side": "right",
+          "position": 7
+        }
+      ],
+      "pieces": {
+        "count": 30,
+        "passablePercent": 65,
+        "reward": {
+          "count": 11,
+          "name": "Poklady",
+          "icon": "treasure",
+          "score": 1
+        },
+        "penalty": {
+          "count": 9,
+          "name": "Goblini",
+          "icon": "goblin",
+          "score": -1
+        }
+      },
+      "fixedObjects": {
+        "rocks": {
+          "randomCount": 4,
+          "positions": []
+        },
+        "lairs": {
+          "randomCount": 2,
+          "positions": []
+        },
+        "pointsOfInterest": [
+          {
+            "id": "cache",
+            "name": "Pokladnice",
+            "icon": "chest",
+            "placement": {
+              "type": "random"
+            },
+            "score": {
+              "found": 3,
+              "missed": -2
+            },
+            "mode": "optional",
+            "onFound": {
+              "title": "Objeveno: Pokladnice",
+              "text": "Místo je nyní propojené s výchozí cestou."
+            }
+          },
+          {
+            "id": "cursed",
+            "name": "Zakázaná hrobka",
+            "icon": "tomb",
+            "placement": {
+              "type": "fixed",
+              "x": 10,
+              "y": 6
+            },
+            "mode": "forbidden",
+            "score": {
+              "found": -5,
+              "missed": 0
+            },
+            "failTarget": {
+              "final": "opened_tomb"
+            },
+            "onFound": {
+              "title": "Pečeť byla porušena",
+              "text": "Otevřel jsi zakázanou hrobku. Výprava zde končí."
+            }
+          }
+        ]
+      },
+      "discard": {
+        "mode": "penalty"
+      },
+      "success": {
+        "minimumScore": 0,
+        "useCampaignReserve": false
+      },
+      "tiles": {
+        "empty": "default",
+        "passable": "corridor",
+        "rock": "rock"
+      }
+    },
+    {
+      "id": "rats_01",
+      "name": "Deratizace sýpky",
+      "description": "Propojené krysy získávají body. Zasažené zásoby je ubírají.",
+      "theme": "granary",
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "start": {
+        "side": "left",
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "out",
+          "side": "right",
+          "position": 5
+        }
+      ],
+      "pieces": {
+        "count": 31,
+        "passablePercent": 75,
+        "reward": {
+          "count": 14,
+          "name": "Krysy",
+          "icon": "rat",
+          "score": 2
+        },
+        "penalty": {
+          "count": 8,
+          "name": "Zásoby",
+          "icon": "supplies",
+          "score": -2
+        }
+      },
+      "fixedObjects": {
+        "rocks": {
+          "randomCount": 3,
+          "positions": []
+        },
+        "lairs": {
+          "randomCount": 1,
+          "positions": []
+        },
+        "pointsOfInterest": [
+          {
+            "id": "food_store",
+            "name": "Sklad",
+            "icon": "barn",
+            "placement": {
+              "type": "fixed",
+              "x": 8,
+              "y": 5
+            },
+            "score": {
+              "found": 5,
+              "missed": 0
+            },
+            "mode": "required",
+            "onFound": {
+              "title": "Objeveno: Sklad",
+              "text": "Místo je nyní propojené s výchozí cestou."
+            }
+          }
+        ]
+      },
+      "discard": {
+        "mode": "disabled"
+      },
+      "success": {
+        "minimumScore": 8,
+        "useCampaignReserve": false
+      },
+      "tiles": {
+        "empty": "default",
+        "passable": "corridor",
+        "rock": "rock"
+      }
+    },
+    {
+      "id": "forest_01",
+      "name": "Lesní stezka",
+      "description": "Najdi průchod lesem a dosáhni ztraceného vozu.",
+      "theme": "forest",
+      "board": {
+        "width": 20,
+        "height": 8
+      },
+      "start": {
+        "side": "left",
+        "position": 3
+      },
+      "exits": [
+        {
+          "id": "north",
+          "side": "right",
+          "position": 2
+        },
+        {
+          "id": "south",
+          "side": "right",
+          "position": 6
+        }
+      ],
+      "pieces": {
+        "count": 31,
+        "passablePercent": 68,
+        "reward": {
+          "count": 10,
+          "name": "Houby",
+          "icon": "mushroom",
+          "score": 1
+        },
+        "penalty": {
+          "count": 6,
+          "name": "Vlci",
+          "icon": "wolf",
+          "score": -1
+        }
+      },
+      "fixedObjects": {
+        "rocks": {
+          "randomCount": 4,
+          "positions": []
+        },
+        "lairs": {
+          "randomCount": 1,
+          "positions": []
+        },
+        "pointsOfInterest": [
+          {
+            "id": "wagon",
+            "name": "Ztracený vůz",
+            "icon": "wagon",
+            "placement": {
+              "type": "fixed",
+              "x": 10,
+              "y": 4
+            },
+            "score": {
+              "found": 3,
+              "missed": 0
+            },
+            "mode": "required",
+            "onFound": {
+              "title": "Objeveno: Ztracený vůz",
+              "text": "Místo je nyní propojené s výchozí cestou."
+            }
+          }
+        ]
+      },
+      "discard": {
+        "mode": "free"
+      },
+      "success": {
+        "minimumScore": 0,
+        "useCampaignReserve": false
+      },
+      "tiles": {
+        "empty": "default",
+        "passable": "path",
+        "rock": "rock"
+      }
+    }
+  ]
+}

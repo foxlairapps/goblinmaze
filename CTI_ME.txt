@@ -1,0 +1,16 @@
+MERCENARY TALES 008 – TESTOVACÍ BUILD
+
+Spuštění: otevři index.html v prohlížeči, nebo publikuj celou složku na web (včetně levels.json a assets/).
+
+NOVINKY:
+- 4 WebP textury buněk v assets/tiles: default (volná), corridor (průchozí dungeon), path (průchozí les), rock (neprůchozí).
+- Úroveň si volí soubory v sekci tiles (jména bez přípon).
+- Jeden ukazatel skóre se souhrnem po klepnutí; přehled POI se samostatnými detaily.
+- POI required / optional / forbidden; forbidden po dosažení okamžitě končí prohrou.
+- Vstupní a výstupní buňku nelze zastavět neprůchozí skálou.
+- Tři testovací scénáře přes Nastavení > Testovací úroveň.
+- Rozvržení dotykového ovládání z verze 006 zůstává zachováno.
+
+Pro vlastní úrovně upravuj levels.json. Při otevření index.html přes file:// může být použit vložený záložní katalog testovacích úrovní.
+
+Zatím bez automatické návaznosti kampaní a bez finálních ikon objektů.
