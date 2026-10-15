@@ -36,24 +36,24 @@
   },
   "tokens": {
     "goblin": {
-      "active": "goblin_active",
-      "available": "goblin_available"
+      "active": "token_goblin_active",
+      "available": "token_goblin_available"
     },
     "treasure": {
-      "active": "treasure_active",
-      "available": "treasure_available"
+      "active": "token_treasure_active",
+      "available": "token_treasure_available"
     },
     "rat": {
-      "active": "goblin_active",
-      "available": "goblin_available"
+      "active": "token_goblin_active",
+      "available": "token_goblin_available"
     },
     "supplies": {
-      "active": "treasure_active",
-      "available": "treasure_available"
+      "active": "token_treasure_active",
+      "available": "token_treasure_available"
     },
     "wolf": {
-      "active": "goblin_active",
-      "available": "goblin_available"
+      "active": "token_goblin_active",
+      "available": "token_goblin_available"
     }
   },
   "levels": [
