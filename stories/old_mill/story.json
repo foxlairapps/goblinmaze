@@ -1,0 +1,659 @@
+{
+  "schemaVersion": "1.0",
+  "id": "old_mill",
+  "name": "Krysy ve starém mlýně",
+  "description": "Mlynářovi mizí zásoby. Pod podlahou se ale skrývá něco víc než obyčejné krysy.",
+  "issuerType": "village",
+  "difficulty": 2,
+  "offerText": "Mlynářovi mizí zásoby. Pod podlahou se ale skrývá něco víc než obyčejné krysy.",
+  "completedText": "Zakázka je splněna. Můžeš se na ni vydat znovu.",
+  "reward": {
+    "firstCompletion": 5,
+    "repeatCompletion": 2
+  },
+  "startTarget": {
+    "type": "screen",
+    "id": "story_intro"
+  },
+  "defaults": {
+    "tileTheme": "granary",
+    "tokenTheme": "story_tokens",
+    "doorTheme": "generic",
+    "poiTheme": "markers"
+  },
+  "assets": {
+    "files": [
+      {
+        "id": "tile_dungeon_default",
+        "path": "assets/tile/dungeon_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_corridor",
+        "path": "assets/tile/dungeon_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_path",
+        "path": "assets/tile/dungeon_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_barrier",
+        "path": "assets/tile/dungeon_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "token_token_treasure_available",
+        "path": "assets/token/token_treasure_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_treasure_active",
+        "path": "assets/token/token_treasure_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_available",
+        "path": "assets/token/token_goblin_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_active",
+        "path": "assets/token/token_goblin_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "door_door_generic_entrance_active",
+        "path": "assets/door/door_generic_entrance_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_available",
+        "path": "assets/door/door_generic_exit_available.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_active",
+        "path": "assets/door/door_generic_exit_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "poi_clue_available",
+        "path": "assets/poi/poi_clue_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_clue_active",
+        "path": "assets/poi/poi_clue_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_available",
+        "path": "assets/poi/poi_danger_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_active",
+        "path": "assets/poi/poi_danger_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_available",
+        "path": "assets/poi/poi_person_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_active",
+        "path": "assets/poi/poi_person_active.webp",
+        "category": "poi"
+      }
+    ],
+    "tileThemes": [
+      {
+        "id": "granary",
+        "label": "Sýpka / mlýn",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      },
+      {
+        "id": "cellar",
+        "label": "Sklep",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      }
+    ],
+    "tokenThemes": [
+      {
+        "id": "story_tokens",
+        "label": "story_tokens",
+        "images": {
+          "reward.available": "token_token_treasure_available",
+          "reward.active": "token_token_treasure_active",
+          "penalty.available": "token_token_goblin_available",
+          "penalty.active": "token_token_goblin_active"
+        }
+      }
+    ],
+    "doorThemes": [
+      {
+        "id": "generic",
+        "label": "generic",
+        "images": {
+          "entrance.active": "door_door_generic_entrance_active",
+          "exit.available": "door_door_generic_exit_available",
+          "exit.active": "door_door_generic_exit_active"
+        }
+      }
+    ],
+    "poiThemes": [
+      {
+        "id": "markers",
+        "label": "markers",
+        "items": [
+          {
+            "id": "clue",
+            "available": "poi_clue_available",
+            "active": "poi_clue_active"
+          },
+          {
+            "id": "danger",
+            "available": "poi_danger_available",
+            "active": "poi_danger_active"
+          },
+          {
+            "id": "person",
+            "available": "poi_person_available",
+            "active": "poi_person_active"
+          }
+        ]
+      }
+    ]
+  },
+  "screens": [
+    {
+      "id": "scene_01_intro",
+      "title": "Mlýn bez mouky",
+      "text": "Mlynář ukazuje rozházené pytle. Stopy vedou do staré násypky."
+    },
+    {
+      "id": "scene_01_poi_01_found",
+      "title": "Roztržený pytel",
+      "text": "Mezi zrním jsou otisky drobných drápů.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_01_success",
+      "title": "Pokračování",
+      "text": "V otvoru mezi prkny mizí celé hrsti obilí."
+    },
+    {
+      "id": "scene_02_intro",
+      "title": "Ve vlhkém sklepě",
+      "text": "Ze sklepa táhne chlad; pod policemi se cosi hýbe."
+    },
+    {
+      "id": "scene_02_poi_02_found",
+      "title": "Mlynářův zápisník",
+      "text": "Někdo zapisoval dodávky krmení do sklepů.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_02_success",
+      "title": "Pokračování",
+      "text": "Krysy sem někdo láká záměrně."
+    },
+    {
+      "id": "scene_03_intro",
+      "title": "Hnízdo pod základy",
+      "text": "Pod mlýnem se rozprostírá staré zdivo a chodbičky."
+    },
+    {
+      "id": "scene_03_poi_03_found",
+      "title": "Královna krys",
+      "text": "V hnízdě leží ukradená pečeť i mlynářovo nářadí.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_03_success",
+      "title": "Pokračování",
+      "text": "Hnízdo je zničeno, ale původ pečeti zůstává záhadou."
+    },
+    {
+      "id": "scene_04_intro",
+      "title": "Poslední pytel",
+      "text": "Nad mlýnem svítá a mlynář chce zachránit zbylé obilí."
+    },
+    {
+      "id": "scene_04_poi_04_found",
+      "title": "Zachráněné obilí",
+      "text": "Mlynář může znovu spustit mlýnské kameny.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_04_success",
+      "title": "Pokračování",
+      "text": "Získáváš odměnu a místo u večerního stolu."
+    },
+    {
+      "id": "story_intro",
+      "title": "Krysy ve starém mlýně",
+      "text": "Mlynářovi mizí zásoby. Pod podlahou se ale skrývá něco víc než obyčejné krysy. Přijímáš zakázku a vyrážíš zjistit, co se skutečně stalo.",
+      "nextTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "ending_success",
+      "title": "Mistrovské dokončení",
+      "text": "Krysy ve starém mlýně: úkol jsi dokončil s mimořádným výsledkem. Tvůj čin se bude dlouho vyprávět."
+    },
+    {
+      "id": "ending_success_2",
+      "title": "Zakázka splněna",
+      "text": "Krysy ve starém mlýně: všechny zásadní kroky jsou za tebou. Získáváš odměnu a místo u večerního stolu."
+    },
+    {
+      "id": "ending_fail",
+      "title": "Nedokončená zakázka",
+      "text": "Cesta se pro tuto chvíli uzavřela. Vrátíš se lépe připravený."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "name": "Mlýn bez mouky",
+      "introScreenId": "scene_01_intro",
+      "themes": {
+        "tile": "granary",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_02"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 22,
+        "passablePercent": 69,
+        "reward": {
+          "count": 12,
+          "name": "grain",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 6,
+          "name": "rat",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 1
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_01",
+          "name": "Roztržený pytel",
+          "tooltip": "Roztržený pytel",
+          "themeItemId": "clue",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_01_poi_01_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_01_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "scene_02",
+      "name": "Ve vlhkém sklepě",
+      "introScreenId": "scene_02_intro",
+      "themes": {
+        "tile": "cellar",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 2,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 24,
+        "passablePercent": 69,
+        "reward": {
+          "count": 14,
+          "name": "grain",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 7,
+          "name": "rat",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 2
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_02",
+          "name": "Mlynářův zápisník",
+          "tooltip": "Mlynářův zápisník",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_02_poi_02_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_02_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_02"
+      }
+    },
+    {
+      "id": "scene_03",
+      "name": "Hnízdo pod základy",
+      "introScreenId": "scene_03_intro",
+      "themes": {
+        "tile": "cellar",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 7,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 26,
+        "passablePercent": 69,
+        "reward": {
+          "count": 16,
+          "name": "grain",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 8,
+          "name": "rat",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 3
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_03",
+          "name": "Královna krys",
+          "tooltip": "Královna krys",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_03_poi_03_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_03_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_03"
+      }
+    },
+    {
+      "id": "scene_04",
+      "name": "Poslední pytel",
+      "introScreenId": "scene_04_intro",
+      "themes": {
+        "tile": "granary",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 28,
+        "passablePercent": 69,
+        "reward": {
+          "count": 18,
+          "name": "grain",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 9,
+          "name": "rat",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 1
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_04",
+          "name": "Zachráněné obilí",
+          "tooltip": "Zachráněné obilí",
+          "themeItemId": "person",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 6,
+            "missed": -2
+          },
+          "onFoundScreenId": "scene_04_poi_04_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_04_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_04"
+      }
+    }
+  ],
+  "endings": {
+    "variants": [
+      {
+        "id": "success",
+        "result": "success",
+        "screenId": "ending_success",
+        "minTotalScore": 13
+      },
+      {
+        "id": "success_2",
+        "result": "success",
+        "screenId": "ending_success_2"
+      },
+      {
+        "id": "fail",
+        "result": "fail",
+        "screenId": "ending_fail"
+      }
+    ]
+  },
+  "authorNotes": {
+    "status": "draft",
+    "text": "Převedeno z testovacích scén MT.017, určeno pro další úpravy v Story Editoru."
+  }
+}
