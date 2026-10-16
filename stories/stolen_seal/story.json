@@ -1,0 +1,669 @@
+{
+  "schemaVersion": "1.0",
+  "id": "stolen_seal",
+  "name": "Ukradená městská pečeť",
+  "description": "Z radnice zmizela pečeť. Bez ní není možné potvrdit zásilku obilí.",
+  "issuerType": "town",
+  "difficulty": 2,
+  "offerText": "Z radnice zmizela pečeť. Bez ní není možné potvrdit zásilku obilí.",
+  "completedText": "Zakázka je splněna. Můžeš se na ni vydat znovu.",
+  "reward": {
+    "firstCompletion": 8,
+    "repeatCompletion": 4
+  },
+  "startTarget": {
+    "type": "screen",
+    "id": "story_intro"
+  },
+  "defaults": {
+    "tileTheme": "city",
+    "tokenTheme": "story_tokens",
+    "doorTheme": "generic",
+    "poiTheme": "markers"
+  },
+  "assets": {
+    "files": [
+      {
+        "id": "tile_dungeon_default",
+        "path": "assets/tile/dungeon_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_corridor",
+        "path": "assets/tile/dungeon_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_path",
+        "path": "assets/tile/dungeon_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_barrier",
+        "path": "assets/tile/dungeon_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "token_token_treasure_available",
+        "path": "assets/token/token_treasure_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_treasure_active",
+        "path": "assets/token/token_treasure_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_available",
+        "path": "assets/token/token_goblin_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_active",
+        "path": "assets/token/token_goblin_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "door_door_generic_entrance_active",
+        "path": "assets/door/door_generic_entrance_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_available",
+        "path": "assets/door/door_generic_exit_available.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_active",
+        "path": "assets/door/door_generic_exit_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "poi_clue_available",
+        "path": "assets/poi/poi_clue_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_clue_active",
+        "path": "assets/poi/poi_clue_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_available",
+        "path": "assets/poi/poi_danger_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_active",
+        "path": "assets/poi/poi_danger_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_available",
+        "path": "assets/poi/poi_person_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_active",
+        "path": "assets/poi/poi_person_active.webp",
+        "category": "poi"
+      }
+    ],
+    "tileThemes": [
+      {
+        "id": "city",
+        "label": "Ulice města",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      },
+      {
+        "id": "market",
+        "label": "Tržiště",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      },
+      {
+        "id": "archive",
+        "label": "Archiv",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      }
+    ],
+    "tokenThemes": [
+      {
+        "id": "story_tokens",
+        "label": "story_tokens",
+        "images": {
+          "reward.available": "token_token_treasure_available",
+          "reward.active": "token_token_treasure_active",
+          "penalty.available": "token_token_goblin_available",
+          "penalty.active": "token_token_goblin_active"
+        }
+      }
+    ],
+    "doorThemes": [
+      {
+        "id": "generic",
+        "label": "generic",
+        "images": {
+          "entrance.active": "door_door_generic_entrance_active",
+          "exit.available": "door_door_generic_exit_available",
+          "exit.active": "door_door_generic_exit_active"
+        }
+      }
+    ],
+    "poiThemes": [
+      {
+        "id": "markers",
+        "label": "markers",
+        "items": [
+          {
+            "id": "clue",
+            "available": "poi_clue_available",
+            "active": "poi_clue_active"
+          },
+          {
+            "id": "danger",
+            "available": "poi_danger_available",
+            "active": "poi_danger_active"
+          },
+          {
+            "id": "person",
+            "available": "poi_person_available",
+            "active": "poi_person_active"
+          }
+        ]
+      }
+    ]
+  },
+  "screens": [
+    {
+      "id": "scene_01_intro",
+      "title": "Prázdná truhlička",
+      "text": "Purkmistr hrozí zpožděním všech obchodů."
+    },
+    {
+      "id": "scene_01_poi_01_found",
+      "title": "Sametová podložka",
+      "text": "V prachu je otisk cizího klíče.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_01_success",
+      "title": "Pokračování",
+      "text": "Zloděj znal radniční zámky."
+    },
+    {
+      "id": "scene_02_intro",
+      "title": "Uličky obchodníků",
+      "text": "Na trhu se šíří zvěsti o falešných listinách."
+    },
+    {
+      "id": "scene_02_poi_02_found",
+      "title": "Rytcův nákres",
+      "text": "Nákres ukazuje kopii městského znaku.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_02_success",
+      "title": "Pokračování",
+      "text": "Pravá pečeť je nejspíš ukrytá jinde."
+    },
+    {
+      "id": "scene_03_intro",
+      "title": "Uzavřený archiv",
+      "text": "V archivu chybí jeden svazek starých smluv."
+    },
+    {
+      "id": "scene_03_poi_03_found",
+      "title": "Tajná schránka",
+      "text": "Uvnitř leží městská pečeť i dlužní úpis.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_03_success",
+      "title": "Pokračování",
+      "text": "Krádež měla zastavit odhalení podvodu."
+    },
+    {
+      "id": "scene_04_intro",
+      "title": "Podpis před svítáním",
+      "text": "Obchodníci čekají v předsálí radnice."
+    },
+    {
+      "id": "scene_04_poi_04_found",
+      "title": "Městská pečeť",
+      "text": "Červený vosk znovu stvrdí listinu.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_04_success",
+      "title": "Pokračování",
+      "text": "Obchod může pokračovat a viník je odhalen."
+    },
+    {
+      "id": "story_intro",
+      "title": "Ukradená městská pečeť",
+      "text": "Z radnice zmizela pečeť. Bez ní není možné potvrdit zásilku obilí. Přijímáš zakázku a vyrážíš zjistit, co se skutečně stalo.",
+      "nextTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "ending_success",
+      "title": "Mistrovské dokončení",
+      "text": "Ukradená městská pečeť: úkol jsi dokončil s mimořádným výsledkem. Tvůj čin se bude dlouho vyprávět."
+    },
+    {
+      "id": "ending_success_2",
+      "title": "Zakázka splněna",
+      "text": "Ukradená městská pečeť: všechny zásadní kroky jsou za tebou. Obchod může pokračovat a viník je odhalen."
+    },
+    {
+      "id": "ending_fail",
+      "title": "Nedokončená zakázka",
+      "text": "Cesta se pro tuto chvíli uzavřela. Vrátíš se lépe připravený."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "name": "Prázdná truhlička",
+      "introScreenId": "scene_01_intro",
+      "themes": {
+        "tile": "city",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_02"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 22,
+        "passablePercent": 69,
+        "reward": {
+          "count": 12,
+          "name": "evidence",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 6,
+          "name": "guards",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 1
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_01",
+          "name": "Sametová podložka",
+          "tooltip": "Sametová podložka",
+          "themeItemId": "clue",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_01_poi_01_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_01_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "scene_02",
+      "name": "Uličky obchodníků",
+      "introScreenId": "scene_02_intro",
+      "themes": {
+        "tile": "market",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 2,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 24,
+        "passablePercent": 69,
+        "reward": {
+          "count": 14,
+          "name": "evidence",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 7,
+          "name": "guards",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 2
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_02",
+          "name": "Rytcův nákres",
+          "tooltip": "Rytcův nákres",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_02_poi_02_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_02_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_02"
+      }
+    },
+    {
+      "id": "scene_03",
+      "name": "Uzavřený archiv",
+      "introScreenId": "scene_03_intro",
+      "themes": {
+        "tile": "archive",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 7,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 26,
+        "passablePercent": 69,
+        "reward": {
+          "count": 16,
+          "name": "evidence",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 8,
+          "name": "guards",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 3
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_03",
+          "name": "Tajná schránka",
+          "tooltip": "Tajná schránka",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_03_poi_03_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_03_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_03"
+      }
+    },
+    {
+      "id": "scene_04",
+      "name": "Podpis před svítáním",
+      "introScreenId": "scene_04_intro",
+      "themes": {
+        "tile": "city",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 28,
+        "passablePercent": 69,
+        "reward": {
+          "count": 18,
+          "name": "evidence",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 9,
+          "name": "guards",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 1
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_04",
+          "name": "Městská pečeť",
+          "tooltip": "Městská pečeť",
+          "themeItemId": "person",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 6,
+            "missed": -2
+          },
+          "onFoundScreenId": "scene_04_poi_04_found"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": false
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_04_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_04"
+      }
+    }
+  ],
+  "endings": {
+    "variants": [
+      {
+        "id": "success",
+        "result": "success",
+        "screenId": "ending_success",
+        "minTotalScore": 16
+      },
+      {
+        "id": "success_2",
+        "result": "success",
+        "screenId": "ending_success_2"
+      },
+      {
+        "id": "fail",
+        "result": "fail",
+        "screenId": "ending_fail"
+      }
+    ]
+  },
+  "authorNotes": {
+    "status": "draft",
+    "text": "Převedeno z testovacích scén MT.017, určeno pro další úpravy v Story Editoru."
+  }
+}

@@ -1,0 +1,659 @@
+{
+  "schemaVersion": "1.0",
+  "id": "sewers",
+  "name": "Tajemství městských stok",
+  "description": "Zpod tržiště se ozývá dunění a z městské kašny teče černá voda.",
+  "issuerType": "town",
+  "difficulty": 3,
+  "offerText": "Zpod tržiště se ozývá dunění a z městské kašny teče černá voda.",
+  "completedText": "Zakázka je splněna. Můžeš se na ni vydat znovu.",
+  "reward": {
+    "firstCompletion": 9,
+    "repeatCompletion": 4
+  },
+  "startTarget": {
+    "type": "screen",
+    "id": "story_intro"
+  },
+  "defaults": {
+    "tileTheme": "city",
+    "tokenTheme": "story_tokens",
+    "doorTheme": "generic",
+    "poiTheme": "markers"
+  },
+  "assets": {
+    "files": [
+      {
+        "id": "tile_dungeon_default",
+        "path": "assets/tile/dungeon_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_corridor",
+        "path": "assets/tile/dungeon_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_path",
+        "path": "assets/tile/dungeon_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_barrier",
+        "path": "assets/tile/dungeon_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "token_token_treasure_available",
+        "path": "assets/token/token_treasure_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_treasure_active",
+        "path": "assets/token/token_treasure_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_available",
+        "path": "assets/token/token_goblin_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_active",
+        "path": "assets/token/token_goblin_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "door_door_generic_entrance_active",
+        "path": "assets/door/door_generic_entrance_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_available",
+        "path": "assets/door/door_generic_exit_available.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_active",
+        "path": "assets/door/door_generic_exit_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "poi_clue_available",
+        "path": "assets/poi/poi_clue_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_clue_active",
+        "path": "assets/poi/poi_clue_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_available",
+        "path": "assets/poi/poi_danger_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_active",
+        "path": "assets/poi/poi_danger_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_available",
+        "path": "assets/poi/poi_person_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_active",
+        "path": "assets/poi/poi_person_active.webp",
+        "category": "poi"
+      }
+    ],
+    "tileThemes": [
+      {
+        "id": "city",
+        "label": "Ulice města",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      },
+      {
+        "id": "sewer",
+        "label": "Městské stoky",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      }
+    ],
+    "tokenThemes": [
+      {
+        "id": "story_tokens",
+        "label": "story_tokens",
+        "images": {
+          "reward.available": "token_token_treasure_available",
+          "reward.active": "token_token_treasure_active",
+          "penalty.available": "token_token_goblin_available",
+          "penalty.active": "token_token_goblin_active"
+        }
+      }
+    ],
+    "doorThemes": [
+      {
+        "id": "generic",
+        "label": "generic",
+        "images": {
+          "entrance.active": "door_door_generic_entrance_active",
+          "exit.available": "door_door_generic_exit_available",
+          "exit.active": "door_door_generic_exit_active"
+        }
+      }
+    ],
+    "poiThemes": [
+      {
+        "id": "markers",
+        "label": "markers",
+        "items": [
+          {
+            "id": "clue",
+            "available": "poi_clue_available",
+            "active": "poi_clue_active"
+          },
+          {
+            "id": "danger",
+            "available": "poi_danger_available",
+            "active": "poi_danger_active"
+          },
+          {
+            "id": "person",
+            "available": "poi_person_available",
+            "active": "poi_person_active"
+          }
+        ]
+      }
+    ]
+  },
+  "screens": [
+    {
+      "id": "scene_01_intro",
+      "title": "Zkažená kašna",
+      "text": "Městský písař má na stole hromadu stížností."
+    },
+    {
+      "id": "scene_01_poi_01_found",
+      "title": "Městský plán",
+      "text": "Staré potrubí vede pod radnici.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_01_success",
+      "title": "Pokračování",
+      "text": "Někdo odemkl zapomenutý uzávěr."
+    },
+    {
+      "id": "scene_02_intro",
+      "title": "Pod tržištěm",
+      "text": "Vzduch je těžký a mezi klenbami se rozléhá rachot."
+    },
+    {
+      "id": "scene_02_poi_02_found",
+      "title": "Ztracený klíč",
+      "text": "Klíč patří městskému vodnímu mistru.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_02_success",
+      "title": "Pokračování",
+      "text": "Uzávěr byl otevřen úmyslně."
+    },
+    {
+      "id": "scene_03_intro",
+      "title": "Komora přepadu",
+      "text": "Za kovovou mříží hučí silný proud."
+    },
+    {
+      "id": "scene_03_poi_03_found",
+      "title": "Ventil výpusti",
+      "text": "Ventil odvádí splašky do zásobní nádrže.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_03_success",
+      "title": "Pokračování",
+      "text": "Kašna se začíná čistit."
+    },
+    {
+      "id": "scene_04_intro",
+      "title": "Čistá voda",
+      "text": "Město stále čeká na první čistý proud."
+    },
+    {
+      "id": "scene_04_poi_04_found",
+      "title": "Vodní pečeť",
+      "text": "Na potrubí je značka bývalého mistra.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_04_success",
+      "title": "Pokračování",
+      "text": "Město opět může pít bez obav."
+    },
+    {
+      "id": "story_intro",
+      "title": "Tajemství městských stok",
+      "text": "Zpod tržiště se ozývá dunění a z městské kašny teče černá voda. Přijímáš zakázku a vyrážíš zjistit, co se skutečně stalo.",
+      "nextTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "ending_success",
+      "title": "Mistrovské dokončení",
+      "text": "Tajemství městských stok: úkol jsi dokončil s mimořádným výsledkem. Tvůj čin se bude dlouho vyprávět."
+    },
+    {
+      "id": "ending_success_2",
+      "title": "Zakázka splněna",
+      "text": "Tajemství městských stok: všechny zásadní kroky jsou za tebou. Město opět může pít bez obav."
+    },
+    {
+      "id": "ending_fail",
+      "title": "Nedokončená zakázka",
+      "text": "Cesta se pro tuto chvíli uzavřela. Vrátíš se lépe připravený."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "name": "Zkažená kašna",
+      "introScreenId": "scene_01_intro",
+      "themes": {
+        "tile": "city",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_02"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 23,
+        "passablePercent": 67,
+        "reward": {
+          "count": 12,
+          "name": "tools",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 6,
+          "name": "vermin",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 1
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_01",
+          "name": "Městský plán",
+          "tooltip": "Městský plán",
+          "themeItemId": "clue",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_01_poi_01_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_01_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "scene_02",
+      "name": "Pod tržištěm",
+      "introScreenId": "scene_02_intro",
+      "themes": {
+        "tile": "sewer",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 2,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 25,
+        "passablePercent": 67,
+        "reward": {
+          "count": 14,
+          "name": "tools",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 7,
+          "name": "vermin",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 3
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_02",
+          "name": "Ztracený klíč",
+          "tooltip": "Ztracený klíč",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_02_poi_02_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_02_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_02"
+      }
+    },
+    {
+      "id": "scene_03",
+      "name": "Komora přepadu",
+      "introScreenId": "scene_03_intro",
+      "themes": {
+        "tile": "sewer",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 7,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 27,
+        "passablePercent": 67,
+        "reward": {
+          "count": 16,
+          "name": "tools",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 8,
+          "name": "vermin",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 4
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_03",
+          "name": "Ventil výpusti",
+          "tooltip": "Ventil výpusti",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_03_poi_03_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_03_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_03"
+      }
+    },
+    {
+      "id": "scene_04",
+      "name": "Čistá voda",
+      "introScreenId": "scene_04_intro",
+      "themes": {
+        "tile": "city",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 29,
+        "passablePercent": 67,
+        "reward": {
+          "count": 18,
+          "name": "tools",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 9,
+          "name": "vermin",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 2
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_04",
+          "name": "Vodní pečeť",
+          "tooltip": "Vodní pečeť",
+          "themeItemId": "person",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 6,
+            "missed": -2
+          },
+          "onFoundScreenId": "scene_04_poi_04_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_04_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_04"
+      }
+    }
+  ],
+  "endings": {
+    "variants": [
+      {
+        "id": "success",
+        "result": "success",
+        "screenId": "ending_success",
+        "minTotalScore": 17
+      },
+      {
+        "id": "success_2",
+        "result": "success",
+        "screenId": "ending_success_2"
+      },
+      {
+        "id": "fail",
+        "result": "fail",
+        "screenId": "ending_fail"
+      }
+    ]
+  },
+  "authorNotes": {
+    "status": "draft",
+    "text": "Převedeno z testovacích scén MT.017, určeno pro další úpravy v Story Editoru."
+  }
+}

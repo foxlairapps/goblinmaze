@@ -1,0 +1,699 @@
+{
+  "schemaVersion": "1.0",
+  "id": "royal_courier",
+  "name": "Králův poslední posel",
+  "description": "Posel nesoucí mírové listiny zmizel na hranici královského území.",
+  "issuerType": "king",
+  "difficulty": 3,
+  "offerText": "Posel nesoucí mírové listiny zmizel na hranici královského území.",
+  "completedText": "Zakázka je splněna. Můžeš se na ni vydat znovu.",
+  "reward": {
+    "firstCompletion": 13,
+    "repeatCompletion": 6
+  },
+  "startTarget": {
+    "type": "screen",
+    "id": "story_intro"
+  },
+  "defaults": {
+    "tileTheme": "royal_road",
+    "tokenTheme": "story_tokens",
+    "doorTheme": "generic",
+    "poiTheme": "markers"
+  },
+  "assets": {
+    "files": [
+      {
+        "id": "tile_forest_default",
+        "path": "assets/tile/forest_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_forest_corridor",
+        "path": "assets/tile/forest_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_forest_path",
+        "path": "assets/tile/forest_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_forest_barrier",
+        "path": "assets/tile/forest_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_default",
+        "path": "assets/tile/dungeon_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_corridor",
+        "path": "assets/tile/dungeon_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_path",
+        "path": "assets/tile/dungeon_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_barrier",
+        "path": "assets/tile/dungeon_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "token_token_treasure_available",
+        "path": "assets/token/token_treasure_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_treasure_active",
+        "path": "assets/token/token_treasure_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_available",
+        "path": "assets/token/token_goblin_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_active",
+        "path": "assets/token/token_goblin_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "door_door_generic_entrance_active",
+        "path": "assets/door/door_generic_entrance_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_available",
+        "path": "assets/door/door_generic_exit_available.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_active",
+        "path": "assets/door/door_generic_exit_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "poi_clue_available",
+        "path": "assets/poi/poi_clue_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_clue_active",
+        "path": "assets/poi/poi_clue_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_available",
+        "path": "assets/poi/poi_danger_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_danger_active",
+        "path": "assets/poi/poi_danger_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_available",
+        "path": "assets/poi/poi_person_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_person_active",
+        "path": "assets/poi/poi_person_active.webp",
+        "category": "poi"
+      }
+    ],
+    "tileThemes": [
+      {
+        "id": "royal_road",
+        "label": "Královská cesta",
+        "images": {
+          "default": "tile_forest_default",
+          "corridor": "tile_forest_corridor",
+          "path": "tile_forest_path",
+          "barrier": "tile_forest_barrier"
+        }
+      },
+      {
+        "id": "forest",
+        "label": "Les",
+        "images": {
+          "default": "tile_forest_default",
+          "corridor": "tile_forest_corridor",
+          "path": "tile_forest_path",
+          "barrier": "tile_forest_barrier"
+        }
+      },
+      {
+        "id": "pass",
+        "label": "Průsmyk",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      },
+      {
+        "id": "castle",
+        "label": "Hrad",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      }
+    ],
+    "tokenThemes": [
+      {
+        "id": "story_tokens",
+        "label": "story_tokens",
+        "images": {
+          "reward.available": "token_token_treasure_available",
+          "reward.active": "token_token_treasure_active",
+          "penalty.available": "token_token_goblin_available",
+          "penalty.active": "token_token_goblin_active"
+        }
+      }
+    ],
+    "doorThemes": [
+      {
+        "id": "generic",
+        "label": "generic",
+        "images": {
+          "entrance.active": "door_door_generic_entrance_active",
+          "exit.available": "door_door_generic_exit_available",
+          "exit.active": "door_door_generic_exit_active"
+        }
+      }
+    ],
+    "poiThemes": [
+      {
+        "id": "markers",
+        "label": "markers",
+        "items": [
+          {
+            "id": "clue",
+            "available": "poi_clue_available",
+            "active": "poi_clue_active"
+          },
+          {
+            "id": "danger",
+            "available": "poi_danger_available",
+            "active": "poi_danger_active"
+          },
+          {
+            "id": "person",
+            "available": "poi_person_available",
+            "active": "poi_person_active"
+          }
+        ]
+      }
+    ]
+  },
+  "screens": [
+    {
+      "id": "scene_01_intro",
+      "title": "Zapečetěný rozkaz",
+      "text": "Král ti svěřuje kopii pečeti a poslední známou trasu."
+    },
+    {
+      "id": "scene_01_poi_01_found",
+      "title": "Poslovo znamení",
+      "text": "Na milníku je čerstvě vyrytá šipka.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_01_success",
+      "title": "Pokračování",
+      "text": "Posel změnil směr z vlastní vůle."
+    },
+    {
+      "id": "scene_02_intro",
+      "title": "Les pohraničníků",
+      "text": "Hlídky hlásí pohyb neznámých jezdců."
+    },
+    {
+      "id": "scene_02_poi_02_found",
+      "title": "Roztržená brašna",
+      "text": "Uvnitř zůstal jen obal mírových listin.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_02_success",
+      "title": "Pokračování",
+      "text": "Posel listiny ukryl před pronásledovateli."
+    },
+    {
+      "id": "scene_03_intro",
+      "title": "Soutěska větrů",
+      "text": "Úzkým průsmykem vede jediná bezpečná stezka."
+    },
+    {
+      "id": "scene_03_poi_03_found",
+      "title": "Schovaná listina",
+      "text": "Listina je suchá a pečeť nedotčená.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_03_success",
+      "title": "Pokračování",
+      "text": "Mír může být zachován."
+    },
+    {
+      "id": "scene_04_intro",
+      "title": "Před královým trůnem",
+      "text": "V síni čekají poslové sousedního panovníka."
+    },
+    {
+      "id": "scene_04_poi_04_found",
+      "title": "Mírová pečeť",
+      "text": "Pečeť je uznána oběma stranami.",
+      "nextTarget": {
+        "type": "return"
+      }
+    },
+    {
+      "id": "scene_04_success",
+      "title": "Pokračování",
+      "text": "Král ti osobně poděkuje."
+    },
+    {
+      "id": "story_intro",
+      "title": "Králův poslední posel",
+      "text": "Posel nesoucí mírové listiny zmizel na hranici královského území. Přijímáš zakázku a vyrážíš zjistit, co se skutečně stalo.",
+      "nextTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "ending_success",
+      "title": "Mistrovské dokončení",
+      "text": "Králův poslední posel: úkol jsi dokončil s mimořádným výsledkem. Tvůj čin se bude dlouho vyprávět."
+    },
+    {
+      "id": "ending_success_2",
+      "title": "Zakázka splněna",
+      "text": "Králův poslední posel: všechny zásadní kroky jsou za tebou. Král ti osobně poděkuje."
+    },
+    {
+      "id": "ending_fail",
+      "title": "Nedokončená zakázka",
+      "text": "Cesta se pro tuto chvíli uzavřela. Vrátíš se lépe připravený."
+    }
+  ],
+  "scenes": [
+    {
+      "id": "scene_01",
+      "name": "Zapečetěný rozkaz",
+      "introScreenId": "scene_01_intro",
+      "themes": {
+        "tile": "royal_road",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_02"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 23,
+        "passablePercent": 67,
+        "reward": {
+          "count": 12,
+          "name": "letters",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 6,
+          "name": "pursuers",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 1
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_01",
+          "name": "Poslovo znamení",
+          "tooltip": "Poslovo znamení",
+          "themeItemId": "clue",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_01_poi_01_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_01_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_01"
+      }
+    },
+    {
+      "id": "scene_02",
+      "name": "Les pohraničníků",
+      "introScreenId": "scene_02_intro",
+      "themes": {
+        "tile": "forest",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 2,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_03"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 25,
+        "passablePercent": 67,
+        "reward": {
+          "count": 14,
+          "name": "letters",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 7,
+          "name": "pursuers",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 3
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_02",
+          "name": "Roztržená brašna",
+          "tooltip": "Roztržená brašna",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_02_poi_02_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_02_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_02"
+      }
+    },
+    {
+      "id": "scene_03",
+      "name": "Soutěska větrů",
+      "introScreenId": "scene_03_intro",
+      "themes": {
+        "tile": "pass",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 2,
+          "label": "Pokračovat",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        },
+        {
+          "id": "alternate",
+          "position": 7,
+          "label": "Vedlejší průchod",
+          "target": {
+            "type": "scene",
+            "id": "scene_04"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 27,
+        "passablePercent": 67,
+        "reward": {
+          "count": 16,
+          "name": "letters",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 8,
+          "name": "pursuers",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 4
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_03",
+          "name": "Schovaná listina",
+          "tooltip": "Schovaná listina",
+          "themeItemId": "clue",
+          "mode": "optional",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 3,
+            "missed": 0
+          },
+          "onFoundScreenId": "scene_03_poi_03_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_03_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_03"
+      }
+    },
+    {
+      "id": "scene_04",
+      "name": "Před královým trůnem",
+      "introScreenId": "scene_04_intro",
+      "themes": {
+        "tile": "castle",
+        "token": "story_tokens",
+        "door": "generic"
+      },
+      "board": {
+        "width": 16,
+        "height": 10
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "main",
+          "position": 7,
+          "label": "Pokračovat",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 29,
+        "passablePercent": 67,
+        "reward": {
+          "count": 18,
+          "name": "letters",
+          "icon": "reward",
+          "score": 1
+        },
+        "penalty": {
+          "count": 9,
+          "name": "pursuers",
+          "icon": "penalty",
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 2
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_04",
+          "name": "Mírová pečeť",
+          "tooltip": "Mírová pečeť",
+          "themeItemId": "person",
+          "mode": "required",
+          "placement": {
+            "mode": "random"
+          },
+          "score": {
+            "found": 6,
+            "missed": -2
+          },
+          "onFoundScreenId": "scene_04_poi_04_found"
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -7,
+        "useReserve": true
+      },
+      "resultScreens": [
+        {
+          "result": "success",
+          "screenId": "scene_04_success"
+        }
+      ],
+      "failTarget": {
+        "type": "scene",
+        "id": "scene_04"
+      }
+    }
+  ],
+  "endings": {
+    "variants": [
+      {
+        "id": "success",
+        "result": "success",
+        "screenId": "ending_success",
+        "minTotalScore": 21
+      },
+      {
+        "id": "success_2",
+        "result": "success",
+        "screenId": "ending_success_2"
+      },
+      {
+        "id": "fail",
+        "result": "fail",
+        "screenId": "ending_fail"
+      }
+    ]
+  },
+  "authorNotes": {
+    "status": "draft",
+    "text": "Převedeno z testovacích scén MT.017, určeno pro další úpravy v Story Editoru."
+  }
+}
