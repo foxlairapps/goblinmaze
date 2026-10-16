@@ -40,3 +40,10 @@
 .offerGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(195px,1fr));max-width:980px;margin:0 auto;gap:12px}.offerCard{text-align:left;min-height:100px;padding:12px;background:#263b4b;border:1px solid #597889;border-radius:12px}.offerCard h3{font-size:16px;margin:0 0 6px}.offerCard small{color:#ccd9df}
 .storyOverlay{position:fixed;inset:0;background:#07111ad9;z-index:12;display:flex;align-items:center;justify-content:center;padding:12px}
 .storyCard{max-width:540px;width:100%;max-height:92dvh;overflow:auto;padding:19px;background:#243949;border:1px solid #668697;border-radius:12px;box-shadow:0 14px 55px #050d12}.storyCard h2{margin:0 0 10px}.storyCard p{line-height:1.5}.storyActions{display:flex;justify-content:flex-end;gap:8px;margin-top:13px}.storyActions button{min-height:40px;min-width:110px}
+
+/* MT.017: jemné objevení příběhové události až po animaci na mapě */
+#detailPanel.showing{animation:poiShade .5s ease-out both}
+#detailPanel.showing .detailCard{animation:poiReveal .62s cubic-bezier(.2,.8,.2,1) both}
+@keyframes poiShade{from{background:transparent}to{background:#08111bd9}}
+@keyframes poiReveal{from{opacity:0;transform:scale(.91) translateY(15px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@media(prefers-reduced-motion:reduce){#detailPanel.showing,#detailPanel.showing .detailCard{animation:none}}

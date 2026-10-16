@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "catalog-1",
+  "stories": [
+    {
+      "id": "dry_well",
+      "category": "village",
+      "name": "Studna bez vody"
+    },
+    {
+      "id": "lost_caravan",
+      "category": "village",
+      "name": "Ztracená karavana"
+    },
+    {
+      "id": "old_mill",
+      "category": "village",
+      "name": "Krysy ve starém mlýně"
+    },
+    {
+      "id": "sewers",
+      "category": "town",
+      "name": "Tajemství městských stok"
+    },
+    {
+      "id": "stolen_seal",
+      "category": "town",
+      "name": "Ukradená městská pečeť"
+    },
+    {
+      "id": "royal_courier",
+      "category": "king",
+      "name": "Králův poslední posel"
+    }
+  ]
+}
