@@ -143,3 +143,48 @@ button{transition:background-color .18s,border-color .18s,box-shadow .18s}button
  .worldHeader h1{font-size:clamp(14px,3vw,23px)}
 }
 @media(max-width:520px){.worldScreen{padding:2px}.worldFrame{padding:4px}.locationIcon,.locationIcon img{width:100%;height:100%}.offerCard h3{font-size:10px}.offerCard p{font-size:9px}.offerFoot{font-size:9px}}
+
+
+/* MT.035 – bez scrollování; 3×3 nabídek, 3 výškové řádky */
+.worldScreen{height:100dvh;min-height:0;overflow:hidden;align-items:flex-start}
+.worldFrame{min-height:0;height:auto;max-width:1080px;flex:0 1 1080px}
+.worldLayout{
+ --place-size:clamp(70px,15.5vh,148px);
+ --place-gap:clamp(4px,1.3vh,16px);
+ grid-template-columns:var(--place-size) 1px minmax(0,1fr);
+ min-height:0;height:calc(3 * var(--place-size) + 2 * var(--place-gap));
+}
+.worldContent{height:100%;overflow:hidden}
+.offerGrid{height:100%;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:0;row-gap:var(--place-gap)}
+.locationRail{height:100%;grid-template-rows:repeat(3,minmax(0,1fr))}
+.locationIcon,.locationIcon.active{height:100%}
+.offerCard{height:80%;max-height:100%}
+@media(max-width:850px){
+ .worldScreen{height:100dvh;padding:4px;overflow:hidden;align-items:stretch}
+ .worldFrame{height:100%;min-height:0;max-width:none;flex:1;padding:clamp(5px,1vw,9px);display:flex;flex-direction:column}
+ .worldHeader{flex:0 0 auto;margin-bottom:clamp(5px,1vh,10px);padding-bottom:clamp(5px,1vh,10px)}
+ .worldLayout{--place-gap:clamp(4px,1.5vh,13px);height:auto;min-height:0;flex:1;grid-template-columns:minmax(0,auto) 1px minmax(0,1fr);column-gap:clamp(4px,1vw,12px)}
+ .worldSidebar,.locationRail{height:100%;min-height:0}
+ .worldSidebar{min-width:0}
+ .locationRail{grid-template-rows:repeat(3,minmax(0,1fr))}
+ .locationIcon,.locationIcon.active{width:auto;max-width:100%;height:100%;aspect-ratio:1/1;justify-self:center}
+ .locationIcon img{width:100%;height:100%;object-fit:contain}
+ .worldContent{height:100%;overflow:hidden}
+ .offerGrid{height:100%;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:0;row-gap:var(--place-gap)}
+ .offerCard{height:80%;max-height:100%}
+}
+@media(max-width:520px){.offerGrid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+/* Mobilní prohlížeče na šířku mohou mít CSS šířku přes 850 px. */
+@media (pointer:coarse) and (orientation:landscape){
+ .worldScreen{height:100dvh;padding:4px;overflow:hidden;align-items:stretch}
+ .worldFrame{height:100%;min-height:0;max-width:none;flex:1;padding:clamp(5px,1vw,9px);display:flex;flex-direction:column}
+ .worldHeader{flex:0 0 auto;margin-bottom:clamp(4px,1vh,10px);padding-bottom:clamp(4px,1vh,10px)}
+ .worldLayout{--place-gap:clamp(3px,1.1vh,10px);height:auto;min-height:0;flex:1;grid-template-columns:min(21vw,calc((100dvh - 92px)/3)) 1px minmax(0,1fr);column-gap:clamp(5px,1vw,12px)}
+ .worldSidebar,.locationRail{height:100%;min-height:0;min-width:0}
+ .locationRail{grid-template-rows:repeat(3,minmax(0,1fr))}
+ .locationIcon,.locationIcon.active{width:100%;height:100%;min-width:0;aspect-ratio:auto}
+ .locationIcon img{width:100%;height:100%;object-fit:contain}
+ .worldContent{height:100%;overflow:hidden}
+ .offerGrid{height:100%;grid-template-columns:repeat(3,minmax(0,1fr));grid-template-rows:repeat(3,minmax(0,1fr));grid-auto-rows:0;row-gap:var(--place-gap)}
+ .offerCard{height:84%;max-height:100%}
+}
