@@ -8,7 +8,10 @@
         "on": "assets/category/ctg_village_on.webp"
       },
       "stories": [
-        "ohrozene_zasoby"
+        "ohrozene_zasoby",
+        "test2",
+        "test3",
+        "test4"       
       ]
     },
     {

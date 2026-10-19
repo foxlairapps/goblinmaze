@@ -690,7 +690,7 @@ function renderWorld(){const progress=readProgress();$('crownTotal').textContent
   const img=document.createElement('img');img.src=active?(l.iconActive||l.icon):(l.icon||l.iconActive||'');img.alt=l.name;img.loading='eager';img.decoding='async';img.onerror=()=>{b.classList.add('textOnly');img.remove()};
   b.append(img);b.onclick=()=>{selectedLocation=l.id;renderWorld()};$('worldLocations').append(b)
  }
- $('worldOffers').replaceChildren();const allEntries=[...campaignCatalog.values()].filter(c=>c.worldIssuerId===selectedLocation);if(allEntries.length>9)console.warn('Kategorie má více než 9 nabídek; rozcestník zobrazuje prvních devět:',selectedLocation);const entries=allEntries.slice(0,9);const grid=$('worldOffers');grid.dataset.rows=String(Math.max(1,Math.ceil(entries.length/3)));
+ $('worldOffers').replaceChildren();const allEntries=[...campaignCatalog.values()].filter(c=>c.worldIssuerId===selectedLocation);if(allEntries.length>6)console.warn('Kategorie má více než 6 nabídek; rozcestník zobrazuje prvních šest:',selectedLocation);const entries=allEntries.slice(0,6);
  if(!entries.length){$('worldOffers').innerHTML='<p class="worldEmpty">Prozatím zde nejsou dostupné zakázky.</p>';return;}
  for(const c of entries){
   const done=progress.completed?.[c.id]||0;
@@ -771,3 +771,26 @@ function goTarget(target,score){if(!inCampaign||!activeRun)return;
  activeRun.finished=true;
  detailOpen(f.title||c.name,`<p style="white-space:pre-wrap">${safeText(f.text||'')}</p><p>${result==='success'?`Získáváš ${award} 👑.`:'Tentokrát bez odměny.'}</p>`,showWorld);
 }
+
+
+// MT.037: keep mobile landscape lobby sized to the actual visible viewport.
+// Chrome can report a transient viewport size immediately after refresh/rotation.
+(function stabilizeWorldViewport(){
+  const apply=()=>{
+    const available=[window.innerHeight,window.visualViewport?.height]
+      .filter(v=>Number.isFinite(v)&&v>0);
+    if(!available.length)return;
+    document.documentElement.style.setProperty('--mt-world-vh',Math.floor(Math.min(...available))+'px');
+  };
+  let pending=0;
+  const schedule=()=>{
+    cancelAnimationFrame(pending);
+    pending=requestAnimationFrame(apply);
+  };
+  apply();
+  window.addEventListener('resize',schedule,{passive:true});
+  window.addEventListener('orientationchange',()=>{schedule();setTimeout(apply,180);setTimeout(apply,650)},{passive:true});
+  window.addEventListener('pageshow',()=>{schedule();setTimeout(apply,250)},{passive:true});
+  window.visualViewport?.addEventListener('resize',schedule,{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
+})();

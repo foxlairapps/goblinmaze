@@ -4,6 +4,18 @@
     {
       "id": "ohrozene_zasoby",
       "name": "Ohrožené zásoby"
+    },
+    {
+      "id": "test2",
+      "name": "Zamořená kanalizace"
+    },
+    {
+      "id": "test3",
+      "name": "Ohrožené zásoby"
+    },
+    {
+      "id": "test4",
+      "name": "Ohrožené zásoby"
     }
   ]
 }
