@@ -690,7 +690,7 @@ function renderWorld(){const progress=readProgress();$('crownTotal').textContent
   const img=document.createElement('img');img.src=active?(l.iconActive||l.icon):(l.icon||l.iconActive||'');img.alt=l.name;img.loading='eager';img.decoding='async';img.onerror=()=>{b.classList.add('textOnly');img.remove()};
   b.append(img);b.onclick=()=>{selectedLocation=l.id;renderWorld()};$('worldLocations').append(b)
  }
- $('worldOffers').replaceChildren();const allEntries=[...campaignCatalog.values()].filter(c=>c.worldIssuerId===selectedLocation);if(allEntries.length>9)console.warn('Kategorie má více než 9 nabídek; rozcestník zobrazuje prvních devět:',selectedLocation);const entries=allEntries.slice(0,9);
+ $('worldOffers').replaceChildren();const allEntries=[...campaignCatalog.values()].filter(c=>c.worldIssuerId===selectedLocation);if(allEntries.length>9)console.warn('Kategorie má více než 9 nabídek; rozcestník zobrazuje prvních devět:',selectedLocation);const entries=allEntries.slice(0,9);const grid=$('worldOffers');grid.dataset.rows=String(Math.max(1,Math.ceil(entries.length/3)));
  if(!entries.length){$('worldOffers').innerHTML='<p class="worldEmpty">Prozatím zde nejsou dostupné zakázky.</p>';return;}
  for(const c of entries){
   const done=progress.completed?.[c.id]||0;
