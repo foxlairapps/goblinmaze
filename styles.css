@@ -47,3 +47,99 @@
 @keyframes poiShade{from{background:transparent}to{background:#08111bd9}}
 @keyframes poiReveal{from{opacity:0;transform:scale(.91) translateY(15px)}to{opacity:1;transform:scale(1) translateY(0)}}
 @media(prefers-reduced-motion:reduce){#detailPanel.showing,#detailPanel.showing .detailCard{animation:none}}
+
+/* MT.024 – fantasy desková atmosféra, bez dalších grafických souborů */
+body{background:radial-gradient(ellipse at 18% 12%,#384439 0%,transparent 46%),radial-gradient(ellipse at 86% 89%,#513f30 0%,transparent 51%),linear-gradient(130deg,#151e20,#20252a 55%,#141d21);color:#f2e9d6}
+button{transition:background-color .18s,border-color .18s,box-shadow .18s}button:hover:not(:disabled){border-color:#d9bd81;box-shadow:0 0 0 1px #8a754c55}
+#mapPanel{background:linear-gradient(145deg,#30372f,#1b2929);border:1px solid #827353;box-shadow:inset 0 1px #c9b78a24,0 7px 28px #080f1190}
+#mapHeader{color:#e9d7aa}#turnHeader{color:#d9c6a3}#statusText{font-size:12px;color:#f0dcb7}
+#side{background:linear-gradient(165deg,#323a31,#1c2b2b);padding:5px;border-radius:10px;border:1px solid #78694d;box-shadow:0 6px 25px #0a111385}
+#takePiece{border:1px solid #9a8056;background:radial-gradient(ellipse at center,#4a4a39,#24302e 72%);box-shadow:inset 0 0 22px #090f11b0}
+#takePiece.pickedUp{border-color:#e2c681;box-shadow:inset 0 0 22px #090f11b0,0 0 0 2px #e6b96966}
+#sideStats button{background:linear-gradient(140deg,#474936,#263c3b);border-color:#8b7a59}
+#confirmMove:not(:disabled){background:linear-gradient(#469c7b,#216b59)!important;box-shadow:0 0 12px #84cf9155}
+.worldScreen{background:radial-gradient(ellipse at 50% -40%,#65563b 0%,transparent 66%),radial-gradient(ellipse at 10% 95%,#2d473d,transparent 65%),linear-gradient(135deg,#19262b,#253029 65%,#172027)}
+.worldScreen h1{color:#f4dca8;text-shadow:0 2px 18px #c79c4938;letter-spacing:.13em}
+.offerCard,.storyCard,.detailCard,.finishCard{background:linear-gradient(160deg,#3a4038,#243433 58%,#1d2b2c);border:1px solid #96805a;box-shadow:inset 0 1px #e4d19b1a,0 10px 35px #080d11a8}
+.offerCard:hover{background:linear-gradient(150deg,#55513d,#2a413e)}
+.detailCard{width:min(540px,100%);padding:20px 24px}.detailCard h2{font-size:21px;color:#f3d79b}
+.poiBriefing h3{font-size:14px;color:#e7ce94;margin:12px 0 8px}.poiBriefingList{display:grid;gap:7px}.poiBriefingRow{display:grid;grid-template-columns:35px minmax(0,1fr) auto;align-items:center;gap:10px;background:#101c1c99;padding:7px 10px;border:1px solid #7c765850;border-radius:9px}.poiBriefingRow b{font-size:13px}.poiBriefingRow small{display:block;color:#cbbda7;font-size:11px;margin-top:3px}.poiEmblem{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;border:2px solid #d9d1b5;font-size:19px;font-weight:900;color:#fff}.poiEmblem.required{background:#b88934}.poiEmblem.forbidden{background:#ac414a}.poiEmblem.optional{background:#377d67}.poiPoints{color:#e9d3a2;white-space:nowrap;font-size:12px}.poiBriefingHint{font-size:11px;color:#b9bcae;margin:10px 0 0}
+@media (prefers-reduced-motion:reduce){button{transition:none}}
+
+/* MT.026 – společné ikonové zadání scény pro úvod a informační tlačítko */
+.mtBrief{display:grid;gap:12px}.mtBriefMetrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.mtBriefMetrics>div{border:1px solid #917f5a77;background:#16242399;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:7px;min-height:52px;padding:6px}.mtBriefIcon{font-size:21px;color:#d8c28e}.mtBriefToken img{width:28px;height:28px;object-fit:contain}.mtBriefMetrics b{white-space:nowrap;font-size:14px}.mtBriefMetrics small{font-size:10px}.mtPoiEntries{display:grid;gap:7px;max-height:40dvh;overflow:auto}.mtPoiEntry{display:flex;align-items:center;gap:8px;border:1px solid #82715470;background:#162423ba;border-radius:9px;padding:5px 9px;min-height:54px}.mtPoiImage{width:41px;height:41px;object-fit:contain;flex-shrink:0}.mtPoiPlaceholder{width:41px;text-align:center}.mtPoiMeaning{width:17px;height:17px;border-radius:50%;display:inline-block;flex-shrink:0;border:3px solid #11211d;outline:2px solid transparent}.mtPositive{outline-color:#76b895;background:#52b878}.mtNegative{outline-color:#e27e76;background:#d65455}.mtOptional.mtPositive{background:transparent;border-color:#52b878;outline-color:#12201d}.mtOptional.mtNegative{background:transparent;border-color:#d65455;outline-color:#12201d}.mtPoiLabel{flex:1;min-width:0}.mtPoiLabel b{font-size:13px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.mtPoiValues{display:flex;gap:8px;font-size:12px;align-items:center;color:#d8cfb4}.mtPoiReached{font-size:26px;color:#e7d29f;margin-left:auto}.mtPoiDetail{display:flex;gap:9px;align-items:center}.mtPoiDetail img{width:52px;height:52px}.mtPoiDetail+ .mtPoiValues{justify-content:center;margin-top:12px;font-size:16px}#poiSummary{font-size:26px!important;display:flex;align-items:center;justify-content:center}#poiCount[hidden]{display:none}
+@media(max-height:450px){.detailCard{padding:10px 16px}.detailCard h2{font-size:17px;margin-bottom:6px}.mtBrief{gap:6px}.mtBriefMetrics>div{min-height:37px}.mtPoiEntries{max-height:38dvh}.mtPoiEntry{min-height:44px}.mtPoiImage{width:32px;height:32px}}
+
+
+/* MT.031 – hlavní rozcestník s ikonami míst vlevo a kartami zakázek vpravo */
+.worldScreen{padding:20px 18px 24px;display:flex;justify-content:center;align-items:flex-start}
+.worldFrame{width:min(1320px,100%);border:1px solid #8c7a57;border-radius:18px;background:linear-gradient(180deg,#202d2bde,#182221ea);box-shadow:inset 0 1px #e7d39a1c,0 16px 60px #09101299;padding:18px 20px 20px}
+.worldHeader{text-align:center;margin-bottom:18px}
+.worldHeader p{margin:8px 0 0;color:#d7ccb1}
+.worldLayout{display:grid;grid-template-columns:130px 1px minmax(0,1fr);gap:20px;align-items:start}
+.worldSidebar{display:flex;justify-content:center}
+.locationRail{display:flex;flex-direction:column;gap:18px;align-items:center;padding-top:4px}
+.locationIcon{width:96px;min-width:96px;padding:0;border:none;background:transparent;box-shadow:none;display:flex;flex-direction:column;align-items:center;gap:6px;color:#d7ccb1}
+.locationIcon:hover:not(:disabled){border-color:transparent;box-shadow:none;transform:translateY(-1px)}
+.locationIcon img{width:96px;height:96px;display:block;object-fit:contain;filter:drop-shadow(0 8px 18px #05090cb0)}
+.locationIcon span{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:#cabf9c}
+.locationIcon.active span{color:#f4dd9a}
+.locationIcon.textOnly{width:110px;padding:12px 10px;border:1px solid #8a7651;border-radius:14px;background:#172322}
+.locationIcon.textOnly span{font-size:14px}
+.worldDivider{width:1px;align-self:stretch;background:linear-gradient(180deg,transparent,#a89363 10%,#a89363 90%,transparent);opacity:.85}
+.worldContent{min-width:0}
+.worldLocationTitle{font-size:22px;font-weight:700;color:#f1ddac;letter-spacing:.03em;margin:4px 0 14px}
+.offerGrid{max-width:none;margin:0;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.offerCard{min-height:132px;padding:0;text-align:left;border-radius:14px;overflow:hidden;background:linear-gradient(160deg,#474434,#263936 58%,#1d2b2c);border:1px solid #9a8255}
+.offerCardInner{height:100%;display:flex;flex-direction:column;padding:16px 16px 14px}
+.offerCard h3{font-size:18px;line-height:1.2;margin:0 0 10px;color:#f2e7cb;display:flex;gap:8px;align-items:flex-start;justify-content:space-between}
+.offerDone{color:#8dd6a6;font-size:18px;line-height:1}
+.offerCard p{margin:0 0 12px;color:#d2c4a6;line-height:1.4;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;min-height:58px}
+.offerFoot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;color:#f2dfae;font-size:15px}
+.offerDifficulty{letter-spacing:.12em;color:#f0d489;white-space:nowrap}
+.offerCrown{white-space:nowrap}
+.worldEmpty{padding:18px 4px;color:#d4c6a2}
+@media(max-width:850px){.worldLayout{grid-template-columns:1fr;gap:14px}.worldSidebar{justify-content:flex-start}.locationRail{flex-direction:row;flex-wrap:wrap;justify-content:center;width:100%}.worldDivider{display:none}.worldLocationTitle{text-align:center}.offerGrid{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}}
+@media(max-width:520px){.worldScreen{padding:12px}.worldFrame{padding:14px 12px 16px}.locationIcon,.locationIcon img{width:84px;height:84px}.offerGrid{grid-template-columns:1fr}.offerCard h3{font-size:17px}}
+
+/* MT.032 – jednotná horní lišta rozcestníku */
+.worldHeader{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:20px;padding:3px 4px 15px;border-bottom:1px solid #a5906155;text-align:left}
+.worldHeader h1{margin:0;text-align:left;font-size:clamp(20px,2.8vw,33px);line-height:1.15;letter-spacing:.1em}
+.worldHeader .worldMeta{display:flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;color:#f4d588;font-size:clamp(18px,2vw,24px);font-variant-numeric:tabular-nums;padding:7px 13px;border:1px solid #a48b566b;border-radius:12px;background:#141e1bb8;box-shadow:inset 0 1px #f6dba817}
+.worldCrownIcon{font-size:1.1em;line-height:1}
+@media(max-width:520px){.worldHeader{gap:7px}.worldHeader h1{font-size:17px;letter-spacing:.04em}.worldHeader .worldMeta{font-size:17px;padding:5px 8px}}
+
+/* MT.033 – rozcestník podle schváleného náčrtu */
+.worldScreen{height:100dvh;overflow:auto;padding:clamp(4px,1.5vw,18px);display:flex;justify-content:center;align-items:flex-start}
+.worldFrame{width:100%;max-width:1080px;min-height:100%;padding:clamp(7px,1.3vw,16px)}
+.worldHeader{margin-bottom:clamp(6px,1.6vh,16px);padding-bottom:clamp(6px,1.5vh,14px)}
+.worldLayout{--place-size:clamp(62px,15.5vh,148px);--place-gap:clamp(5px,1.3vh,16px);display:grid;grid-template-columns:var(--place-size) 1px minmax(0,1fr);column-gap:clamp(8px,1.6vw,24px);align-items:stretch;min-height:calc(3 * var(--place-size) + 2 * var(--place-gap))}
+.worldSidebar{display:block;min-width:0}
+.locationRail{display:grid;grid-template-rows:repeat(3,var(--place-size));gap:var(--place-gap);justify-items:stretch;padding:0}
+.locationIcon,.locationIcon.active{width:100%;height:var(--place-size);min-width:0;margin:0;padding:0;border:0;background:transparent;box-shadow:none;display:grid;place-items:center;border-radius:0}
+.locationIcon img{width:100%;height:100%;display:block;object-fit:contain;filter:none}
+.locationIcon span{display:none!important}
+.locationIcon:hover:not(:disabled){transform:none;border:none;box-shadow:none;filter:brightness(1.08)}
+.locationIcon:focus-visible{outline:2px solid #f6d791;outline-offset:2px}
+.locationIcon.textOnly{border:1px solid #9a8355;border-radius:8px;background:#20332b;padding:4px}
+.locationIcon.textOnly span{display:block!important;font-size:12px}
+.worldDivider{width:1px;min-height:100%;align-self:stretch;background:linear-gradient(180deg,transparent,#b5a174 7%,#b5a174 93%,transparent);display:block}
+.worldContent{min-width:0;height:calc(3 * var(--place-size) + 2 * var(--place-gap));overflow-y:auto;scrollbar-width:thin}
+.worldLocationTitle{display:none!important}
+.offerGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));grid-auto-rows:var(--place-size);column-gap:clamp(4px,1vw,13px);row-gap:var(--place-gap);max-width:none;margin:0;align-items:center}
+.offerCard{width:100%;height:80%;min-height:0;min-width:0;align-self:center;text-align:left;border-radius:8px;padding:0;overflow:hidden;border:1px solid #9a8255}
+.offerCardInner{height:100%;padding:clamp(5px,.8vw,11px);display:flex;flex-direction:column;gap:2px}
+.offerCard h3{font-size:clamp(10px,1.2vw,16px);line-height:1.12;margin:0 0 2px}
+.offerCard p{flex:1;min-height:0;margin:0;line-height:1.18;font-size:clamp(9px,.95vw,13px);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.offerFoot{display:flex;align-items:center;justify-content:space-between;gap:3px;font-size:clamp(9px,1.05vw,14px);margin-top:auto}
+.offerDifficulty{letter-spacing:0;white-space:nowrap}
+.offerCrown{white-space:nowrap}
+@media(max-width:850px){
+ .worldScreen{padding:4px;align-items:stretch}
+ .worldFrame{max-width:none;width:100%;min-height:100%;padding:clamp(5px,1vw,9px)}
+ .worldLayout{grid-template-columns:var(--place-size) 1px minmax(0,1fr);gap:clamp(4px,1vw,10px)}
+ .worldSidebar{display:block}.locationRail{display:grid;grid-template-rows:repeat(3,var(--place-size));gap:var(--place-gap)}
+ .worldDivider{display:block}.offerGrid{grid-template-columns:repeat(4,minmax(0,1fr))}
+ .worldHeader h1{font-size:clamp(14px,3vw,23px)}
+}
+@media(max-width:520px){.worldScreen{padding:2px}.worldFrame{padding:4px}.locationIcon,.locationIcon img{width:100%;height:100%}.offerCard h3{font-size:10px}.offerCard p{font-size:9px}.offerFoot{font-size:9px}}

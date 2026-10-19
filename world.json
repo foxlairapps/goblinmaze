@@ -1,28 +1,33 @@
 {
-  "issuers": [
+  "categories": [
     {
       "id": "village",
       "name": "Vesnice",
+      "images": {
+        "off": "assets/category/ctg_village_off.webp",
+        "on": "assets/category/ctg_village_on.webp"
+      },
       "stories": [
-        "dry_well",
-        "lost_caravan",
-        "old_mill"
+        "ohrozene_zasoby"
       ]
     },
     {
       "id": "town",
       "name": "Město",
-      "stories": [
-        "sewers",
-        "stolen_seal"
-      ]
+      "images": {
+        "off": "assets/category/ctg_town_off.webp",
+        "on": "assets/category/ctg_town_on.webp"
+      },
+      "stories": []
     },
     {
       "id": "king",
       "name": "Král",
-      "stories": [
-        "royal_courier"
-      ]
+      "images": {
+        "off": "assets/category/ctg_king_off.webp",
+        "on": "assets/category/ctg_king_on.webp"
+      },
+      "stories": []
     }
   ]
 }

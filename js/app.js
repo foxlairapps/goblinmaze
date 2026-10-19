@@ -12,31 +12,35 @@ function paintBurst(now=performance.now()){effects=effects.filter(e=>now-e.time<
 function burstAt(x,y){effects.push({x,y,time:performance.now()});function frame(){drawBoard();if(effects.length)requestAnimationFrame(frame);}requestAnimationFrame(frame);}
 
 
-// Schema 1.0 is the only accepted source format. Internal canvas representation is runtime-only.
+// Story Editor 0.7: story schema 1.1. Story data remain read-only.
 function parseStoryV1(raw,id){
- if(raw.schemaVersion!=='1.0'||raw.id!==id)throw Error(`Story ${id}: očekáváno schemaVersion 1.0`);
- const files=new Map((raw.assets?.files||[]).map(f=>[f.id,f.path]));
- const errors=[];const resolveAsset=(key)=>{if(!key)return null;const path=files.get(key);if(!path){errors.push('Neznámý asset '+key);return null;}return `stories/${id}/${path}`;};
+ if(raw.schemaVersion!=='1.1'||raw.id!==id)throw Error(`Story ${id}: očekáváno schemaVersion 1.1`);
+ const errors=[],files=new Map((raw.assets?.files||[]).map(f=>[f.id,f.path]));
+ const resolveAsset=key=>{if(!key)return null;const path=files.get(key);if(!path){errors.push('Neznámý asset '+key);return null;}return `stories/${id}/${path}`;};
  const fromThemes=(collection,build)=>Object.fromEntries((collection||[]).map(t=>[t.id,build(t)]));
  const tileThemes=fromThemes(raw.assets?.tileThemes,t=>({tiles:Object.fromEntries(Object.entries(t.images||{}).map(([k,v])=>[k,resolveAsset(v)]))}));
  const tokenThemes=fromThemes(raw.assets?.tokenThemes,t=>({reward:{available:resolveAsset(t.images?.['reward.available']),active:resolveAsset(t.images?.['reward.active'])},penalty:{available:resolveAsset(t.images?.['penalty.available']),active:resolveAsset(t.images?.['penalty.active'])}}));
  const doorThemes=fromThemes(raw.assets?.doorThemes,t=>({entrance:{active:resolveAsset(t.images?.['entrance.active'])},exit:{available:resolveAsset(t.images?.['exit.available']),active:resolveAsset(t.images?.['exit.active'])}}));
- const poiThemes=fromThemes(raw.assets?.poiThemes,t=>Object.fromEntries((t.items||[]).map(i=>[i.id,{active:resolveAsset(i.active),available:resolveAsset(i.available)}])));
- const screens=new Map((raw.screens||[]).map(x=>[x.id,x]));
+ const poiThemes={default:Object.fromEntries((raw.assets?.poiItems||[]).map(i=>[i.id,{available:resolveAsset(i.images?.available),active:resolveAsset(i.images?.active)}]))};
+ const dialogs=new Map((raw.dialogs||[]).map(d=>[d.id,d]));
  const sceneIds=new Set((raw.scenes||[]).map(x=>x.id));
- const endingIds=new Set((raw.endings?.variants||[]).map(x=>x.id));
- const checkTarget=(t,where)=>{if(!t)return;if(t.type==='scene'&&!sceneIds.has(t.id))errors.push(where+': neznámá scéna '+t.id);if(t.type==='screen'&&!screens.has(t.id))errors.push(where+': neznámá obrazovka '+t.id);if(t.type==='ending'&&t.id&&!endingIds.has(t.id))errors.push(where+': neznámé zakončení '+t.id);};
- checkTarget(raw.startTarget,'startTarget');for(const x of raw.screens||[])checkTarget(x.nextTarget,'screen '+x.id);
+ const checkTarget=(t,where)=>{if(!t){errors.push(where+': chybí cíl');return;}if(t.type==='scene'&&!sceneIds.has(t.id))errors.push(where+': neznámá scéna '+t.id);else if(t.type==='dialog'&&!dialogs.has(t.id))errors.push(where+': neznámý dialog '+t.id);else if(t.type==='ending'&&!['success','fail'].includes(t.result))errors.push(where+': neznámý výsledek zakončení');else if(!['scene','dialog','ending'].includes(t.type))errors.push(where+': neznámý typ cíle');};
+ checkTarget(raw.startTarget,'startTarget');for(const d of dialogs.values())checkTarget(d.nextTarget,'dialog '+d.id);
  const scenes=(raw.scenes||[]).map(x=>{
+  const oneToZero=n=>Number.isInteger(n)?n-1:n;
   for(const e of x.exits||[])checkTarget(e.target,'dveře '+x.id);
-  checkTarget(x.failTarget,'failTarget '+x.id);
-  const pois=(x.pointsOfInterest||[]).map(o=>({...o,icon:o.themeItemId,placement:{...o.placement,type:o.placement?.mode},onFound:screens.get(o.onFoundScreenId)}));
-  const z={...x,start:{side:'left',position:x.entrance?.position},exits:(x.exits||[]).map(e=>({...e,side:'right',next:e.target,name:e.label})),tileTheme:x.themes?.tile||raw.defaults?.tileTheme,tokenTheme:x.themes?.token||raw.defaults?.tokenTheme,doorTheme:x.themes?.door||raw.defaults?.doorTheme,poiTheme:raw.defaults?.poiTheme||raw.assets?.poiThemes?.[0]?.id,fixedObjects:{rocks:{positions:x.obstacles?.fixed||[],randomCount:x.obstacles?.randomCount||0},lairs:{positions:[],randomCount:0},pointsOfInterest:pois},success:{...x.success,useCampaignReserve:x.success?.useReserve},intro:x.introScreenId?screens.get(x.introScreenId):null};
+  for(const [key,t] of Object.entries(x.failTargets||{}))if(t)checkTarget(t,'failTargets '+x.id+'.'+key);
+  const results=x.results||[];
+  for(const r of results){if(r.target)checkTarget(r.target,'výsledek '+x.id);if(!['success','fail'].includes(r.result)||r.min!=null&&!Number.isFinite(r.min)||r.max!=null&&!Number.isFinite(r.max)||r.min!=null&&r.max!=null&&r.min>r.max)errors.push('Neplatný interval ve scéně '+x.id);}
+  for(const result of ['success','fail']){const rr=results.filter(r=>r.result===result);for(let i=0;i<rr.length;i++)for(let j=i+1;j<rr.length;j++)if((rr[i].min??-Infinity)<=(rr[j].max??Infinity)&&(rr[j].min??-Infinity)<=(rr[i].max??Infinity))errors.push('Překrývající se intervaly '+result+' ve scéně '+x.id);}
+  const pois=(x.pointsOfInterest||[]).map(o=>({...o,icon:o.themeItemId,score:{found:o.score?.found??0,missed:o.score?.missed??0},placement:{...o.placement,type:o.placement?.mode,x:oneToZero(o.placement?.x),y:oneToZero(o.placement?.y)},onFound:o.foundText?{title:o.name,text:o.foundText}:null}));
+  const z={...x,start:{side:'left',position:oneToZero(x.entrance?.position)},exits:(x.exits||[]).map(e=>({...e,position:oneToZero(e.position),side:'right',next:e.target,name:e.label})),tileTheme:x.themes?.tile,tokenTheme:x.themes?.token,doorTheme:x.themes?.door,poiTheme:'default',fixedObjects:{rocks:{positions:(x.obstacles?.fixed||[]).map(o=>({x:oneToZero(o.x),y:oneToZero(o.y)})),randomCount:x.obstacles?.randomCount||0},lairs:{positions:[],randomCount:0},pointsOfInterest:pois},success:{...x.success,useCampaignReserve:x.success?.useReserve},intro:x.introText?{title:x.name,text:x.introText}:null,failTarget:x.failTargets?.base||{type:'ending',result:'fail'},failureTargets:{forbiddenPoi:x.failTargets?.forbidden,requiredPoi:x.failTargets?.required}};
   return z;
  });
  if(!scenes.length)errors.push('Nejsou definované žádné scény');
+ if(!Array.isArray(raw.endings?.success)||!Array.isArray(raw.endings?.fail))errors.push('Zakončení vyžaduje endings.success a endings.fail');
  if(errors.length)throw Error(`Příběh ${id}: `+errors.join(' | '));
- return {...raw,category:raw.issuerType,tileThemes,tokenThemes,doorThemes,poiThemes,scenes,screensMap:screens,assetsBase:'',_raw:raw};
+ return {...raw,category:null,tileThemes,tokenThemes,doorThemes,poiThemes,scenes,dialogsMap:dialogs,assetsBase:'',_raw:raw};
 }
 
 let themeCatalog=null;
@@ -84,14 +88,12 @@ function paintToken(c,type,x,y,size,active=true){
  const icon=currentLevel?.pieces?.[tokenType]?.icon;
  const group=activeStory?.tokenThemes?.[currentLevel?.tokenTheme||activeStory?.defaults?.tokenTheme]?.[tokenType];
  const name=group?.[active?'active':'available'],im=tokenImages[name];
- // Neaktivní truhla je vizuálním etalonem velikosti; ostatní motivy jsou mírně zmenšené.
- // Stejné pravidlo platí pro náhled, rozpracovaný i položený dílek.
- const scale=(type==='gold'&&!active)?1:0.84;
+  const scale=1; // Stejné měřítko pro všechny žetony; rozdíly řeší grafika.
  const drawSize=size*scale,offset=(size-drawSize)/2;
  if(im?.complete&&im.naturalWidth){c.drawImage(im,x+offset,y+offset,drawSize,drawSize);return;}
  c.fillStyle=type==='enemy'?'#c45560':'#efc65c';c.beginPath();c.arc(x+size/2,y+size/2,size*.31,0,Math.PI*2);c.fill();
 }
-let animating=false, animationFrame=0, inHand=true, workPos=null, discarded=0, lost=false;
+let animating=false, animationFrame=0, inHand=false, workPos=null, discarded=0, lost=false;
 let liveEntry=new Set([1,4,7]),liveExit=new Set([1,4,7]);
 let currentLevel=null,poi=[],reserve=0,discardPoints=0,levelFinished=false,noticedPOI=new Set(),endReason="";let BW=16,BH=10,pieces=[],placements=[],obstacles=new Set(),lairs=new Set(),selected=null,turn=0,hover=null,entry=new Set([1,4,7]),exit=new Set([1,4,7]);
 const randint=n=>Math.floor(Math.random()*n);
@@ -101,7 +103,7 @@ function generate(){if(animating)return;
  BW=integerInput('width',8,30);BH=integerInput('height',6,16);
  canvas.width=boardW()+BOARD_PAD_X*2;canvas.height=boardH()+BOARD_PAD_Y*2;canvas.style.setProperty('--board-ratio',`${canvas.width}/${canvas.height}`);if(typeof fitBoardToSpace==='function')requestAnimationFrame(fitBoardToSpace);
  // Nejdříve rozmístíme skály, pak teprve sestavíme balíček dílků.
- placements=[];obstacles.clear();lairs.clear();selected=null;turn=0;hover=null;workPos=null;discarded=0;lost=false;levelFinished=false;inHand=true;noticedPOI.clear();endReason="";
+ placements=[];obstacles.clear();lairs.clear();selected=null;turn=0;hover=null;workPos=null;discarded=0;lost=false;levelFinished=false;inHand=false;noticedPOI.clear();endReason="";
  entry=new Set([...entry].filter(y=>y<BH));exit=new Set([...exit].filter(y=>y<BH));
  if(!entry.size)entry.add(Math.floor((BH-1)/2));
  if(!exit.size)exit.add(Math.floor((BH-1)/2));
@@ -123,7 +125,7 @@ function generate(){if(animating)return;
  for(let i=0;i<actualEnemy;i++)available[i].token='enemy';
  for(let i=actualEnemy;i<actualEnemy+actualGold;i++)available[i].token='gold';
  if(actualEnemy<enemies||actualGold<treasures)$('obstacleInfo').textContent+=` Pozor: z ${enemies} nestvůr a ${treasures} pokladů se vešlo jen ${actualEnemy} a ${actualGold}.`;
- selected=pieces.length?0:null;inHand=true;edges();renderAll();
+ selected=pieces.length?0:null;inHand=false;edges();renderAll();
 }
 function rotated(piece,n){let cells=piece.cells.map(c=>({...c}));for(let k=0;k<n;k++){const h=Math.max(...cells.map(c=>c.y))+1;cells=cells.map(c=>({...c,x:h-1-c.y,y:c.x}));}const mx=Math.min(...cells.map(c=>c.x)),my=Math.min(...cells.map(c=>c.y));return cells.map(c=>({...c,x:c.x-mx,y:c.y-my}));}
 function occupancy(){
@@ -150,10 +152,22 @@ function analyze(m){const visited=new Set(),q=[];
 }
 function drawCell(c,x,y,size,ghost=false,connected=false){ctx.save();ctx.globalAlpha=ghost?.7:1;paintTile(ctx,c,x,y,size,connected);
  if(c.type==='poi'){
-  const theme=activeStory?.poiThemes?.[currentLevel?.poiTheme||activeStory?.defaults?.poiTheme];
-  const spec=spriteSpec(theme?.[c.poi?.icon]);const name=spec[connected?'active':'available'];const im=poiImages[name];
-  if(im?.complete&&im.naturalWidth){ctx.drawImage(im,x+size*.05,y+size*.05,size*.90,size*.90);}
-  else {const color=c.poi?.mode==='forbidden'?'#d85b62':c.poi?.mode==='required'?'#f0c96b':'#66d7a7';ctx.lineWidth=3;ctx.strokeStyle=color;ctx.fillStyle='rgba(10,18,28,.35)';ctx.beginPath();ctx.arc(x+size/2,y+size/2,size*.30,0,Math.PI*2);ctx.fill();ctx.stroke();ctx.fillStyle='#eef7f7';ctx.font=`bold ${size*.36}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(c.poi?.mode==='forbidden'?'✕':c.poi?.mode==='required'?'!':'◆',x+size/2,y+size/2+1);}
+  const o=c.poi,theme=activeStory?.poiThemes?.default;
+  const spec=spriteSpec(theme?.[o?.icon]),name=spec[connected?'active':'available'],im=poiImages[name];
+  // Podobu POI dodává výhradně autor: žádný rám ani přebarvení v enginu.
+  if(im?.complete&&im.naturalWidth){ctx.drawImage(im,x,y,size,size);}
+  else{ctx.save();ctx.fillStyle='rgba(215,185,123,.22)';ctx.fillRect(x+size*.15,y+size*.15,size*.70,size*.70);ctx.restore();}
+  if(!connected&&(o.mode==='required'||o.mode==='forbidden')){
+   ctx.save();ctx.fillStyle=o.mode==='required'?'#e9bd61':'#e45e5c';ctx.strokeStyle='#1f2525';ctx.lineWidth=Math.max(1,size*.023);
+   ctx.beginPath();ctx.arc(x+size*.15,y+size*.16,size*.125,0,Math.PI*2);ctx.fill();ctx.stroke();
+   ctx.textAlign='center';ctx.textBaseline='middle';ctx.font=`900 ${size*.19}px system-ui`;ctx.fillStyle='#172025';ctx.fillText('!',x+size*.15,y+size*.16);ctx.restore();
+  }
+  const current=Number(connected?o.score?.found:o.score?.missed)||0;
+  if((Number(o.score?.found)||0)!==0||(Number(o.score?.missed)||0)!==0){
+   ctx.save();ctx.font=`900 ${size*.185}px system-ui`;ctx.textAlign='center';ctx.textBaseline='middle';
+   ctx.lineWidth=Math.max(2,size*.06);ctx.strokeStyle='#162321';ctx.fillStyle=current>0?'#8debb0':current<0?'#ff9292':'#f4e9d1';
+   const value=String(current);ctx.strokeText(value,x+size*.83,y+size*.16);ctx.fillText(value,x+size*.83,y+size*.16);ctx.restore();
+  }
  }
  if(isWay(c)&&(c.token==='enemy'||c.token==='gold')){paintToken(ctx,c.token,x,y,size,connected);}
  ctx.strokeStyle='rgba(11,22,32,.55)';ctx.lineWidth=1.1;ctx.strokeRect(x+.7,y+.7,size-1.4,size-1.4);ctx.restore();}
@@ -204,7 +218,7 @@ function drawSmallTile(id,piece,orientation=0){
  const ox=(cv.width-w)/2,oy=(cv.height-h)/2;
  for(const q of cells){let x=ox+q.x*s,y=oy+q.y*s;
   paintTile(c,q,x,y,s,false);
-  if(isWay(q)&&(q.token==='enemy'||q.token==='gold')){paintToken(c,q.token,x,y,s,true);}
+  if(isWay(q)&&(q.token==='enemy'||q.token==='gold')){paintToken(c,q.token,x,y,s,false);}
   c.strokeStyle='#152332';c.lineWidth=1;c.strokeRect(x+.5,y+.5,s-1,s-1);
  }
 }
@@ -216,10 +230,11 @@ function renderPalette(){
  $('takeLabel').textContent='';
  $('nextLabel').textContent=selected===null||selected+1>=pieces.length?'Žádný další':`Dílek ${selected+2}`;
  $('takePiece').disabled=selected===null;
+ $('takePiece').classList.toggle('pickedUp',Boolean(inHand));
  $('putBack').disabled=selected===null||!inHand;
  for(const p of pieces){const used=placements.some(x=>x.id===p.id),b=document.createElement('button');b.className='piece'+(used?' placed':'')+(selected===p.id?' selected':'');b.disabled=used||p.id!==selected;b.title=`Dílek ${p.id+1} · ${p.name}`;
  const cv=document.createElement('canvas');cv.width=72;cv.height=60;const c=cv.getContext('2d'),cc=p.cells,s=13,ox=(72-(Math.max(...cc.map(q=>q.x))+1)*s)/2,oy=(60-(Math.max(...cc.map(q=>q.y))+1)*s)/2;
- for(const q of cc){const x=ox+q.x*s,y=oy+q.y*s;paintTile(c,q,x,y,s,false);if(isWay(q)&&(q.token==='enemy'||q.token==='gold')){paintToken(c,q.token,x,y,s,true)}c.strokeStyle='#112233';c.strokeRect(x+.5,y+.5,s-1,s-1)}b.append(cv);const cap=document.createElement('span');cap.textContent=`${String(p.id+1).padStart(2,'0')} · ${p.name}`;b.append(cap);b.onclick=()=>takePiece();palette.append(b)}
+ for(const q of cc){const x=ox+q.x*s,y=oy+q.y*s;paintTile(c,q,x,y,s,false);if(isWay(q)&&(q.token==='enemy'||q.token==='gold')){paintToken(c,q.token,x,y,s,false)}c.strokeStyle='#112233';c.strokeRect(x+.5,y+.5,s-1,s-1)}b.append(cv);const cap=document.createElement('span');cap.textContent=`${String(p.id+1).padStart(2,'0')} · ${p.name}`;b.append(cap);b.onclick=()=>takePiece();palette.append(b)}
 }
 function metrics(){updateCapacity();const a=analyze(occupancy());const done=selected===null||lost;
  $('count').textContent=`${placements.length} položeno · ${discarded} odhozeno / ${pieces.length}`;$('taken').textContent=`${placements.length*4+obstacles.size+lairs.size}/${BW*BH} (z toho ${obstacles.size} skal, ${lairs.size} líhní)`;
@@ -234,14 +249,15 @@ function metrics(){updateCapacity();const a=analyze(occupancy());const done=sele
 function renderAll(){renderPalette();drawBoard();metrics();refreshUI();if((selected===null||lost)&&!levelFinished){levelFinished=true;const a=analyze(occupancy());const ok=!lost&&!a.forbidden&&a.win&&a.mandatory&&a.finalScore>=(currentLevel?.success?.minimumScore??0);$('finishTitle').textContent=ok?'✓ Scéna splněna':'✕ Scéna nesplněna';$('finishText').textContent=$('result').textContent+` · Dosažené body ${a.finalScore}.`+(endReason&&endReason.includes('POI')?' '+endReason:'');$('finishPanel').hidden=eventLock;onLevelEnd(ok,a);}}
 function rotate(n){if(selected===null||!inHand)return;turn=(turn+n+4)%4;if(workPos){workPos=clampWorkPos(workPos);hover=workPos;}drawBoard();metrics();refreshUI();}
 function coord(e){const b=canvas.getBoundingClientRect();const px=(e.clientX-b.left)*canvas.width/b.width-BOARD_PAD_X;const py=(e.clientY-b.top)*canvas.height/b.height-BOARD_PAD_Y;return {x:Math.floor(px/S),y:Math.floor(py/S)};}
-function takePiece(){if(selected===null||inHand)return;inHand=true;hover=null;workPos=null;renderAll();}
+function takePiece(){if(selected===null||inHand||eventLock)return;inHand=true;hover=null;workPos=null;renderAll();}
 function putBack(){if(!inHand)return;inHand=false;hover=null;workPos=null;renderAll();}
 function shakeBad(){canvas.classList.remove('shake');void canvas.offsetWidth;canvas.classList.add('shake');}
-// Aktuální dílek je aktivní vždy; tap touchpadu používáme pouze k otočení.
+// Dílek se bere vědomě z pravého panelu; tap touchpadu otáčí. Na PC Esc vrací dílek.
 $('putBack').onclick=putBack;
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&inHand&&$('detailPanel').hidden&&$('settingsPanel').hidden){putBack();}});
 canvas.addEventListener('contextmenu',e=>{e.preventDefault();rotate(1)});
 $('generate').onclick=()=>{if(placements.length&&!confirm('Vygenerovat nové podzemí? Současná hra se vymaže.'))return;generate()};
-$('clear').onclick=()=>{if(animating)return;if(placements.length&&!confirm('Vyčistit plochu?'))return;placements=[];selected=pieces.length?0:null;turn=0;inHand=true;hover=null;workPos=null;discarded=0;lost=false;renderAll()};
+$('clear').onclick=()=>{if(animating)return;if(placements.length&&!confirm('Vyčistit plochu?'))return;placements=[];selected=pieces.length?0:null;turn=0;inHand=false;hover=null;workPos=null;discarded=0;lost=false;renderAll()};
 $('undo').onclick=()=>{if(animating||!placements.length)return;const p=placements.pop();selected=p.id;turn=p.rot;inHand=true;hover=null;renderAll()};
 $('rotL').onclick=()=>rotate(-1);$('rotR').onclick=()=>rotate(1);
 function edges(){renderPortInputs(BH)}
@@ -336,18 +352,18 @@ function stateOfWork(){
 }
 function refreshUI(){
  const status=stateOfWork();$confirm.disabled=eventLock||status!=='valid'||lost;
- $('statusText').textContent=(selected===null||lost)?$('result').textContent:status==='valid'?'Lze položit · potvrď ✓':status==='invalid'?'Kolize nebo mimo pole':status==='floating'?'Chybí opora':inHand?'Posouvej dílek po pravém touchpadu':'Klepni na aktuální dílek';
+ $('statusText').textContent=(selected===null||lost)?$('result').textContent:status==='valid'?'Lze položit · klikni na mapu (PC) nebo potvrď ✓ (mobil)':status==='invalid'?'Kolize nebo mimo pole':status==='floating'?'Chybí opora':inHand?'Posouvej dílek po pravém touchpadu':'Vezmi dílek z pravého panelu';
  $('mobileRound').textContent=`${selected===null?pieces.length:selected+1} / ${pieces.length}`;
  const a=analyze(occupancy());$('poiCount').textContent=`${poi.filter(o=>a.visited.has(`${o.x},${o.y}`)).length}/${poi.length}`;
  $('mobileScore').textContent=Math.abs(a.finalScore);$('mobileScore').style.color=a.finalScore<0?'#f16f6f':'#e9ce82';
  $('discard').disabled=selected===null||lost||currentLevel?.discard?.mode==='disabled';$('mobileDiscard').disabled=$('discard').disabled;
  $('confirmMove').style.opacity=$confirm.disabled?'.4':'1';
- $('takePiece').classList.toggle('activeCard',false);
+ $('takePiece').classList.toggle('activeCard',Boolean(inHand));
 }
 function commit(){if(eventLock||stateOfWork()!=='valid')return;
  remember();placements.push({id:selected,x:workPos.x,y:workPos.y,rot:turn});
  selected=selected+1<pieces.length?selected+1:null;
- inHand=selected!==null;hover=null;workPos=null;turn=0;
+ inHand=false;hover=null;workPos=null;turn=0;
  const state=analyze(occupancy());const newExits=[...liveExit].filter(y=>state.visited.has(`${BW-1},${y}`)&&!lastExitKeys.has(y));lastExitKeys=new Set([...liveExit].filter(y=>state.visited.has(`${BW-1},${y}`)));const newPOI=poi.filter(o=>state.visited.has(`${o.x},${o.y}`)&&!noticedPOI.has(o.id));
  newPOI.forEach(o=>noticedPOI.add(o.id));
  if(state.forbidden){lost=true;inHand=false;endReason=`PROHRA · zakázaný POI: ${state.forbidden.name}`;}
@@ -359,7 +375,7 @@ $('mobileDiscard').addEventListener('click',()=>discardCard());
 function hiddenUndo(){
  const p=history.pop();if(!p)return;
  placements=p.placements;selected=p.selected;turn=p.turn;discarded=p.discarded;lost=p.lost;extraEnemies=p.extraEnemies;
- inHand=selected!==null;hover=null;workPos=null;renderAll();
+ inHand=false;hover=null;workPos=null;renderAll();
 }
 // Goblini se přidávají natrvalo na dosud prázdná dosažitelná průchozí políčka.
 const oldOccupancy=occupancy;
@@ -373,7 +389,7 @@ function discardCard(){if(selected===null||lost||eventLock)return;
  const amount=mode==='free'?0:(currentLevel.discard.piecePenalty??-1)+n*(currentLevel.discard.negativeTokenPenalty??-1);
  if(!confirm(mode==='free'?'Odhodit dílek bez postihu?':`Odhodit dílek? Bodový postih ${amount}.`))return;
  remember();discardPoints+=amount;discarded++;selected=selected+1<pieces.length?selected+1:null;
- inHand=selected!==null;workPos=null;hover=null;turn=0;renderAll();
+ inHand=false;workPos=null;hover=null;turn=0;renderAll();
 }
 $discard.addEventListener('click',discardCard);
 
@@ -407,18 +423,20 @@ function relativeMove(e){
  drawBoard();refreshUI();
 }
 const mouseInput=e=>e.pointerType==='mouse';
-// Shift + kliknutí umožní kontrolovat POI bez položení nebo posunutí dílku.
+canvas.addEventListener('click',e=>{if(!inHand&&!dragging)inspectPoiAtPointer(e);});
+canvas.addEventListener('pointermove',e=>{if(mouseInput(e)&&!inHand&&!dragging){const p=pointerCoord(e),o=poi.find(q=>q.x===p.x&&q.y===p.y);canvas.title=o?`${o.name} · ${poiModeLabel(o.mode)}`:'';}});
+// Shift + kliknutí umožní kontrolovat POI i při zvednutém dílku.
 function inspectPoiAtPointer(e){
  const p=pointerCoord(e);
  const item=poi.find(o=>o.x===p.x&&o.y===p.y);
  if(!item)return false;
- detailOpen('Bod zájmu',poiInfo(item));
+ detailOpen(item.name,poiInfo(item));
  return true;
 }
 canvas.addEventListener('pointerdown',e=>{
  if(e.button===0&&e.shiftKey){e.preventDefault();inspectPoiAtPointer(e);return;}
  if(e.button!==0||selected===null||lost)return;
- if(!inHand)inHand=true;
+ if(!inHand)return;
  dragging=true;dragMoved=false;startX=e.clientX;startY=e.clientY;
  firstPlacement=!workPos||mouseInput(e);
  dragOrigin=workPos?{...workPos}:null;
@@ -441,11 +459,12 @@ canvas.addEventListener('pointerup',e=>{
  dragging=false;
  if(mouseInput(e)){
   positionPiece(e);
-  if(stateOfWork()==='valid')commit();
+  // Na PC položí dílek levé kliknutí do mapy; tažení neukládá.
+  if(!dragMoved&&stateOfWork()==='valid')commit();
  }else if(firstPlacement){
   positionPiece(e);
  }else{
-  // Krátké klepnutí na mapu při existujícím dílku nic neposouvá.
+  // Mobilní mapa slouží jen pro prohlížení; pokládá se tlačítkem ✓.
   relativeMove(e);
  }
  dragOrigin=null;dragPointer=null;refreshUI();
@@ -456,7 +475,7 @@ let prevTapPos=null;
 // Pravá oblast se zásobou současně slouží jako dotykový touchpad.
 // Pohyb je relativní; prst nikdy nezakrývá umisťovaný dílek v mapě.
 const pad=$('takePiece');
-let padPointer=null,padStart=null,padOrigin=null,padMoved=false;
+let padPointer=null,padStart=null,padOrigin=null,padMoved=false,padFresh=false;
 function ensureWorkingPosition(){
  if(workPos||selected===null)return;
  const cells=rotated(pieces[selected],turn);
@@ -466,8 +485,10 @@ function ensureWorkingPosition(){
  hover=workPos;
 }
 pad.addEventListener('pointerdown',e=>{
- if(selected===null||lost||e.button!==0)return;
+ if(selected===null||lost||e.button!==0||eventLock)return;
  e.preventDefault();
+ padFresh=!inHand;
+ if(!inHand){inHand=true;renderAll();}
  ensureWorkingPosition();
  padPointer=e.pointerId;padStart={x:e.clientX,y:e.clientY};padOrigin={...workPos};padMoved=false;
  pad.setPointerCapture(e.pointerId);drawBoard();refreshUI();
@@ -484,17 +505,39 @@ pad.addEventListener('pointermove',e=>{
  workPos=clampWorkPos({x:padOrigin.x+dx,y:padOrigin.y+dy});hover=workPos;
  drawBoard();refreshUI();
 });
-function padEnd(e){if(e.pointerId!==padPointer)return;const tap=!padMoved&&e.type==='pointerup';padPointer=null;padStart=null;padOrigin=null;padMoved=false;if(tap)rotate(1);}
+function padEnd(e){if(e.pointerId!==padPointer)return;const tap=!padMoved&&e.type==='pointerup';padPointer=null;padStart=null;padOrigin=null;padMoved=false;if(tap&&!padFresh)rotate(1);padFresh=false;}
 pad.addEventListener('pointerup',padEnd);pad.addEventListener('pointercancel',padEnd);
 
 
 
 const detail=$('detailPanel');let eventQueue=[];
 function signed(n){return (n>0?'+':'')+n;}
+function signed(n){return (n>0?'+':'')+n;}
+function poiPositive(o){if(o?.mode==='required')return true;if(o?.mode==='forbidden')return false;return (Number(o?.score?.found)||0)>=(Number(o?.score?.missed)||0);}
+function poiMeaning(o){if(o.mode==='required')return 'Nutné získat';if(o.mode==='forbidden')return 'Nutné minout';return poiPositive(o)?'Výhodné získat':'Výhodné minout';}
+function poiLegend(o){return `<span class="mtPoiMeaning ${poiPositive(o)?'mtPositive':'mtNegative'} ${o.mode==='optional'?'mtOptional':'mtMandatory'}" title="${safeText(poiMeaning(o))}" aria-label="${safeText(poiMeaning(o))}"></span>`;}
+function poiImage(o){const theme=activeStory?.poiThemes?.default;const spec=spriteSpec(theme?.[o.icon]);const url=spec.available||spec.active;return url?`<img class="mtPoiImage" src="${safeText(url)}" alt="" onerror="this.style.display='none'">`:'<span class="mtPoiPlaceholder">◆</span>';}
+function sceneBriefing(during=false){
+ const d=currentLevel;if(!d)return '';
+ const a=during?analyze(occupancy()):null;
+ const t=activeStory?.tokenThemes?.[d.tokenTheme||activeStory?.defaults?.tokenTheme];
+ const icon=(role)=>{const url=t?.[role]?.available||t?.[role]?.active;return url?`<img src="${safeText(url)}" alt="">`:'<span>◆</span>';};
+ const tokens=[['reward',d.pieces?.reward],['penalty',d.pieces?.penalty]];
+ const parts=`<div class="mtBriefMetrics">
+  <div title="Mapa" aria-label="Mapa"><span class="mtBriefIcon">▦</span><b>${d.board.width}×${d.board.height}</b></div>
+  <div title="Počet dílků" aria-label="Počet dílků"><span class="mtBriefIcon">▧</span><b>${d.pieces.count}</b></div>
+  <div title="Minimální skóre" aria-label="Minimální skóre"><span class="mtBriefIcon">🏆</span><b>≥ ${d.success?.minimumScore??0}</b>${d.success?.useCampaignReserve?'<small title="Započítává se zásoba">＋◈</small>':''}</div>
+  ${tokens.map(([role,v])=>`<div title="${safeText(v?.name||role)}" aria-label="${safeText(v?.name||role)}"><span class="mtBriefToken">${icon(role)}</span><b>${v?.count??0} × ${signed(v?.score??(role==='reward'?1:-1))}</b></div>`).join('')}
+  <div title="Zahazování" aria-label="Zahazování"><span class="mtBriefIcon">♻</span><b>${d.discard?.mode==='disabled'?'⊘':d.discard?.mode==='free'?'0':signed(d.discard?.piecePenalty??-1)}</b></div>
+ </div>`;
+ const entries=poi.map(o=>{const found=during&&a.visited.has(`${o.x},${o.y}`),missed=Number(o.score?.missed)||0,gained=Number(o.score?.found)||0;
+ return `<div class="mtPoiEntry">${poiImage(o)}${poiLegend(o)}<div class="mtPoiLabel"><b>${safeText(o.name)}</b><div class="mtPoiValues"><span class="${missed>0?'good':missed<0?'bad':'muted'}">${signed(missed)}</span><span>→</span><span class="${gained>0?'good':gained<0?'bad':'muted'}">${signed(gained)}</span></div></div>${during?`<span class="mtPoiReached" title="${found?'Dosaženo':'Nedosaženo'}" aria-label="${found?'Dosaženo':'Nedosaženo'}">${found?'☑':'☐'}</span>`:''}</div>`;
+ }).join('');
+ return `<div class="mtBrief">${parts}${poi.length?`<div class="mtPoiEntries">${entries}</div>`:''}</div>`;
+}
 function detailOpen(title,html,callback){$('detailTitle').textContent=title;$('detailBody').innerHTML=html;detail.hidden=false;detail.classList.remove('showing');void detail.offsetWidth;detail.classList.add('showing');$('detailClose').onclick=()=>{detail.hidden=true;if(callback)callback();};}
 function safeText(t){return String(t??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function poiInfo(o){const a=analyze(occupancy()),found=a.visited.has(`${o.x},${o.y}`);const modes={required:'Povinný — musíš propojit',optional:'Nepovinný',forbidden:'Zakázaný — propojení znamená okamžitou prohru'};
- return `<p><b>${safeText(o.name)}</b> · ${modes[o.mode]}</p><p>Aktuální stav: <b>${found?'Dosažený':'Nedosažený'}</b></p><div class="poiLine"><span>Za dosažení</span><b class="${found?'good':'muted'}">${signed(o.score.found)} ${found?'●':''}</b></div><div class="poiLine"><span>Za nedosažení</span><b class="${!found?'bad':'muted'}">${signed(o.score.missed)} ${!found?'●':''}</b></div>`;}
+function poiInfo(o){const a=analyze(occupancy()),found=a.visited.has(`${o.x},${o.y}`);return `<div class="mtPoiDetail">${poiImage(o)}${poiLegend(o)}<b>${safeText(o.name)}</b><span>${found?'☑':'☐'}</span></div><div class="mtPoiValues"><span>${signed(Number(o.score?.missed)||0)}</span><span>→</span><span>${signed(Number(o.score?.found)||0)}</span></div>`;}
 async function showPOIEvents(items){
  eventLock=true;refreshUI();eventQueue.push(...items.filter(o=>o.onFound?.text||o.onFound?.title));
  $('finishPanel').hidden=true;for(const o of items){burstAt(pxX(o.x)+S/2,pxY(o.y)+S/2);}await sleep(1250);
@@ -502,21 +545,10 @@ async function showPOIEvents(items){
  if(eventQueue.length)nextPOIEvent();else{eventLock=false;refreshUI();if(levelFinished)$('finishPanel').hidden=false;}
 }
 function nextPOIEvent(){if(!eventQueue.length){eventLock=false;refreshUI();if(levelFinished)$('finishPanel').hidden=false;return;}
- const o=eventQueue.shift();let content=o.onFound||{};
- const show=(screen)=>detailOpen(screen.title||`Objeveno: ${o.name}`,`<p style="white-space:pre-wrap">${safeText(screen.text||'')}</p>`+poiInfo(o),()=>{
-   const t=screen.nextTarget;if(t?.type==='screen'){
-     const next=activeStory.screensMap.get(t.id);
-     if(next){show(next);return;}
-   }
-   nextPOIEvent();
- });
- show(content);
+ const o=eventQueue.shift(),content=o.onFound||{};
+ detailOpen(content.title||o.name,`<p style="white-space:pre-wrap">${safeText(content.text||'')}</p>`+poiInfo(o),nextPOIEvent);
 }
-$('poiSummary').addEventListener('click',()=>{const a=analyze(occupancy());const modeLabel={required:'musí',optional:'může',forbidden:'nesmí'};const stateIcon=(o)=>a.visited.has(`${o.x},${o.y}`)?'●':'○';const rows=poi.length?`<table style="width:100%;border-collapse:collapse;font-size:14px"><thead><tr><th style="text-align:left;padding:6px 4px">Název</th><th style="padding:6px 4px">Stav</th><th style="padding:6px 4px">Bonus</th><th style="padding:6px 4px">Postih</th></tr></thead><tbody>${poi.map(o=>{const found=a.visited.has(`${o.x},${o.y}`);return `<tr><td style="padding:7px 4px;border-top:1px solid #465c69"><button type="button" class="poiInspect" data-poi-id="${safeText(o.id)}" style="text-align:left;background:transparent;border:0;text-decoration:underline;padding:2px;color:#e5f3ff">${safeText(o.name)}</button><br><span class="muted">${modeLabel[o.mode]}</span></td><td style="text-align:center;padding:7px 4px;border-top:1px solid #465c69">${stateIcon(o)}</td><td style="text-align:center;padding:7px 4px;border-top:1px solid #465c69"><span class="${found?'good':'muted'}">${signed(o.score.found)}</span></td><td style="text-align:center;padding:7px 4px;border-top:1px solid #465c69"><span class="${!found?'bad':'muted'}">${signed(o.score.missed)}</span></td></tr>`;}).join('')}</tbody></table>`:'<p>V této úrovni nejsou žádné body zájmu.</p>';detailOpen('Body zájmu',rows+'<p class="muted">Kliknutím na název POI zobrazíš jeho podrobnosti. Na počítači lze také použít Shift + kliknutí přímo na POI v mapě.</p>');
- $('detailBody').querySelectorAll('.poiInspect').forEach(btn=>btn.addEventListener('click',()=>{
-   const item=poi.find(o=>o.id===btn.dataset.poiId);
-   if(item)detailOpen('Bod zájmu',poiInfo(item));
- }));});
+$('poiSummary').addEventListener('click',()=>detailOpen(currentLevel?.name||'Scéna',sceneBriefing(true)));
 $('scoreSummary').addEventListener('click',()=>{const a=analyze(occupancy()),r=a.treasures*(currentLevel?.pieces?.reward?.score??1),p=a.enemies*(currentLevel?.pieces?.penalty?.score??-1);const poiRows=poi.map(o=>{const found=a.visited.has(`${o.x},${o.y}`);return `<div class="poiLine"><span>${safeText(o.name)} (${found?'dosažen':'nedosažen'})</span><b>${signed(found?o.score.found:o.score.missed)}</b></div>`;}).join('');detailOpen('Rozpis skóre',`<div class="poiLine"><span>${safeText(currentLevel?.pieces?.reward?.name||'Odměny')} (${a.treasures}×)</span><b>${signed(r)}</b></div><div class="poiLine"><span>${safeText(currentLevel?.pieces?.penalty?.name||'Postihy')} (${a.enemies}×)</span><b>${signed(p)}</b></div>${poiRows}<div class="poiLine"><b>Skóre úrovně</b><b>${signed(a.score)}</b></div>${currentLevel?.success?.useCampaignReserve?`<div class="poiLine"><span>Zásoba kampaně</span><b>${signed(reserve)}</b></div>`:''}<div class="poiLine"><b>Aktuální výsledek</b><b>${signed(a.finalScore)}</b></div><p class="muted">Požadované minimum: ${currentLevel?.success?.minimumScore??0}</p>`);});
 
 // Datově definované úrovně – lze upravit soubor levels.json bez úprav herního jádra.
@@ -556,7 +588,7 @@ function chooseLevel(id){
  $('obstacleCount').value=d.fixedObjects?.rocks?.randomCount||0;$('lairCount').value=d.fixedObjects?.lairs?.randomCount||0;
  entry=new Set([d.start.position]);exit=new Set(d.exits.map(e=>e.position));renderPortInputs(d.board.height);
  $('levelDescription').textContent=`${d.name} — ${d.description||''} · minimum ${d.success?.minimumScore??0} · koš: ${d.discard.mode}`;
- $('scoreSummary').title='Rozpis skóre';$('poiSummary').title='Body zájmu';
+ $('scoreSummary').title='Rozpis skóre';$('poiSummary').title='Informace o scéně';
  $('levelSelect').value=id;generate();if(inCampaign)showLevelIntro(d);
 }
 function setupPOI(){
@@ -581,8 +613,8 @@ function showLoadError(e){console.error('Nepodařilo se načíst data hry:',e);$
 async function loadCatalog(){
  try{
   const world=await loadJSON('world.json');
-  const issuers=Array.isArray(world.issuers)?world.issuers:[];
-  if(!issuers.length)throw Error('world.json: chybí issuers');
+  const issuers=Array.isArray(world.categories)?world.categories:(Array.isArray(world.issuers)?world.issuers:[]);
+  if(!issuers.length)throw Error('world.json: chybí categories');
   const index=await loadJSON('stories-index.json');
   const discovered=new Set((Array.isArray(index)?index:index.stories||[]).map(x=>typeof x==='string'?x:x.id));
   const refs=[];const unique=new Set();
@@ -594,7 +626,7 @@ async function loadCatalog(){
     refs.push({id,issuerId:issuer.id});
    }
   }
-  window.worldLocations=issuers.map(x=>({id:x.id,name:x.name}));
+  window.worldLocations=issuers.map(x=>({id:x.id,name:x.name,icon:x.images?.off||x.icon||`assets/category/ctg_${x.id}_off.webp`,iconActive:x.images?.on||x.iconActive||`assets/category/ctg_${x.id}_on.webp`}));
   if(!window.worldLocations.some(x=>x.id===selectedLocation))selectedLocation=window.worldLocations[0].id;
   if(!refs.length)throw Error('Nebyly nalezeny žádné příběhy');
   const collected=[];campaignCatalog.clear();
@@ -649,28 +681,42 @@ function showWorld(){eventLock=false;effects=[];lastExitKeys=new Set();inCampaig
 function initWorld(){showWorld()}
 function renderWorld(){const progress=readProgress();$('crownTotal').textContent=progress.crowns||0;
  const locations=window.worldLocations||[];
- $('worldLocations').replaceChildren();for(const l of locations){const b=document.createElement('button');b.textContent=l.name;b.className=l.id===selectedLocation?'active':'';b.onclick=()=>{selectedLocation=l.id;renderWorld()};$('worldLocations').append(b)}
+ const activeLocation=locations.find(l=>l.id===selectedLocation)||locations[0]||null;
+ const locationTitle=$('worldLocationTitle');if(locationTitle)locationTitle.textContent=activeLocation?.name||'';
+ $('worldLocations').replaceChildren();
+ for(const l of locations){
+  const active=l.id===selectedLocation;
+  const b=document.createElement('button');b.className='locationIcon'+(active?' active':'');b.type='button';b.title=l.name;b.setAttribute('aria-label',l.name);
+  const img=document.createElement('img');img.src=active?(l.iconActive||l.icon):(l.icon||l.iconActive||'');img.alt=l.name;img.loading='eager';img.decoding='async';img.onerror=()=>{b.classList.add('textOnly');img.remove()};
+  b.append(img);b.onclick=()=>{selectedLocation=l.id;renderWorld()};$('worldLocations').append(b)
+ }
  $('worldOffers').replaceChildren();const entries=[...campaignCatalog.values()].filter(c=>c.worldIssuerId===selectedLocation);
- if(!entries.length){$('worldOffers').innerHTML='<p>Prozatím zde nejsou dostupné zakázky.</p>';return;}
- for(const c of entries){const count=c.scenes.length,done=progress.completed?.[c.id]||0;const b=document.createElement('button');b.className='offerCard';b.innerHTML=`<h3>${safeText(c.name)} ${done?'✓':''}</h3><small>${'★'.repeat(c.difficulty)}${'☆'.repeat(5-c.difficulty)} · ${count} scény · ${done?c.reward.repeatCompletion:c.reward.firstCompletion} 👑</small><p>${safeText(done?c.completedText:c.offerText)}</p>`;b.onclick=()=>openOffer(c);$('worldOffers').append(b)}
+ if(!entries.length){$('worldOffers').innerHTML='<p class="worldEmpty">Prozatím zde nejsou dostupné zakázky.</p>';return;}
+ for(const c of entries){
+  const done=progress.completed?.[c.id]||0;
+  const reward=c.reward?.completion??0;
+  const teaser=safeText(done?c.completedText:c.offerText);
+  const b=document.createElement('button');b.className='offerCard';b.type='button';
+  b.innerHTML=`<div class="offerCardInner"><h3>${safeText(c.name)}${done?'<span class="offerDone" aria-hidden="true">✓</span>':''}</h3><p>${teaser}</p><div class="offerFoot"><span class="offerCrown">👑 ${reward}</span><span class="offerDifficulty">${'★'.repeat(Math.max(0,Math.min(5,c.difficulty||0)))}</span></div></div>`;
+  b.onclick=()=>openOffer(c);$('worldOffers').append(b)
+ }
 }
 function openOffer(c){selectedOffer=c;const done=(readProgress().completed||{})[c.id]||0;
  $('offerTitle').textContent=c.name;$('offerDescription').textContent=done?c.completedText:c.offerText;
- $('offerInfo').textContent=`Scény: ${c.scenes.length} · Obtížnost: ${'★'.repeat(c.difficulty)}${'☆'.repeat(5-c.difficulty)} · Odměna: ${done?c.reward.repeatCompletion:c.reward.firstCompletion} 👑`;$('offerOverlay').hidden=false;
+ $('offerInfo').textContent=`Scény: ${c.scenes.length} · Obtížnost: ${'★'.repeat(c.difficulty)}${'☆'.repeat(5-c.difficulty)} · Odměna: ${done?0:(c.reward?.completion||0)} 👑`;$('offerOverlay').hidden=false;
 }
 $('offerCancel').onclick=()=>{$('offerOverlay').hidden=true};
 $('offerAccept').onclick=()=>{if(!selectedOffer)return;const c=selectedOffer;$('offerOverlay').hidden=true;inCampaign=true;
  activeRun={campaignId:c.id,levelId:null,visited:0,finished:false};activeCampaignId=null;reserve=0;$('worldScreen').hidden=true;$('game').hidden=false;
- goTarget(c.startTarget,0);
+ if(c.startText)detailOpen(c.name,`<p style="white-space:pre-wrap">${safeText(c.startText)}</p>`,()=>goTarget(c.startTarget,0));else goTarget(c.startTarget,0);
 };
-function showScreen(id,callback){const c=campaignCatalog.get(activeRun?.campaignId),screen=c?.screensMap?.get(id);
- if(!screen){detailOpen('Chyba obrazovky',`<p>Obrazovka ${safeText(id)} neexistuje.</p>`,showWorld);return;}
- detailOpen(screen.title||c.name,`<p style="white-space:pre-wrap">${safeText(screen.text||'')}</p>`,()=>{if(callback)callback();else if(screen.nextTarget)goTarget(screen.nextTarget,0);else detailOpen('Neúplná obrazovka','<p>Obrazovka nemá pokračování.</p>',showWorld)});
+function showDialog(id){const c=campaignCatalog.get(activeRun?.campaignId),d=c?.dialogsMap?.get(id);
+ if(!d){detailOpen('Chyba dialogu',`<p>Dialog ${safeText(id)} neexistuje.</p>`,showWorld);return;}
+ detailOpen(d.title||d.name||c.name,`<p style="white-space:pre-wrap">${safeText(d.text||'')}</p>`,()=>goTarget(d.nextTarget,0));
 }
-function showLevelIntro(d){if(d.introScreenId)showScreen(d.introScreenId,()=>{});}
-function chooseResultScreen(level,ok,score){const candidates=(level.resultScreens||[]).filter(r=>r.result===(ok?'success':'fail')&&score>=(r.minScore??-Infinity)&&score<=(r.maxScore??Infinity));
- if(candidates.length>1)console.error('Překrývající se intervaly resultScreens',level.id);
- return candidates.length===1?candidates[0].screenId:null;
+function showLevelIntro(d){const showBrief=()=>detailOpen(d.name||'Scéna',sceneBriefing(false));if(d.intro?.text)detailOpen(d.name||'Scéna',`<p style="white-space:pre-wrap">${safeText(d.intro.text)}</p>`,showBrief);else showBrief();}
+function chooseResultScreen(level,ok,score){const candidates=(level.results||[]).filter(r=>r.result===(ok?'success':'fail')&&score>=(r.min??-Infinity)&&score<=(r.max??Infinity));
+ if(candidates.length!==1){console.error('Chybí jediný vhodný výsledkový interval',level.id,ok,score);return null;}return candidates[0];
 }
 function resolveTarget(target){if(!target)return {type:'ending',result:'fail'};return target;}
 function onLevelEnd(ok,a){if(!inCampaign||!activeRun)return;const level=currentLevel;
@@ -679,7 +725,7 @@ function onLevelEnd(ok,a){if(!inCampaign||!activeRun)return;const level=currentL
  let target=null,exits=[];
  if(ok){
   const seen=new Set();for(const e of reached){const key=JSON.stringify(e.next);if(!seen.has(key)){seen.add(key);exits.push(e);}}
-  if(exits.length===1)target=exits[0].next;
+  if(exits.length===1)target=exits[0].next;else if(!exits.length)target=chooseResultScreen(level,true,a.finalScore)?.target;
  }else{
   if(a.forbidden&&level.failureTargets?.forbiddenPoi)target=level.failureTargets.forbiddenPoi;
   else if(!a.win)target=level.failTarget;
@@ -697,12 +743,12 @@ function handleContinue(){if(!inCampaign||!pendingEnd){$('finishPanel').hidden=t
    $('detailBody').querySelectorAll('[data-exit]').forEach(b=>b.onclick=()=>{const e=p.exits[Number(b.dataset.exit)];$('detailPanel').hidden=true;goTarget(e.next,p.score)});
   }else goTarget(p.target,p.score);
  };
- if(p.resultScreen)showScreen(p.resultScreen,onward);else onward();
+ if(p.resultScreen?.text)detailOpen(currentLevel?.name||'Výsledek',`<p style="white-space:pre-wrap">${safeText(p.resultScreen.text)}</p>`,onward);else onward();
 }
 function goTarget(target,score){if(!inCampaign||!activeRun)return;
  const c=campaignCatalog.get(activeRun.campaignId);
  if(!target){detailOpen('Chyba návaznosti','<p>Chybí cíl pokračování.</p>',showWorld);return;}
- if(target.type==='screen'){showScreen(target.id);return;}
+ if(target.type==='dialog'){showDialog(target.id);return;}
  if(target.type==='scene'){
   const id=`${activeRun.campaignId}/${target.id}`,found=levelCatalog.find(x=>x.id===id);
   if(!found){detailOpen('Chyba návaznosti',`<p>Scéna ${safeText(target.id)} neexistuje.</p>`,showWorld);return;}
@@ -712,17 +758,16 @@ function goTarget(target,score){if(!inCampaign||!activeRun)return;
  }
  if(target.type==='return'){eventLock=false;refreshUI();return;}
  if(target.type!=='ending'){detailOpen('Chyba návaznosti','<p>Neznámý typ cíle.</p>',showWorld);return;}
- const endings=c.endings?.variants||[];
- let f;
- if(target.id)f=endings.find(e=>e.id===target.id);
- else {const opts=endings.filter(e=>e.result===target.result&&score>=(e.minTotalScore??-Infinity));opts.sort((a,b)=>(b.minTotalScore??-Infinity)-(a.minTotalScore??-Infinity));f=opts[0];}
- if(!f){detailOpen('Chyba zakončení','<p>Chybí odpovídající zakončení.</p>',showWorld);return;}
- const success=f.result==='success';let award=0;
- if(success&&!activeRun.finished){const progress=readProgress();const seen=progress.completed[c.id]||0;
-  award=seen?c.reward.repeatCompletion:c.reward.firstCompletion;progress.crowns=(progress.crowns||0)+award;
+ const result=target.result,variants=c.endings?.[result]||[];
+ // Editor 0.7: select the highest eligible score threshold, fall back to unbounded variant.
+ const matches=variants.filter(e=>score>=(e.minTotalScore??e.minScore??-Infinity)&&score<=(e.maxTotalScore??e.maxScore??Infinity));
+ matches.sort((a,b)=>(b.minTotalScore??b.minScore??-Infinity)-(a.minTotalScore??a.minScore??-Infinity));
+ const f=matches[0];if(!f){detailOpen('Chyba zakončení','<p>Chybí odpovídající zakončení.</p>',showWorld);return;}
+ let award=0;
+ if(result==='success'&&!activeRun.finished){const progress=readProgress(),seen=progress.completed[c.id]||0;
+  if(!seen){award=Number(c.reward?.completion)||0;progress.crowns=(progress.crowns||0)+award;}
   progress.completed[c.id]=seen+1;saveProgress(progress);
  }
  activeRun.finished=true;
- const message=c.screensMap.get(f.screenId);
- detailOpen(message?.title||'Konec příběhu',`<p style="white-space:pre-wrap">${safeText(message?.text||'')}</p><p>${success?`Získáváš ${award} 👑.`:'Tentokrát bez odměny.'}</p>`,showWorld);
+ detailOpen(f.title||c.name,`<p style="white-space:pre-wrap">${safeText(f.text||'')}</p><p>${result==='success'?`Získáváš ${award} 👑.`:'Tentokrát bez odměny.'}</p>`,showWorld);
 }

@@ -1,0 +1,275 @@
+{
+  "schemaVersion": "1.1",
+  "id": "ohrozene_zasoby",
+  "name": "Ohrožené zásoby",
+  "difficulty": 2,
+  "offerText": "Hostinskému se ztrácejí zásoby ze sklepa.",
+  "startText": "Hostinský hledá někoho, kdo by rozluštil záhadu ztrácejících se zásob ze sklepa.",
+  "completedText": "Hostinec jede díky tobě bez ztrát na zásobách.",
+  "reward": {
+    "completion": 4
+  },
+  "startTarget": {
+    "type": "dialog",
+    "id": "A01_uvod"
+  },
+  "flowOrder": [
+    {
+      "type": "dialog",
+      "id": "A01_uvod"
+    },
+    {
+      "type": "scene",
+      "id": "S02_zachrana_zasob"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "S02_zachrana_zasob",
+      "name": "S02_zachrana_zasob",
+      "introText": "",
+      "themes": {
+        "tile": "thema_tiles_dungeon",
+        "token": "token_poklad_goblin",
+        "door": "door_jeskyne"
+      },
+      "board": {
+        "width": 14,
+        "height": 7
+      },
+      "entrance": {
+        "position": 5
+      },
+      "exits": [
+        {
+          "id": "exit_1",
+          "position": 1,
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 18,
+        "passablePercent": 70,
+        "reward": {
+          "count": 10,
+          "score": 1
+        },
+        "penalty": {
+          "count": 5,
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [
+          {
+            "x": 5,
+            "y": 7
+          },
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 6
+          },
+          {
+            "x": 5,
+            "y": 4
+          },
+          {
+            "x": 10,
+            "y": 1
+          },
+          {
+            "x": 10,
+            "y": 2
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 4
+          }
+        ],
+        "randomCount": 0
+      },
+      "pointsOfInterest": [],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": 0,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": -1,
+          "result": "fail",
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        {
+          "min": 0,
+          "max": null,
+          "result": "success",
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      }
+    }
+  ],
+  "dialogs": [
+    {
+      "id": "A01_uvod",
+      "name": "A01_uvod",
+      "title": "hostinského trápení",
+      "text": "Hostinský ti vypráví, že se mu nedávno začaly ztrácet zásoby ze sklepa. Asi se mu tam rozmnožily krysy.\n\"Nejdřív musíme zachránit co nejvíce zbylých zásob!\"",
+      "nextTarget": {
+        "type": "scene",
+        "id": "S02_zachrana_zasob"
+      }
+    }
+  ],
+  "assets": {
+    "files": [
+      {
+        "id": "tile_dungeon_barrier",
+        "path": "assets/tile/tile_dungeon_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_corridor",
+        "path": "assets/tile/tile_dungeon_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_default",
+        "path": "assets/tile/tile_dungeon_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_dungeon_path",
+        "path": "assets/tile/tile_dungeon_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "token_token_goblin_active",
+        "path": "assets/token/token_token_goblin_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_goblin_available",
+        "path": "assets/token/token_token_goblin_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_treasure_active",
+        "path": "assets/token/token_token_treasure_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_token_treasure_available",
+        "path": "assets/token/token_token_treasure_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "door_door_generic_entrance_active",
+        "path": "assets/door/door_door_generic_entrance_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_active",
+        "path": "assets/door/door_door_generic_exit_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_door_generic_exit_available",
+        "path": "assets/door/door_door_generic_exit_available.webp",
+        "category": "door"
+      },
+      {
+        "id": "poi_poi_klic_active",
+        "path": "assets/poi/poi_poi_klic_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_poi_klic_available",
+        "path": "assets/poi/poi_poi_klic_available.webp",
+        "category": "poi"
+      }
+    ],
+    "tileThemes": [
+      {
+        "id": "thema_tiles_dungeon",
+        "name": "Dungeon",
+        "images": {
+          "default": "tile_dungeon_default",
+          "corridor": "tile_dungeon_corridor",
+          "path": "tile_dungeon_path",
+          "barrier": "tile_dungeon_barrier"
+        }
+      }
+    ],
+    "tokenThemes": [
+      {
+        "id": "token_poklad_goblin",
+        "name": "Poklad a goblin",
+        "images": {
+          "reward.available": "token_token_treasure_available",
+          "reward.active": "token_token_treasure_active",
+          "penalty.available": "token_token_goblin_available",
+          "penalty.active": "token_token_goblin_active"
+        }
+      }
+    ],
+    "doorThemes": [
+      {
+        "id": "door_jeskyne",
+        "name": "Jeskyně",
+        "images": {
+          "entrance.active": "door_door_generic_entrance_active",
+          "exit.available": "door_door_generic_exit_available",
+          "exit.active": "door_door_generic_exit_active"
+        }
+      }
+    ],
+    "poiItems": [
+      {
+        "id": "poi_klic",
+        "name": "poi_klic",
+        "images": {
+          "available": "poi_poi_klic_available",
+          "active": "poi_poi_klic_active"
+        }
+      }
+    ]
+  },
+  "endings": {
+    "success": [],
+    "fail": []
+  },
+  "authorNotes": ""
+}
