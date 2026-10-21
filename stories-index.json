@@ -2,6 +2,10 @@
   "schemaVersion": "catalog-1",
   "stories": [
     {
+      "id": "prichod_do_vsi",
+      "name": "Příchod do vsi"
+    },
+    {
       "id": "ohrozene_zasoby",
       "name": "Ohrožené zásoby"
     }

@@ -33,13 +33,14 @@ function parseStoryV1(raw,id){
   for(const r of results){if(r.target)checkTarget(r.target,'výsledek '+x.id);if(!['success','fail'].includes(r.result)||r.min!=null&&!Number.isFinite(r.min)||r.max!=null&&!Number.isFinite(r.max)||r.min!=null&&r.max!=null&&r.min>r.max)errors.push('Neplatný interval ve scéně '+x.id);}
   for(const result of ['success','fail']){const rr=results.filter(r=>r.result===result);for(let i=0;i<rr.length;i++)for(let j=i+1;j<rr.length;j++)if((rr[i].min??-Infinity)<=(rr[j].max??Infinity)&&(rr[j].min??-Infinity)<=(rr[i].max??Infinity))errors.push('Překrývající se intervaly '+result+' ve scéně '+x.id);}
   const pois=(x.pointsOfInterest||[]).map(o=>({...o,icon:o.themeItemId,score:{found:o.score?.found??0,missed:o.score?.missed??0},placement:{...o.placement,type:o.placement?.mode,x:oneToZero(o.placement?.x),y:oneToZero(o.placement?.y)},onFound:o.foundText?{title:o.name,text:o.foundText}:null}));
-  const z={...x,start:{side:'left',position:oneToZero(x.entrance?.position)},exits:(x.exits||[]).map(e=>({...e,position:oneToZero(e.position),side:'right'})),tileTheme:x.themes?.tile,tokenTheme:x.themes?.token,doorTheme:x.themes?.door,poiTheme:'default',fixedObjects:{rocks:{positions:(x.obstacles?.fixed||[]).map(o=>({x:oneToZero(o.x),y:oneToZero(o.y)})),randomCount:x.obstacles?.randomCount||0},lairs:{positions:[],randomCount:0},pointsOfInterest:pois},success:{...x.success,useCampaignReserve:x.success?.useReserve},intro:x.introText?{title:x.name,text:x.introText}:null,failTarget:x.failTargets?.base||{type:'ending',result:'fail'},failureTargets:{forbiddenPoi:x.failTargets?.forbidden,requiredPoi:x.failTargets?.required},failureOutcomes:x.failureOutcomes||null};
+  const tokenSpec=k=>{const o=x.pieces?.[k]||{},q=o.placement;return {...o,count:q?Math.max(0,Number(q.pieces)||0):Math.max(0,Number(o.count)||0),total:q?(Math.max(0,Number(q.pieces)||0)+Math.max(0,Number(q.random)||0)+(q.fixed||[]).length):Math.max(0,Number(o.count)||0),placement:q?{pieces:q.pieces||0,random:q.random||0,fixed:(q.fixed||[]).map(p=>({x:oneToZero(p.x),y:oneToZero(p.y)}))}:{pieces:o.count||0,random:0,fixed:[]}};};
+  const z={...x,pieces:{...x.pieces,reward:tokenSpec('reward'),penalty:tokenSpec('penalty')},start:{side:'left',position:oneToZero(x.entrance?.position)},exits:(x.exits||[]).map(e=>({...e,position:oneToZero(e.position),side:'right'})),tileTheme:x.themes?.tile,tokenTheme:x.themes?.token,doorTheme:x.themes?.door,poiTheme:'default',fixedObjects:{rocks:{positions:(x.obstacles?.fixed||[]).map(o=>({x:oneToZero(o.x),y:oneToZero(o.y)})),randomCount:x.obstacles?.randomCount||0},lairs:{positions:[],randomCount:0},pointsOfInterest:pois},success:{...x.success,useCampaignReserve:x.success?.useReserve},intro:x.introText?{title:x.name,text:x.introText}:null,failTarget:x.failTargets?.base||{type:'ending',result:'fail'},failureTargets:{forbiddenPoi:x.failTargets?.forbidden,requiredPoi:x.failTargets?.required},failureOutcomes:x.failureOutcomes||null};
   return z;
  });
  if(!scenes.length)errors.push('Nejsou definované žádné scény');
  if(!Array.isArray(raw.endings?.success)||!Array.isArray(raw.endings?.fail))errors.push('Zakončení vyžaduje endings.success a endings.fail');
  if(errors.length)throw Error(`Příběh ${id}: `+errors.join(' | '));
- return {...raw,category:null,tileThemes,tokenThemes,doorThemes,poiThemes,scenes,dialogsMap:dialogs,assetsBase:'',_raw:raw};
+ return {...raw,minimumCrowns:Math.max(0,Number(raw.minimumCrowns)||0),category:null,tileThemes,tokenThemes,doorThemes,poiThemes,scenes,dialogsMap:dialogs,assetsBase:'',_raw:raw};
 }
 
 let themeCatalog=null;
@@ -94,7 +95,7 @@ function paintToken(c,type,x,y,size,active=true){
 }
 let animating=false, animationFrame=0, inHand=false, workPos=null, discarded=0, lost=false;
 let liveEntry=new Set([1,4,7]),liveExit=new Set([1,4,7]);
-let currentLevel=null,poi=[],reserve=0,discardPoints=0,levelFinished=false,noticedPOI=new Set(),endReason="";let BW=16,BH=10,pieces=[],placements=[],obstacles=new Set(),lairs=new Set(),selected=null,turn=0,hover=null,entry=new Set([1,4,7]),exit=new Set([1,4,7]);
+let fieldTokens=new Map();let currentLevel=null,poi=[],reserve=0,discardPoints=0,levelFinished=false,noticedPOI=new Set(),endReason="";let BW=16,BH=10,pieces=[],placements=[],obstacles=new Set(),lairs=new Set(),selected=null,turn=0,hover=null,entry=new Set([1,4,7]),exit=new Set([1,4,7]);
 const randint=n=>Math.floor(Math.random()*n);
 function integerInput(id,min,max){const n=Number($(id).value);const value=Number.isFinite(n)?Math.max(min,Math.min(max,Math.floor(n))):min;$(id).value=value;return value;}
 function pct(id){const x=Number($(id).value);return Number.isFinite(x)?Math.min(100,Math.max(0,x))/100:0;}
@@ -108,6 +109,7 @@ function generate(){if(animating)return;
  if(!exit.size)exit.add(Math.floor((BH-1)/2));
  liveEntry=new Set(entry);liveExit=new Set(exit);
  setupPOI();
+ setupFieldTokens();
  applyObstacles(false);
  const keys=Object.keys(SHAPES),p=pct('chance'),mode=$('mode').value;
  const pieceCount=integerInput('pieceCount',1,120);
@@ -128,7 +130,7 @@ function generate(){if(animating)return;
 }
 function rotated(piece,n){let cells=piece.cells.map(c=>({...c}));for(let k=0;k<n;k++){const h=Math.max(...cells.map(c=>c.y))+1;cells=cells.map(c=>({...c,x:h-1-c.y,y:c.x}));}const mx=Math.min(...cells.map(c=>c.x)),my=Math.min(...cells.map(c=>c.y));return cells.map(c=>({...c,x:c.x-mx,y:c.y-my}));}
 function occupancy(){
- const m=new Map();for(const key of obstacles)m.set(key,{type:'rock',fixed:true});for(const key of lairs)m.set(key,{type:'enemy',fixed:true,lair:true});
+ const m=new Map();for(const key of obstacles)m.set(key,{type:'rock',fixed:true});for(const [key,token] of fieldTokens)m.set(key,{type:'way',terrain:'way',token,fixed:true});for(const key of lairs)m.set(key,{type:'enemy',fixed:true,lair:true});
  for(const o of poi)m.set(`${o.x},${o.y}`,{type:'poi',poi:o,fixed:true});
  for(const pos of placements)for(const c of rotated(pieces[pos.id],pos.rot))m.set(`${pos.x+c.x},${pos.y+c.y}`,c);
  return m;
@@ -236,10 +238,10 @@ function renderPalette(){
  for(const q of cc){const x=ox+q.x*s,y=oy+q.y*s;paintTile(c,q,x,y,s,false);if(isWay(q)&&(q.token==='enemy'||q.token==='gold')){paintToken(c,q.token,x,y,s,false)}c.strokeStyle='#112233';c.strokeRect(x+.5,y+.5,s-1,s-1)}b.append(cv);const cap=document.createElement('span');cap.textContent=`${String(p.id+1).padStart(2,'0')} · ${p.name}`;b.append(cap);b.onclick=()=>takePiece();palette.append(b)}
 }
 function metrics(){updateCapacity();const a=analyze(occupancy());const done=selected===null||lost;
- $('count').textContent=`${placements.length} položeno · ${discarded} odhozeno / ${pieces.length}`;$('taken').textContent=`${placements.length*4+obstacles.size+lairs.size}/${BW*BH} (z toho ${obstacles.size} skal, ${lairs.size} líhní)`;
+ $('count').textContent=`${placements.length} položeno · ${discarded} odhozeno / ${pieces.length}`;$('taken').textContent=`${placements.length*4+obstacles.size+lairs.size+poi.length+fieldTokens.size}/${BW*BH}`;
  $('passable').textContent=a.space;$('access').textContent=`${a.visited.size} (${a.space?Math.round(100*a.visited.size/a.space):0} %)`;
  $('enemies').textContent=a.enemies;$('treasures').textContent=a.treasures;$('won').textContent=a.win?'ANO ✓':'ne';
- $('score').textContent=`${a.finalScore>0?'+':''}${a.finalScore}`;
+ $('score').textContent=(currentLevel?.pieces?.reward?.total||currentLevel?.pieces?.penalty?.total||poi.length||currentLevel?.success?.minimumScore)?`${a.finalScore>0?'+':''}${a.finalScore}`:'—';
  const success=!a.forbidden&&a.win&&a.mandatory&&a.finalScore>=(currentLevel?.success?.minimumScore??0);const result=lost?(endReason||'PROHRA · úroveň vzdána nebo nelze odhodit'):done?(success?`ÚSPĚCH · skóre ${a.finalScore}`:!a.win?'PROHRA · chybí cesta':!a.mandatory?'PROHRA · chybí povinné místo':`PROHRA · minimum ${currentLevel?.success?.minimumScore??0}`):'probíhá';
  $('result').textContent=result;$('result').style.color=done?(success?'#7ad6bf':'#e98481'):'#d1dfe6';
  $('undo').disabled=true;$('rotL').disabled=selected===null||!inHand;$('rotR').disabled=selected===null||!inHand;
@@ -269,10 +271,12 @@ function renderAll(){renderPalette();drawBoard();metrics();refreshUI();if((selec
  levelFinished=true;finishReady=false;finishViewing=false;const serial=++finishSerial;
  const a=analyze(occupancy()),ok=!lost&&!a.forbidden&&a.win&&a.mandatory&&a.finalScore>=(currentLevel?.success?.minimumScore??0);
  finishOk=ok;$('finishTitle').textContent=ok?'🏆 Úspěch!':'✕ Neúspěch';
- $('finishText').innerHTML=ok?`<span class="finishScore">🏆 ${safeText(a.finalScore)} / ${safeText(currentLevel?.success?.minimumScore??0)}</span>`:finishReasons(a).map(r=>`<div class="finishReason">✕ ${safeText(r)}</div>`).join('');
+ $('finishText').innerHTML=ok&&!(currentLevel.pieces.reward.total||currentLevel.pieces.penalty.total||poi.length||currentLevel.success.minimumScore)?'' : ok?`<span class="finishScore">🏆 ${safeText(a.finalScore)} / ${safeText(currentLevel?.success?.minimumScore??0)}</span>`:finishReasons(a).map(r=>`<div class="finishReason">✕ ${safeText(r)}</div>`).join('');
  $('finishClose').textContent=ok?'Pokračovat':'Ukončit';$('finishPanel').hidden=true;
  onLevelEnd(ok,a);if(inCampaign&&pendingEnd?.target?.type!=='ending')$('finishClose').textContent='Pokračovat';void finishAfterEffects(serial);
- }}
+ }
+ scheduleRunSave();
+}
 function rotate(n){if(selected===null||!inHand)return;turn=(turn+n+4)%4;if(workPos){workPos=clampWorkPos(workPos);hover=workPos;}drawBoard();metrics();refreshUI();}
 function coord(e){const b=canvas.getBoundingClientRect();const px=(e.clientX-b.left)*canvas.width/b.width-BOARD_PAD_X;const py=(e.clientY-b.top)*canvas.height/b.height-BOARD_PAD_Y;return {x:Math.floor(px/S),y:Math.floor(py/S)};}
 function takePiece(){if(levelFinished){revealFinished();return;}if(selected===null||inHand||eventLock)return;inHand=true;hover=null;workPos=null;renderAll();}
@@ -327,7 +331,7 @@ function validRock(x,y,fixed,occupied){
 function applyObstacles(redraw=true){
  if(animating)return;
  const requestedRocks=integerInput('obstacleCount',0,BW*BH),requestedLairs=integerInput('lairCount',0,BW*BH);
- const occupied=new Set(poi.map(o=>`${o.x},${o.y}`));for(const pos of placements)for(const c of rotated(pieces[pos.id],pos.rot))occupied.add(`${pos.x+c.x},${pos.y+c.y}`);
+ const occupied=new Set([...poi.map(o=>`${o.x},${o.y}`),...fieldTokens.keys()]);for(const pos of placements)for(const c of rotated(pieces[pos.id],pos.rot))occupied.add(`${pos.x+c.x},${pos.y+c.y}`);
  const candidates=[];for(let y=1;y<BH-1;y++)for(let x=1;x<BW-1;x++)if(!occupied.has(`${x},${y}`))candidates.push([x,y]);
  const manualRocks=new Set((currentLevel?.fixedObjects?.rocks?.positions||[]).map(p=>`${p.x},${p.y}`));
  const manualLairs=new Set((currentLevel?.fixedObjects?.lairs?.positions||[]).map(p=>`${p.x},${p.y}`));
@@ -573,8 +577,8 @@ function sceneBriefing(during=false){
  const parts=`${objective?`<p class="mtObjectiveText">${safeText(objective)}</p>`:''}<div class="mtBriefMetrics">
   <div title="Mapa" aria-label="Mapa"><span class="mtBriefIcon">▦</span><b>${d.board.width}×${d.board.height}</b></div>
   <div title="Počet dílků" aria-label="Počet dílků"><span class="mtBriefIcon">▧</span><b>${d.pieces.count}</b></div>
-  <div title="Minimální skóre" aria-label="Minimální skóre"><span class="mtBriefIcon">🏆</span><b>min ${d.success?.minimumScore??0}</b>${d.success?.useCampaignReserve?'<small title="Započítává se zásoba">＋◈</small>':''}</div>
-  ${tokens.map(([role,v])=>`<div title="${safeText(v?.name||role)}" aria-label="${safeText(v?.name||role)}"><span class="mtBriefToken">${icon(role)}</span><b>${v?.count??0} (${signed(v?.score??(role==='reward'?1:-1))})</b></div>`).join('')}
+  ${(d.pieces.reward.total||d.pieces.penalty.total||poi.length||d.success?.minimumScore||d.success?.useCampaignReserve)?`<div title="Minimální skóre"><span class="mtBriefIcon">🏆</span><b>min ${d.success?.minimumScore??0}</b></div>`:''}
+  ${tokens.filter(([role,v])=>v?.total>0).map(([role,v])=>`<div title="${safeText(v?.name||role)}" aria-label="${safeText(v?.name||role)}"><span class="mtBriefToken">${icon(role)}</span><b>${v?.total??0} (${signed(v?.score??(role==='reward'?1:-1))})</b></div>`).join('')}
   <div title="Zahazování" aria-label="Zahazování"><span class="mtBriefIcon">${d.discard?.mode==='disabled'?'☠':d.discard?.mode==='free'?'♻':'🗑'}</span></div>
  </div>`;
  const entries=poi.map(o=>{const found=during&&a.visited.has(`${o.x},${o.y}`),missed=Number(o.score?.missed)||0,gained=Number(o.score?.found)||0;
@@ -637,6 +641,7 @@ function validateLevel(d){
   const key=o.x+','+o.y;if(occupied.has(key))errors.push('Kolize pevných objektů '+key);occupied.add(key);
  }
  for(const o of d.fixedObjects?.pointsOfInterest||[]){if(o.placement?.type==='fixed'){const {x,y}=o.placement;const key=x+','+y;if(x<0||y<0||x>=d.board.width||y>=d.board.height)errors.push('POI mimo mapu');if(occupied.has(key))errors.push('Kolize s POI '+key);occupied.add(key);}}
+ for(const kind of ['reward','penalty']){const q=d.pieces[kind].placement;for(const o of q.fixed){const key=o.x+','+o.y;if(!Number.isInteger(o.x)||!Number.isInteger(o.y)||o.x<0||o.y<0||o.x>=d.board.width||o.y>=d.board.height)errors.push('Token mimo mapu');if(occupied.has(key))errors.push('Kolize tokenu '+key);occupied.add(key);if(o.x===0&&o.y===d.start.position||o.x===d.board.width-1&&d.exits.some(e=>e.position===o.y))errors.push('Token u dveří')}if(!Number.isInteger(q.random)||q.random<0||!Number.isInteger(q.pieces)||q.pieces<0)errors.push('Neplatný počet tokenů')}
  for(const o of d.fixedObjects?.pointsOfInterest||[])if(!Number.isFinite(o.score?.found)||!Number.isFinite(o.score?.missed)||!['required','optional','forbidden'].includes(o.mode))errors.push('POI: chybný mode nebo found/missed');
  return [...new Set(errors)];
 }
@@ -657,13 +662,13 @@ function chooseLevel(id){
  $('gold').value=d.pieces.reward.count;$('enemy').value=d.pieces.penalty.count;
  $('obstacleCount').value=d.fixedObjects?.rocks?.randomCount||0;$('lairCount').value=d.fixedObjects?.lairs?.randomCount||0;
  entry=new Set([d.start.position]);exit=new Set(d.exits.map(e=>e.position));renderPortInputs(d.board.height);
- $('levelDescription').textContent=`${d.name} — ${d.description||''} · minimum ${d.success?.minimumScore??0} · koš: ${d.discard.mode}`;
+ $('levelDescription').textContent=d.name;
  $('scoreSummary').title='Rozpis skóre';$('poiSummary').title='Zbývající dílky';
- $('levelSelect').value=id;generate();if(inCampaign)showLevelIntro(d);
+ $('levelSelect').value=id;generate();if(inCampaign){showLevelIntro(d);scheduleRunSave();}
 }
 function setupPOI(){
  poi=[];const defs=currentLevel?.fixedObjects?.pointsOfInterest||[];
- const blocked=new Set([...(currentLevel?.fixedObjects?.rocks?.positions||[]).map(p=>`${p.x},${p.y}`),...(currentLevel?.fixedObjects?.lairs?.positions||[]).map(p=>`${p.x},${p.y}`)]);const futureFixed=new Set(defs.filter(o=>o.placement?.type==='fixed').map(o=>`${o.placement.x},${o.placement.y}`));
+ const blocked=new Set([...(currentLevel?.fixedObjects?.rocks?.positions||[]).map(p=>`${p.x},${p.y}`),...(currentLevel?.fixedObjects?.lairs?.positions||[]).map(p=>`${p.x},${p.y}`)]);const futureFixed=new Set([...defs.filter(o=>o.placement?.type==='fixed').map(o=>`${o.placement.x},${o.placement.y}`),...['reward','penalty'].flatMap(k=>(currentLevel.pieces[k].placement.fixed||[]).map(p=>`${p.x},${p.y}`))]);
  for(const spec of defs){
   let x,y;
   if(spec.placement?.type==='fixed'){({x,y}=spec.placement)}else{
@@ -673,6 +678,17 @@ function setupPOI(){
   if(blocked.has(`${x},${y}`))continue;
   poi.push({...spec,x,y});blocked.add(`${x},${y}`);
  }
+}
+function setupFieldTokens(){
+ fieldTokens=new Map();const blocked=new Set([...poi.map(p=>`${p.x},${p.y}`),...(currentLevel.fixedObjects?.rocks?.positions||[]).map(p=>`${p.x},${p.y}`)]);
+ const specs=[['reward','gold'],['penalty','enemy']];
+ for(const [kind,token] of specs)for(const p of currentLevel.pieces[kind].placement.fixed){const key=`${p.x},${p.y}`;if(blocked.has(key)||fieldTokens.has(key))throw Error('Kolize pevného tokenu '+key);fieldTokens.set(key,token)}
+ const candidates=[];
+ for(let y=0;y<BH;y++)for(let x=0;x<BW;x++){const key=`${x},${y}`;if(blocked.has(key)||fieldTokens.has(key)||x===0&&liveEntry.has(y)||x===BW-1&&liveExit.has(y))continue;candidates.push(key)}
+ for(let i=candidates.length-1;i>0;i--){const j=randint(i+1);[candidates[i],candidates[j]]=[candidates[j],candidates[i]]}
+ const wanted=specs.reduce((n,[kind])=>n+Number(currentLevel.pieces[kind].placement.random||0),0);
+ if(candidates.length<wanted)throw Error('Nedostatek volných buněk pro náhodné tokeny: '+wanted+' požadováno, '+candidates.length+' dostupných');
+ for(const [kind,token] of specs)for(let i=0;i<currentLevel.pieces[kind].placement.random;i++)fieldTokens.set(candidates.pop(),token);
 }
 async function loadJSON(url){
  const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(`${url}: HTTP ${r.status}`);return r.json();
@@ -746,9 +762,21 @@ fitBoardToSpace();
 let inCampaign=false,activeRun=null,pendingEnd=null,selectedOffer=null,selectedLocation='village';
 const progressKey='mercenary-tales-progress-v1';
 function readProgress(){try{return JSON.parse(localStorage.getItem(progressKey))||{crowns:0,completed:{}}}catch{return {crowns:0,completed:{}}}}
-function saveProgress(data){localStorage.setItem(progressKey,JSON.stringify(data))}
-function showWorld(){finishSerial++;finishReady=false;finishViewing=false;eventLock=false;effects=[];lastExitKeys=new Set();inCampaign=false;activeRun=null;pendingEnd=null;$('finishPanel').hidden=true;$('settingsPanel').hidden=true;$('game').hidden=true;$('worldScreen').hidden=false;$('offerOverlay').hidden=true;renderWorld()}
-function initWorld(){showWorld()}
+function saveProgress(data){localStorage.setItem(progressKey,JSON.stringify(data));GameStorage.saveProfile(data).catch(reportSaveError)}
+function showWorld(){if(inCampaign&&activeRun)clearSavedRun();finishSerial++;finishReady=false;finishViewing=false;eventLock=false;effects=[];lastExitKeys=new Set();inCampaign=false;activeRun=null;pendingEnd=null;$('finishPanel').hidden=true;$('settingsPanel').hidden=true;$('game').hidden=true;$('worldScreen').hidden=false;$('offerOverlay').hidden=true;renderWorld()}
+async function initWorld(){
+ showWorld();
+ try{
+  const profile=await GameStorage.loadProfile();
+  // Legacy localStorage is kept as a compatible mirror; IndexedDB is authoritative.
+  localStorage.setItem(progressKey,JSON.stringify(profile));renderWorld();
+  const saved=await GameStorage.loadRun();
+  if(saved?.version===1&&saved?.campaignId&&campaignCatalog.has(saved.campaignId)){
+   if(confirm(`Máš rozehraný příběh „${campaignCatalog.get(saved.campaignId).name}“. Pokračovat přesně od uloženého tahu?`))restoreRun(saved);
+   else if(confirm('Zahodit rozehraný pokus? Získané koruny a dokončené příběhy zůstanou.'))await GameStorage.clearRun();
+  }
+ }catch(e){console.error('Nelze načíst herní postup',e);alert('Uložený postup nelze načíst: '+e.message)}
+}
 function renderWorld(){const progress=readProgress();$('crownTotal').textContent=progress.crowns||0;
  const locations=window.worldLocations||[];
  const activeLocation=locations.find(l=>l.id===selectedLocation)||locations[0]||null;
@@ -766,9 +794,9 @@ function renderWorld(){const progress=readProgress();$('crownTotal').textContent
   const done=progress.completed?.[c.id]||0;
   const reward=c.reward?.completion??0;
   const teaser=safeText(done?c.completedText:c.offerText);
-  const b=document.createElement('button');b.className='offerCard';b.type='button';
-  b.innerHTML=`<div class="offerCardInner"><h3>${safeText(c.name)}${done?'<span class="offerDone" aria-hidden="true">✓</span>':''}</h3><p>${teaser}</p><div class="offerFoot"><span class="offerCrown">👑 ${reward}</span><span class="offerDifficulty">${'★'.repeat(Math.max(0,Math.min(5,c.difficulty||0)))}</span></div></div>`;
-  b.onclick=()=>openOffer(c);$('worldOffers').append(b)
+  const b=document.createElement('button');b.className='offerCard';b.type='button';const locked=(progress.crowns||0)<(c.minimumCrowns||0);if(locked)b.classList.add('offerLocked');
+  b.innerHTML=`<div class="offerCardInner"><h3>${safeText(c.name)}${done?'<span class="offerDone" aria-hidden="true">✓</span>':''}</h3><p>${teaser}</p><div class="offerFoot"><span class="offerCrown">👑 ${reward}</span><span class="offerDifficulty">${'★'.repeat(Math.max(0,Math.min(5,c.difficulty||0)))}</span></div>${locked?'<span class="offerPadlock" aria-hidden="true">🔒</span>':''}</div>`;
+  b.onclick=()=>locked?detailOpen(c.name,`<p class="lockedRequirement">min 👑 ${c.minimumCrowns}</p>`):openOffer(c);$('worldOffers').append(b)
  }
 }
 function openOffer(c){selectedOffer=c;const done=(readProgress().completed||{})[c.id]||0;
@@ -777,7 +805,7 @@ function openOffer(c){selectedOffer=c;const done=(readProgress().completed||{})[
  $('offerInfo').textContent='';$('offerInfo').hidden=true;$('offerOverlay').hidden=false;
 }
 $('offerCancel').onclick=()=>{$('offerOverlay').hidden=true};
-$('offerAccept').onclick=()=>{if(!selectedOffer)return;const c=selectedOffer;$('offerOverlay').hidden=true;inCampaign=true;
+$('offerAccept').onclick=()=>{if(!selectedOffer)return;const c=selectedOffer;if((readProgress().crowns||0)<(c.minimumCrowns||0))return;$('offerOverlay').hidden=true;inCampaign=true;
  activeRun={campaignId:c.id,levelId:null,visited:0,finished:false};activeCampaignId=null;reserve=0;$('worldScreen').hidden=true;$('game').hidden=false;
  goTarget(c.startTarget,0);
 };
@@ -812,7 +840,7 @@ function onLevelEnd(ok,a){if(!inCampaign||!activeRun)return;const level=currentL
  }
  if(!chosen)chosen=chooseResultScreen(level,ok,a.finalScore);
  const target=chosen?.target||(!ok?level.failTarget:fallback);
- pendingEnd={kind:'target',target,score:a.finalScore,resultScreen:chosen};
+ pendingEnd={kind:'target',target,score:a.finalScore,resultScreen:chosen};scheduleRunSave();
 }
 function handleContinue(){if(!inCampaign||!pendingEnd){$('finishPanel').hidden=true;showWorld();return;}
  $('finishPanel').hidden=true;const p=pendingEnd;pendingEnd=null;
@@ -830,7 +858,7 @@ function goTarget(target,score){if(!inCampaign||!activeRun)return;
   if(!found){detailOpen('Chyba návaznosti',`<p>Scéna ${safeText(target.id)} neexistuje.</p>`,showWorld);return;}
   activeRun.levelId=id;activeRun.visited++;
   if(activeRun.visited>150){detailOpen('Příliš mnoho přechodů','<p>Výprava se opakuje příliš dlouho.</p>',showWorld);return;}
-  chooseLevel(id);return;
+  chooseLevel(id);scheduleRunSave();return;
  }
  if(target.type==='return'){eventLock=false;refreshUI();return;}
  if(target.type!=='ending'){detailOpen('Chyba návaznosti','<p>Neznámý typ cíle.</p>',showWorld);return;}
@@ -845,9 +873,71 @@ function goTarget(target,score){if(!inCampaign||!activeRun)return;
   progress.completed[c.id]=seen+1;saveProgress(progress);
  }
  activeRun.finished=true;
+ clearSavedRun();
  detailOpen(f.title||c.name,`<p style="white-space:pre-wrap">${safeText(f.text||'')}</p><p>${result==='success'?`Získáváš ${award} 👑.`:'Tentokrát bez odměny.'}</p>`,showWorld);
 }
 
+
+
+// MT.057: Exact checkpoint of a committed turn. Live preview coordinates are not a committed action.
+let saveTimer=null,saveGeneration=0,saveQueue=Promise.resolve(),restoreActive=false;
+function reportSaveError(e){console.error('Ukládání Mercenary Tales selhalo:',e);}
+function snapshotRun(){
+ if(!inCampaign||!activeRun||activeRun.finished||!currentLevel)return null;
+ return {
+  version:1,campaignId:activeRun.campaignId,levelId:activeRun.levelId,
+  visited:activeRun.visited,reserve,discardPoints,discarded,lost,endReason,
+  board:{width:BW,height:BH},pieces:structuredClone(pieces),placements:structuredClone(placements),
+  selected,turn,inHand:false,entry:[...entry],exit:[...exit],liveEntry:[...liveEntry],liveExit:[...liveExit],
+  obstacles:[...obstacles],lairs:[...lairs],fieldTokens:[...fieldTokens],extraEnemies:[...extraEnemies],
+  poi:structuredClone(poi),noticedPOI:[...noticedPOI],lastExitKeys:[...lastExitKeys],
+  levelFinished,finishOk,pendingEnd:structuredClone(pendingEnd),
+  savedAt:new Date().toISOString()
+ };
+}
+function queueStorage(task){saveQueue=saveQueue.then(task).catch(reportSaveError);return saveQueue;}
+function scheduleRunSave(){
+ if(restoreActive||!inCampaign||!activeRun||!currentLevel||activeRun.finished)return;
+ clearTimeout(saveTimer);const generation=++saveGeneration;
+ saveTimer=setTimeout(()=>{
+  if(generation!==saveGeneration)return;
+  const snap=snapshotRun();if(snap)queueStorage(()=>GameStorage.saveRun(snap));
+ },90);
+}
+function flushRunSave(){
+ clearTimeout(saveTimer);const snap=snapshotRun();if(snap)queueStorage(()=>GameStorage.saveRun(snap));
+}
+function clearSavedRun(){clearTimeout(saveTimer);++saveGeneration;queueStorage(()=>GameStorage.clearRun());}
+function restoreRun(saved){
+ const d=levelCatalog.find(x=>x.id===saved.levelId);
+ if(!d||!Array.isArray(saved.pieces)||!Array.isArray(saved.placements)){
+  alert('Uložená scéna již neexistuje nebo má nekompatibilní formát. Rozehraný postup zůstal zachován.');return;
+ }
+ restoreActive=true;
+ try{
+  inCampaign=true;activeRun={campaignId:saved.campaignId,levelId:saved.levelId,visited:saved.visited||1,finished:false};
+  reserve=saved.reserve||0;chooseLevel(saved.levelId);
+  // chooseLevel initializes the scene; replace random contents with checkpoint.
+  $('detailPanel').hidden=true;$('settingsPanel').hidden=true;$('finishPanel').hidden=true;$('worldScreen').hidden=true;$('game').hidden=false;
+  BW=saved.board.width;BH=saved.board.height;
+  canvas.width=boardW()+BOARD_PAD_X*2;canvas.height=boardH()+BOARD_PAD_Y*2;
+  canvas.style.setProperty('--board-ratio',`${canvas.width}/${canvas.height}`);
+  pieces=saved.pieces;placements=saved.placements;selected=saved.selected;turn=0;inHand=false;workPos=null;hover=null;
+  entry=new Set(saved.entry);exit=new Set(saved.exit);liveEntry=new Set(saved.liveEntry);liveExit=new Set(saved.liveExit);
+  obstacles=new Set(saved.obstacles);lairs=new Set(saved.lairs);fieldTokens=new Map(saved.fieldTokens||[]);extraEnemies=new Set(saved.extraEnemies);
+  poi=saved.poi;noticedPOI=new Set(saved.noticedPOI);lastExitKeys=new Set(saved.lastExitKeys||[]);
+  discardPoints=saved.discardPoints||0;discarded=saved.discarded||0;lost=!!saved.lost;endReason=saved.endReason||'';
+  levelFinished=false;finishReady=false;pendingEnd=null;history.length=0;eventQueue=[];eventLock=false;
+  renderAll();
+  if(saved.levelFinished){
+   // renderAll recomputes the correct outcome and next target from saved board.
+   finishReady=true;$('finishPanel').hidden=false;
+  }
+  requestAnimationFrame(fitBoardToSpace);
+ }finally{restoreActive=false;}
+}
+window.addEventListener('pagehide',()=>{flushRunSave()});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)flushRunSave()});
 
 // MT.037: keep mobile landscape lobby sized to the actual visible viewport.
 // Chrome can report a transient viewport size immediately after refresh/rotation.
@@ -870,3 +960,21 @@ function goTarget(target,score){if(!inCampaign||!activeRun)return;
   window.visualViewport?.addEventListener('resize',schedule,{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)schedule()});
 })();
+
+// Profile maintenance is separate from authored world and stories.
+$('resetProfileBtn').onclick=async()=>{
+ if(!confirm('Opravdu resetovat celý herní postup? Zmizí koruny, dokončené příběhy i rozehraná výprava. Příběhy a jejich assety zůstanou.'))return;
+ clearTimeout(saveTimer);++saveGeneration;
+ await saveQueue;
+ try{await GameStorage.resetProfile();await GameStorage.clearRun();localStorage.setItem(progressKey,JSON.stringify({crowns:0,completed:{}}));showWorld();renderWorld();}
+ catch(e){alert('Reset se nepodařil: '+e.message);}
+};
+$('exportSaveBtn').onclick=async()=>{
+ try{await saveQueue;const obj=await GameStorage.exportData();const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mercenary-tales-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}catch(e){alert('Export selhal: '+e.message)}
+};
+$('importSaveBtn').onclick=()=>{$('importSaveFile').click()};
+$('importSaveFile').onchange=async(e)=>{
+ const file=e.target.files?.[0];if(!file)return;
+ if(!confirm('Import nahradí současný herní postup a rozehranou výpravu. Pokračovat?'))return;
+ try{const data=JSON.parse(await file.text());await GameStorage.importData(data);localStorage.setItem(progressKey,JSON.stringify(data.profile));showWorld();renderWorld();alert('Postup importován. Obnov jej opětovným otevřením hry.')}catch(err){alert('Import selhal: '+err.message)}finally{e.target.value=''}
+};

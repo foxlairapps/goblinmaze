@@ -1,0 +1,320 @@
+{
+  "schemaVersion": "1.1",
+  "id": "prichod_do_vsi",
+  "name": "Příchod do vsi",
+  "difficulty": 1,
+  "minimumCrowns": 0,
+  "offerText": "Přicházíš do kraje, vcházíš do vsi.",
+  "startText": "",
+  "completedText": "",
+  "reward": {
+    "completion": 3
+  },
+  "startTarget": {
+    "type": "scene",
+    "id": "01_prichod"
+  },
+  "flowOrder": [
+    {
+      "type": "scene",
+      "id": "01_prichod"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "01_prichod",
+      "name": "Příchod do vsi",
+      "introText": "Projdi celou ves, ať ji poznáš.\nNavštiv alespoň 3 místa. Ale vyhni se toulavým psům!",
+      "themes": {
+        "tile": "vesnice",
+        "token": "dum_vlk",
+        "door": "brana"
+      },
+      "board": {
+        "width": 17,
+        "height": 9
+      },
+      "entrance": {
+        "position": 5
+      },
+      "exits": [
+        {
+          "id": "exit_5",
+          "position": 5
+        }
+      ],
+      "pieces": {
+        "count": 25,
+        "passablePercent": 75,
+        "reward": {
+          "count": 6,
+          "score": 1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": [
+              {
+                "x": 15,
+                "y": 1
+              },
+              {
+                "x": 3,
+                "y": 1
+              },
+              {
+                "x": 9,
+                "y": 1
+              },
+              {
+                "x": 9,
+                "y": 9
+              },
+              {
+                "x": 15,
+                "y": 9
+              },
+              {
+                "x": 3,
+                "y": 9
+              }
+            ]
+          }
+        },
+        "penalty": {
+          "count": 3,
+          "score": -1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": [
+              {
+                "x": 3,
+                "y": 5
+              },
+              {
+                "x": 9,
+                "y": 5
+              },
+              {
+                "x": 15,
+                "y": 5
+              }
+            ]
+          }
+        }
+      },
+      "obstacles": {
+        "fixed": [
+          {
+            "x": 6,
+            "y": 1
+          },
+          {
+            "x": 6,
+            "y": 2
+          },
+          {
+            "x": 6,
+            "y": 3
+          },
+          {
+            "x": 12,
+            "y": 1
+          },
+          {
+            "x": 12,
+            "y": 2
+          },
+          {
+            "x": 12,
+            "y": 3
+          },
+          {
+            "x": 6,
+            "y": 7
+          },
+          {
+            "x": 6,
+            "y": 8
+          },
+          {
+            "x": 6,
+            "y": 9
+          },
+          {
+            "x": 12,
+            "y": 7
+          },
+          {
+            "x": 12,
+            "y": 8
+          },
+          {
+            "x": 12,
+            "y": 9
+          }
+        ],
+        "randomCount": 0
+      },
+      "pointsOfInterest": [],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": 0,
+        "negativeTokenPenalty": 0
+      },
+      "success": {
+        "minimumScore": 0,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": 2,
+          "result": "fail",
+          "text": "Je potřeba navštívit více míst nebo se lépe vyhýbat toulavým psům.",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        {
+          "min": 3,
+          "max": null,
+          "result": "success",
+          "text": "Teď už znáš vesnici dost dobře.",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
+      }
+    }
+  ],
+  "dialogs": [],
+  "assets": {
+    "files": [
+      {
+        "id": "token_wolf_active",
+        "path": "assets/token/token_wolf_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_wolf_available",
+        "path": "assets/token/token_wolf_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "portcullis_active",
+        "path": "assets/door/portcullis_active.webp",
+        "category": "door"
+      },
+      {
+        "id": "portcullis_inactive",
+        "path": "assets/door/portcullis_inactive.webp",
+        "category": "door"
+      },
+      {
+        "id": "forest_corridor",
+        "path": "assets/tile/forest_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "forest_default",
+        "path": "assets/tile/forest_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "forest_path",
+        "path": "assets/tile/forest_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "village_barrier",
+        "path": "assets/tile/village_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "token_house_active",
+        "path": "assets/token/token_house_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_house_available",
+        "path": "assets/token/token_house_available.webp",
+        "category": "token"
+      }
+    ],
+    "tileThemes": [
+      {
+        "id": "vesnice",
+        "name": "Vesnice",
+        "images": {
+          "default": "forest_default",
+          "corridor": "forest_corridor",
+          "path": "forest_path",
+          "barrier": "village_barrier"
+        }
+      }
+    ],
+    "tokenThemes": [
+      {
+        "id": "dum_vlk",
+        "name": "Dům a vlk",
+        "images": {
+          "reward.available": "token_house_available",
+          "reward.active": "token_house_active",
+          "penalty.available": "token_wolf_available",
+          "penalty.active": "token_wolf_active"
+        }
+      }
+    ],
+    "doorThemes": [
+      {
+        "id": "brana",
+        "name": "Brána",
+        "images": {
+          "entrance.active": "portcullis_active",
+          "exit.available": "portcullis_inactive",
+          "exit.active": "portcullis_active"
+        }
+      }
+    ],
+    "poiItems": []
+  },
+  "endings": {
+    "success": [],
+    "fail": []
+  },
+  "authorNotes": ""
+}

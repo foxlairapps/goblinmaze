@@ -47,11 +47,7 @@
       "exits": [
         {
           "id": "exit_2",
-          "position": 2,
-          "target": {
-            "type": "scene",
-            "id": "S03_chytani_mysi"
-          }
+          "position": 2
         }
       ],
       "pieces": {
@@ -59,11 +55,21 @@
         "passablePercent": 70,
         "reward": {
           "count": 10,
-          "score": 1
+          "score": 1,
+          "placement": {
+            "pieces": 10,
+            "random": 0,
+            "fixed": []
+          }
         },
         "penalty": {
           "count": 5,
-          "score": -1
+          "score": -1,
+          "placement": {
+            "pieces": 5,
+            "random": 0,
+            "fixed": []
+          }
         }
       },
       "obstacles": {
@@ -142,6 +148,29 @@
         },
         "forbidden": null,
         "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
       }
     },
     {
@@ -163,11 +192,7 @@
       "exits": [
         {
           "id": "exit_4",
-          "position": 4,
-          "target": {
-            "type": "scene",
-            "id": "S02_zachrana_zasob"
-          }
+          "position": 4
         }
       ],
       "pieces": {
@@ -175,11 +200,21 @@
         "passablePercent": 70,
         "reward": {
           "count": 0,
-          "score": 1
+          "score": 1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": []
+          }
         },
         "penalty": {
           "count": 0,
-          "score": -1
+          "score": -1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": []
+          }
         }
       },
       "obstacles": {
@@ -295,6 +330,29 @@
           "type": "ending",
           "result": "fail"
         }
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
       }
     },
     {
@@ -316,11 +374,7 @@
       "exits": [
         {
           "id": "exit_4",
-          "position": 4,
-          "target": {
-            "type": "ending",
-            "result": "success"
-          }
+          "position": 4
         }
       ],
       "pieces": {
@@ -328,11 +382,21 @@
         "passablePercent": 70,
         "reward": {
           "count": 6,
-          "score": 1
+          "score": 1,
+          "placement": {
+            "pieces": 6,
+            "random": 0,
+            "fixed": []
+          }
         },
         "penalty": {
           "count": 0,
-          "score": -1
+          "score": -1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": []
+          }
         }
       },
       "obstacles": {
@@ -457,6 +521,29 @@
         },
         "forbidden": null,
         "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "",
+          "target": {
+            "type": "scene",
+            "id": "S03_chytani_mysi"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "scene",
+            "id": "S03_chytani_mysi"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "scene",
+            "id": "S03_chytani_mysi"
+          }
+        }
       }
     }
   ],
@@ -640,5 +727,6 @@
     "success": [],
     "fail": []
   },
-  "authorNotes": ""
+  "authorNotes": "",
+  "minimumCrowns": 3
 }

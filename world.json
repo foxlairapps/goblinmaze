@@ -8,6 +8,7 @@
         "on": "assets/category/ctg_village_on.webp"
       },
       "stories": [
+        "prichod_do_vsi",
         "ohrozene_zasoby"
       ]
     },
