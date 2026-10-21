@@ -269,3 +269,48 @@ button{transition:background-color .18s,border-color .18s,box-shadow .18s}button
  .offerCardInner{padding:5px 8px;gap:2px}
  .offerCard p,.offerGrid[data-rows="3"] .offerCard p{-webkit-line-clamp:2}
 }
+
+
+/* MT.039: příběhový úvod scény a herní informace na jedné obrazovce */
+.mtSceneOpening{display:flex;flex-direction:column;gap:12px;min-height:0}
+.mtSceneIntroText{font-size:clamp(14px,1.55vw,19px);line-height:1.48;white-space:pre-wrap;color:#f1e6cf;flex:1 1 auto;min-height:0;overflow-y:auto;max-height:32dvh;padding:4px 6px 10px;border-bottom:1px solid #9f855559}
+.mtSceneOpening .mtBrief{display:flex;flex-direction:column;gap:9px}
+.mtSceneOpening .mtBriefMetrics{display:flex;align-items:center;justify-content:space-around;flex-wrap:nowrap;gap:4px;padding:8px 4px;border:1px solid #8b785a77;background:#121c1b9c;border-radius:9px}
+.mtSceneOpening .mtBriefMetrics>div{display:flex;align-items:center;flex:1 1 0;min-width:0;min-height:0;justify-content:center;gap:5px;padding:2px;background:transparent;border:0;border-right:1px solid #9f85554a;border-radius:0}
+.mtSceneOpening .mtBriefMetrics>div:last-child{border-right:0}
+.mtSceneOpening .mtBriefMetrics b{font-size:clamp(10px,1.13vw,16px);white-space:nowrap}
+.mtSceneOpening .mtBriefIcon{font-size:clamp(14px,1.7vw,24px)}
+.mtSceneOpening .mtBriefToken img{width:clamp(18px,2.1vw,28px);height:clamp(18px,2.1vw,28px)}
+.mtSceneOpening .mtPoiEntries{max-height:19dvh;overflow-y:auto}
+#detailPanel:has(.mtSceneOpening) .detailCard{width:min(1000px,97vw);display:flex;flex-direction:column;max-height:94dvh}
+#detailPanel:has(.mtSceneOpening) #detailBody{flex:1;min-height:0;overflow:auto}
+#detailPanel:has(.mtSceneOpening) #detailClose{align-self:center;min-width:124px}
+@media(max-height:500px){.mtSceneOpening{gap:6px}.mtSceneIntroText{max-height:25dvh;font-size:13px;line-height:1.28;padding:2px 4px 5px}.mtSceneOpening .mtBriefMetrics{padding:4px 1px}.mtSceneOpening .mtBriefMetrics b{font-size:12px}.mtSceneOpening .mtPoiEntries{max-height:16dvh}}
+
+/* MT.040 – společný rám úvodu; herní údaje bez dalšího panelu */
+.mtSceneOpening .mtBriefMetrics{background:transparent;border:0;border-radius:0;padding:9px 0 0;border-top:1px solid #9f855559;box-shadow:none}
+.mtSceneOpening .mtBriefMetrics>div{background:transparent;border-top:0;border-bottom:0;border-left:0;box-shadow:none}
+#offerInfo[hidden]{display:none!important}
+#offerDescription{white-space:pre-wrap;line-height:1.5}
+
+/* MT.042 - mapa bez technické hlavičky, informační a herní HUD vpravo */
+#mapHeader{display:none!important;height:0!important;min-height:0!important;margin:0!important;padding:0!important}
+#mapPanel{background:transparent;border:0;box-shadow:none;padding:0}
+#boardBox{flex:1;min-height:0;align-items:center;justify-content:center}
+#sideHead{grid-template-columns:1fr 1fr 2fr!important}
+#sideHead #settingsBtn{display:none!important}
+#sideHead #sideInfo{font-size:24px;background:linear-gradient(140deg,#474936,#263c3b);border:1px solid #8b7a59}
+#sideStats button{display:flex;align-items:center;justify-content:center;gap:5px;font-size:20px}
+#sideStats button strong{font-size:21px;margin:0;line-height:1}
+.mtObjectiveText{margin:0;padding:9px 12px;border-left:3px solid #d7bb7b;background:#172823;color:#f1dfbb;white-space:pre-wrap;line-height:1.45}
+.mtSceneTools{display:flex;justify-content:flex-end;margin-top:10px}
+.mtSceneTools button{min-width:42px;min-height:35px;font-size:22px}
+@media(max-height:420px){#board{max-height:100dvh}}
+
+/* MT.047 – výsledky a správa příběhu v samostatném dialogu */
+.finishActions{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.finishActions button{min-height:44px}
+.finishReason{padding:6px 0;text-align:left;color:#f1bbac}
+.finishScore{font-size:1.35em;color:#f5d995;font-weight:700}
+.mtSceneTools{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:12px;border-top:1px solid #66736b}
+.mtSceneTools button{font-size:clamp(11px,1.2vw,15px);min-height:39px;padding:7px 12px}

@@ -2,35 +2,39 @@
   "schemaVersion": "1.1",
   "id": "ohrozene_zasoby",
   "name": "Ohrožené zásoby",
-  "difficulty": 2,
+  "difficulty": 3,
   "offerText": "Hostinskému se ztrácejí zásoby ze sklepa.",
   "startText": "Hostinský hledá někoho, kdo by rozluštil záhadu ztrácejících se zásob ze sklepa.",
   "completedText": "Hostinec jede díky tobě bez ztrát na zásobách.",
   "reward": {
-    "completion": 4
+    "completion": 5
   },
   "startTarget": {
-    "type": "dialog",
-    "id": "A01_uvod"
+    "type": "scene",
+    "id": "S01_nalezeni_klice"
   },
   "flowOrder": [
     {
-      "type": "dialog",
-      "id": "A01_uvod"
+      "type": "scene",
+      "id": "S01_nalezeni_klice"
     },
     {
       "type": "scene",
       "id": "S02_zachrana_zasob"
+    },
+    {
+      "type": "scene",
+      "id": "S03_chytani_mysi"
     }
   ],
   "scenes": [
     {
       "id": "S02_zachrana_zasob",
-      "name": "S02_zachrana_zasob",
-      "introText": "",
+      "name": "Záchránit zásoby",
+      "introText": "Hostinský ti vypráví, že se mu nedávno začaly ztrácet zásoby ze sklepa. Asi se mu tam rozmnožily krysy.\n\"Nejdřív musíme zachránit co nejvíce zbylých zásob!\"",
       "themes": {
         "tile": "thema_tiles_dungeon",
-        "token": "token_poklad_goblin",
+        "token": "token_zasoby_krysy",
         "door": "door_jeskyne"
       },
       "board": {
@@ -38,15 +42,15 @@
         "height": 7
       },
       "entrance": {
-        "position": 5
+        "position": 6
       },
       "exits": [
         {
-          "id": "exit_1",
-          "position": 1,
+          "id": "exit_2",
+          "position": 2,
           "target": {
-            "type": "ending",
-            "result": "success"
+            "type": "scene",
+            "id": "S03_chytani_mysi"
           }
         }
       ],
@@ -106,6 +110,156 @@
         "negativeTokenPenalty": -1
       },
       "success": {
+        "minimumScore": 5,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": 4,
+          "result": "fail",
+          "text": "To je málo, přines těch zásob více!",
+          "target": {
+            "type": "scene",
+            "id": "S02_zachrana_zasob"
+          }
+        },
+        {
+          "min": 5,
+          "max": null,
+          "result": "success",
+          "text": "",
+          "target": {
+            "type": "scene",
+            "id": "S03_chytani_mysi"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      }
+    },
+    {
+      "id": "S01_nalezeni_klice",
+      "name": "Nalézt klíč",
+      "introText": "Hostinský ukáže na komoru.\n\"Nejprve si vezmi klíč od sklepa. Visí na zdi mezi regály.\"",
+      "themes": {
+        "tile": "thema_tiles_dungeon",
+        "token": "",
+        "door": "door_jeskyne"
+      },
+      "board": {
+        "width": 13,
+        "height": 7
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "exit_4",
+          "position": 4,
+          "target": {
+            "type": "scene",
+            "id": "S02_zachrana_zasob"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 16,
+        "passablePercent": 70,
+        "reward": {
+          "count": 0,
+          "score": 1
+        },
+        "penalty": {
+          "count": 0,
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [
+          {
+            "x": 3,
+            "y": 3
+          },
+          {
+            "x": 3,
+            "y": 5
+          },
+          {
+            "x": 11,
+            "y": 3
+          },
+          {
+            "x": 11,
+            "y": 5
+          },
+          {
+            "x": 4,
+            "y": 3
+          },
+          {
+            "x": 5,
+            "y": 3
+          },
+          {
+            "x": 4,
+            "y": 5
+          },
+          {
+            "x": 5,
+            "y": 5
+          },
+          {
+            "x": 9,
+            "y": 3
+          },
+          {
+            "x": 10,
+            "y": 3
+          },
+          {
+            "x": 9,
+            "y": 5
+          },
+          {
+            "x": 10,
+            "y": 5
+          }
+        ],
+        "randomCount": 0
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_klic",
+          "name": "Klíč od sklepa",
+          "tooltip": "",
+          "themeItemId": "poi_klic",
+          "mode": "required",
+          "placement": {
+            "mode": "fixed",
+            "x": 7,
+            "y": 4
+          },
+          "score": {
+            "found": 0,
+            "missed": 0
+          },
+          "foundText": "Máš klíč od sklepa!"
+        }
+      ],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
         "minimumScore": 0,
         "useReserve": false
       },
@@ -124,10 +278,10 @@
           "min": 0,
           "max": null,
           "result": "success",
-          "text": "",
+          "text": "Máš klíč. Můžeš se vydat do sklepa.",
           "target": {
-            "type": "ending",
-            "result": "success"
+            "type": "scene",
+            "id": "S02_zachrana_zasob"
           }
         }
       ],
@@ -137,22 +291,176 @@
           "result": "fail"
         },
         "forbidden": null,
+        "required": {
+          "type": "ending",
+          "result": "fail"
+        }
+      }
+    },
+    {
+      "id": "S03_chytani_mysi",
+      "name": "Zbavit se škůdců",
+      "introText": "\"Výborně\", říká hostinský.\n\"Teď už jen pochytat všechny ty myši!\"",
+      "themes": {
+        "tile": "thema_tiles_dungeon",
+        "token": "token_mysi_nic",
+        "door": "door_jeskyne"
+      },
+      "board": {
+        "width": 14,
+        "height": 7
+      },
+      "entrance": {
+        "position": 4
+      },
+      "exits": [
+        {
+          "id": "exit_4",
+          "position": 4,
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "pieces": {
+        "count": 18,
+        "passablePercent": 70,
+        "reward": {
+          "count": 6,
+          "score": 1
+        },
+        "penalty": {
+          "count": 0,
+          "score": -1
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 0
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_mys1",
+          "name": "poi_mys",
+          "tooltip": "",
+          "themeItemId": "poi_mys",
+          "mode": "optional",
+          "placement": {
+            "mode": "fixed",
+            "x": 2,
+            "y": 2
+          },
+          "score": {
+            "found": 1,
+            "missed": 0
+          },
+          "foundText": ""
+        },
+        {
+          "id": "poi_mys2",
+          "name": "poi_mys2",
+          "tooltip": "",
+          "themeItemId": "poi_mys",
+          "mode": "optional",
+          "placement": {
+            "mode": "fixed",
+            "x": 2,
+            "y": 6
+          },
+          "score": {
+            "found": 1,
+            "missed": 0
+          },
+          "foundText": ""
+        },
+        {
+          "id": "poi_mys3",
+          "name": "poi_mys3",
+          "tooltip": "",
+          "themeItemId": "poi_mys",
+          "mode": "optional",
+          "placement": {
+            "mode": "fixed",
+            "x": 13,
+            "y": 2
+          },
+          "score": {
+            "found": 1,
+            "missed": 0
+          },
+          "foundText": ""
+        },
+        {
+          "id": "poi_mys4",
+          "name": "poi_mys4",
+          "tooltip": "",
+          "themeItemId": "poi_mys",
+          "mode": "optional",
+          "placement": {
+            "mode": "fixed",
+            "x": 13,
+            "y": 6
+          },
+          "score": {
+            "found": 1,
+            "missed": 0
+          },
+          "foundText": ""
+        }
+      ],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": 8,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": 7,
+          "result": "fail",
+          "text": "Hostinský se jen škrábe na hlavě.\n\"Vždyť jich ta spousta zůstala! Zkus to znovu.\"",
+          "target": {
+            "type": "scene",
+            "id": "S03_chytani_mysi"
+          }
+        },
+        {
+          "min": 8,
+          "max": 9,
+          "result": "success",
+          "text": "\"Děkuju ti! Konečně zase čistý sklad!\"",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        },
+        {
+          "result": "success",
+          "min": 10,
+          "max": null,
+          "text": "\"Všechny?? Opravdu? Můj hrdino!\"",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "scene",
+          "id": "S03_chytani_mysi"
+        },
+        "forbidden": null,
         "required": null
       }
     }
   ],
-  "dialogs": [
-    {
-      "id": "A01_uvod",
-      "name": "A01_uvod",
-      "title": "hostinského trápení",
-      "text": "Hostinský ti vypráví, že se mu nedávno začaly ztrácet zásoby ze sklepa. Asi se mu tam rozmnožily krysy.\n\"Nejdřív musíme zachránit co nejvíce zbylých zásob!\"",
-      "nextTarget": {
-        "type": "scene",
-        "id": "S02_zachrana_zasob"
-      }
-    }
-  ],
+  "dialogs": [],
   "assets": {
     "files": [
       {
@@ -176,48 +484,83 @@
         "category": "tile"
       },
       {
-        "id": "token_token_goblin_active",
-        "path": "assets/token/token_token_goblin_active.webp",
+        "id": "token_goblin_active",
+        "path": "assets/token/token_goblin_active.webp",
         "category": "token"
       },
       {
-        "id": "token_token_goblin_available",
-        "path": "assets/token/token_token_goblin_available.webp",
+        "id": "token_goblin_available",
+        "path": "assets/token/token_goblin_available.webp",
         "category": "token"
       },
       {
-        "id": "token_token_treasure_active",
-        "path": "assets/token/token_token_treasure_active.webp",
+        "id": "token_mouse_active",
+        "path": "assets/token/token_mouse_active.webp",
         "category": "token"
       },
       {
-        "id": "token_token_treasure_available",
-        "path": "assets/token/token_token_treasure_available.webp",
+        "id": "token_mouse_available",
+        "path": "assets/token/token_mouse_available.webp",
         "category": "token"
       },
       {
-        "id": "door_door_generic_entrance_active",
-        "path": "assets/door/door_door_generic_entrance_active.webp",
+        "id": "token_rat_active",
+        "path": "assets/token/token_rat_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_rat_available",
+        "path": "assets/token/token_rat_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_supply_active",
+        "path": "assets/token/token_supply_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_supply_available",
+        "path": "assets/token/token_supply_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_treasure_active",
+        "path": "assets/token/token_treasure_active.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_treasure_available",
+        "path": "assets/token/token_treasure_available.webp",
+        "category": "token"
+      },
+      {
+        "id": "reinforced_active",
+        "path": "assets/door/reinforced_active.webp",
         "category": "door"
       },
       {
-        "id": "door_door_generic_exit_active",
-        "path": "assets/door/door_door_generic_exit_active.webp",
+        "id": "reinforced_inactive",
+        "path": "assets/door/reinforced_inactive.webp",
         "category": "door"
       },
       {
-        "id": "door_door_generic_exit_available",
-        "path": "assets/door/door_door_generic_exit_available.webp",
-        "category": "door"
-      },
-      {
-        "id": "poi_poi_klic_active",
-        "path": "assets/poi/poi_poi_klic_active.webp",
+        "id": "poi_key_active",
+        "path": "assets/poi/poi_key_active.webp",
         "category": "poi"
       },
       {
-        "id": "poi_poi_klic_available",
-        "path": "assets/poi/poi_poi_klic_available.webp",
+        "id": "poi_key_available",
+        "path": "assets/poi/poi_key_available.webp",
+        "category": "poi"
+      },
+      {
+        "id": "token_mouse_active_2",
+        "path": "assets/poi/token_mouse_active.webp",
+        "category": "poi"
+      },
+      {
+        "id": "token_mouse_available_2",
+        "path": "assets/poi/token_mouse_available.webp",
         "category": "poi"
       }
     ],
@@ -238,10 +581,28 @@
         "id": "token_poklad_goblin",
         "name": "Poklad a goblin",
         "images": {
-          "reward.available": "token_token_treasure_available",
-          "reward.active": "token_token_treasure_active",
-          "penalty.available": "token_token_goblin_available",
-          "penalty.active": "token_token_goblin_active"
+          "reward.available": "token_treasure_available",
+          "reward.active": "token_treasure_active",
+          "penalty.available": "token_goblin_available",
+          "penalty.active": "token_goblin_active"
+        }
+      },
+      {
+        "id": "token_zasoby_krysy",
+        "name": "Zásoby a krysy",
+        "images": {
+          "reward.available": "token_supply_available",
+          "reward.active": "token_supply_active",
+          "penalty.available": "token_rat_available",
+          "penalty.active": "token_rat_active"
+        }
+      },
+      {
+        "id": "token_mysi_nic",
+        "name": "Myši a nic",
+        "images": {
+          "reward.available": "token_mouse_available",
+          "reward.active": "token_mouse_active"
         }
       }
     ],
@@ -250,9 +611,9 @@
         "id": "door_jeskyne",
         "name": "Jeskyně",
         "images": {
-          "entrance.active": "door_door_generic_entrance_active",
-          "exit.available": "door_door_generic_exit_available",
-          "exit.active": "door_door_generic_exit_active"
+          "entrance.active": "reinforced_active",
+          "exit.available": "reinforced_inactive",
+          "exit.active": "reinforced_active"
         }
       }
     ],
@@ -261,8 +622,16 @@
         "id": "poi_klic",
         "name": "poi_klic",
         "images": {
-          "available": "poi_poi_klic_available",
-          "active": "poi_poi_klic_active"
+          "available": "poi_key_available",
+          "active": "poi_key_active"
+        }
+      },
+      {
+        "id": "poi_mys",
+        "name": "poi_mys",
+        "images": {
+          "available": "token_mouse_available_2",
+          "active": "token_mouse_active_2"
         }
       }
     ]
