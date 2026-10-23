@@ -5,7 +5,7 @@
   "difficulty": 1,
   "minimumCrowns": 0,
   "offerText": "Přicházíš do kraje, vcházíš do vsi.",
-  "startText": "",
+  "startText": "Seznam se s obyvateli i nástrahami vesnice.",
   "completedText": "",
   "reward": {
     "completion": 3
@@ -245,21 +245,6 @@
         "category": "door"
       },
       {
-        "id": "forest_corridor",
-        "path": "assets/tile/forest_corridor.webp",
-        "category": "tile"
-      },
-      {
-        "id": "forest_default",
-        "path": "assets/tile/forest_default.webp",
-        "category": "tile"
-      },
-      {
-        "id": "forest_path",
-        "path": "assets/tile/forest_path.webp",
-        "category": "tile"
-      },
-      {
         "id": "village_barrier",
         "path": "assets/tile/village_barrier.webp",
         "category": "tile"
@@ -273,6 +258,21 @@
         "id": "token_house_available",
         "path": "assets/token/token_house_available.webp",
         "category": "token"
+      },
+      {
+        "id": "tile_village_corridor",
+        "path": "assets/tile/tile_village_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_village_default",
+        "path": "assets/tile/tile_village_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "tile_village_path",
+        "path": "assets/tile/tile_village_path.webp",
+        "category": "tile"
       }
     ],
     "tileThemes": [
@@ -280,9 +280,9 @@
         "id": "vesnice",
         "name": "Vesnice",
         "images": {
-          "default": "forest_default",
-          "corridor": "forest_corridor",
-          "path": "forest_path",
+          "default": "tile_village_default",
+          "corridor": "tile_village_corridor",
+          "path": "tile_village_path",
           "barrier": "village_barrier"
         }
       }

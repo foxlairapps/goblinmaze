@@ -1,0 +1,898 @@
+{
+  "schemaVersion": "1.1",
+  "id": "vlci_smecka",
+  "name": "Vlčí smečka",
+  "difficulty": 4,
+  "minimumCrowns": 5,
+  "offerText": "Z lesů se stáhla smečka vlků, která ohrožuje stáda.",
+  "startText": "Pastevci hledají někoho, kdo by se s vlky vypořádal.",
+  "completedText": "Stáda jsou opět v bezpečí na pastvinách.",
+  "reward": {
+    "completion": 8
+  },
+  "startTarget": {
+    "type": "scene",
+    "id": "cesta_do_lesa"
+  },
+  "flowOrder": [
+    {
+      "type": "scene",
+      "id": "cesta_do_lesa"
+    },
+    {
+      "type": "scene",
+      "id": "hledani_vlciho_doupete"
+    },
+    {
+      "type": "scene",
+      "id": "nabor_lovcu"
+    },
+    {
+      "type": "scene",
+      "id": "lov_vlku"
+    },
+    {
+      "type": "scene",
+      "id": "navrat_pasti"
+    }
+  ],
+  "scenes": [
+    {
+      "id": "hledani_vlciho_doupete",
+      "name": "Vlčí doupě",
+      "introText": "Najdi a obhlédni vlčí doupě.\nVyhni se vlkům v okolí.",
+      "themes": {
+        "tile": "les",
+        "token": "stopy_vlci",
+        "door": "lesni_pruchod"
+      },
+      "board": {
+        "width": 13,
+        "height": 9
+      },
+      "entrance": {
+        "position": 5
+      },
+      "exits": [
+        {
+          "id": "exit_5",
+          "position": 5
+        }
+      ],
+      "pieces": {
+        "count": 20,
+        "passablePercent": 75,
+        "reward": {
+          "count": 0,
+          "score": 1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": []
+          }
+        },
+        "penalty": {
+          "count": 8,
+          "score": -1,
+          "placement": {
+            "pieces": 4,
+            "random": 4,
+            "fixed": []
+          }
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 0
+      },
+      "pointsOfInterest": [
+        {
+          "id": "poi_vlci_doupe",
+          "name": "Vlčí doupě",
+          "tooltip": "vlčí doupě",
+          "themeItemId": "vlci_doupe",
+          "mode": "required",
+          "placement": {
+            "mode": "fixed",
+            "x": 7,
+            "y": 1
+          },
+          "score": {
+            "found": 0,
+            "missed": 0
+          },
+          "foundText": "Zaznamenáváš si podrobnosti o doupěti."
+        }
+      ],
+      "discard": {
+        "mode": "disabled",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": -2,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": 0,
+          "max": null,
+          "result": "success",
+          "text": "Okolí doupěte je úspěšně zmapované. Vlci větří, ale nenašli tě.",
+          "target": {
+            "type": "scene",
+            "id": "nabor_lovcu"
+          }
+        },
+        {
+          "min": -2,
+          "max": -1,
+          "result": "success",
+          "text": "Okolí doupěte je zmapované. Jen tak tak se ti podařilo uniknout ostrým vlčím zubům!",
+          "target": {
+            "type": "scene",
+            "id": "nabor_lovcu"
+          }
+        },
+        {
+          "result": "fail",
+          "min": -6,
+          "max": -3,
+          "text": "Podařilo se ti na sebe upozornit příliš mnoho vlků.\nBudeš se muset na čas stáhnout a zkusit to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "hledani_vlciho_doupete"
+          }
+        },
+        {
+          "result": "fail",
+          "min": null,
+          "max": -7,
+          "text": "Z průzkumu doupěte se stal lov na lovce. Smečka se pustila ve tvých stopách.\nS posledními zbytky sil se ti podařilo vrátit se do vesnice.",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "Podařilo se ti ztratit se v lese.\nZkus to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "hledani_vlciho_doupete"
+          }
+        },
+        "required": {
+          "text": "Nepodařilo se ti zmapovat okolí vlčího doupěte.\nZkus to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "hledani_vlciho_doupete"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
+      }
+    },
+    {
+      "id": "cesta_do_lesa",
+      "name": "Cesta do lesa",
+      "introText": "Projdi les a vlky vystopuj.",
+      "themes": {
+        "tile": "les",
+        "token": "stopy_vlci",
+        "door": "lesni_pruchod"
+      },
+      "board": {
+        "width": 13,
+        "height": 9
+      },
+      "entrance": {
+        "position": 5
+      },
+      "exits": [
+        {
+          "id": "exit_5",
+          "position": 5
+        }
+      ],
+      "pieces": {
+        "count": 24,
+        "passablePercent": 75,
+        "reward": {
+          "count": 10,
+          "score": 1,
+          "placement": {
+            "pieces": 10,
+            "random": 0,
+            "fixed": []
+          }
+        },
+        "penalty": {
+          "count": 0,
+          "score": -1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": []
+          }
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 5
+      },
+      "pointsOfInterest": [],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": 8,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": 3,
+          "result": "fail",
+          "text": "Vracíš se do vsi s přesvědčením, že v tomto lese snad ani žádní vlci nežijí.",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        {
+          "min": 4,
+          "max": 7,
+          "result": "fail",
+          "text": "Pár vlčích stop se ti podařilo najít, ale ne dostatek na nalezení vlčího doupěte.",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        {
+          "result": "success",
+          "min": 8,
+          "max": 9,
+          "text": "Nyní máš jasnou představu, kde leží vlčí doupě.",
+          "target": {
+            "type": "scene",
+            "id": "hledani_vlciho_doupete"
+          }
+        },
+        {
+          "result": "success",
+          "min": 10,
+          "max": null,
+          "text": "⭐ Tvá dovednost stopování je vynikající.\nVíš nejen, kde leží vlčí doupě, ale také kolik tam je vlků, jaká je jejich hierarchie a co měli dnes k snídani.",
+          "target": {
+            "type": "scene",
+            "id": "hledani_vlciho_doupete"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "Nepodařilo se ti vlky vystopovat.",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
+      }
+    },
+    {
+      "id": "nabor_lovcu",
+      "name": "Nábor lovců",
+      "introText": "Bez pomoci místních lovců si s vlky neporadíš.\nZískej od nich pomoc, ale pozor na jejich pasti!",
+      "themes": {
+        "tile": "les",
+        "token": "sipy_pasti",
+        "door": "lesni_pruchod"
+      },
+      "board": {
+        "width": 13,
+        "height": 9
+      },
+      "entrance": {
+        "position": 5
+      },
+      "exits": [
+        {
+          "id": "exit_5",
+          "position": 5
+        }
+      ],
+      "pieces": {
+        "count": 22,
+        "passablePercent": 75,
+        "reward": {
+          "count": 6,
+          "score": 1,
+          "placement": {
+            "pieces": 4,
+            "random": 2,
+            "fixed": []
+          }
+        },
+        "penalty": {
+          "count": 12,
+          "score": -1,
+          "placement": {
+            "pieces": 10,
+            "random": 2,
+            "fixed": []
+          }
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 0
+      },
+      "pointsOfInterest": [],
+      "discard": {
+        "mode": "disabled",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": 3,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": 2,
+          "result": "fail",
+          "text": "Nepodařilo se ti získat dostatek pomoci od lovců.\nZkus to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "nabor_lovcu"
+          }
+        },
+        {
+          "min": 3,
+          "max": null,
+          "result": "success",
+          "text": "Lovci ti přislíbili svou pomoc, nyní se můžete vydat na lov.",
+          "target": {
+            "type": "scene",
+            "id": "lov_vlku"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "Bludný kořen ti vstoupil do cesty, zdá se.\nZkus to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "nabor_lovcu"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
+      }
+    },
+    {
+      "id": "lov_vlku",
+      "name": "Lov vlků",
+      "introText": "S pomocí lovců pochytejte co nejvíce vlků.",
+      "themes": {
+        "tile": "les",
+        "token": "vlci_nic",
+        "door": "lesni_pruchod"
+      },
+      "board": {
+        "width": 13,
+        "height": 9
+      },
+      "entrance": {
+        "position": 5
+      },
+      "exits": [
+        {
+          "id": "exit_5",
+          "position": 5
+        }
+      ],
+      "pieces": {
+        "count": 22,
+        "passablePercent": 75,
+        "reward": {
+          "count": 12,
+          "score": 1,
+          "placement": {
+            "pieces": 10,
+            "random": 2,
+            "fixed": []
+          }
+        },
+        "penalty": {
+          "count": 0,
+          "score": -1,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": []
+          }
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 4
+      },
+      "pointsOfInterest": [],
+      "discard": {
+        "mode": "penalty",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": 8,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": 4,
+          "result": "fail",
+          "text": "Strach tě ochromil. Při lovu se nelze vlkům vyhýbat.\nLovci se rozešli za svou prací. Budeš je muset znovu přemluvit ke spolupráci.",
+          "target": {
+            "type": "scene",
+            "id": "nabor_lovcu"
+          }
+        },
+        {
+          "min": 5,
+          "max": 7,
+          "result": "fail",
+          "text": "Spoustu vlků jste chytili, ale spousta vám jich unikla.\nTo nestačí. Zkus to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "lov_vlku"
+          }
+        },
+        {
+          "result": "success",
+          "min": 8,
+          "max": 10,
+          "text": "Pochytali jste většinu vlků, ostatní odtáhli pryč.",
+          "target": {
+            "type": "scene",
+            "id": "navrat_pasti"
+          }
+        },
+        {
+          "result": "success",
+          "min": 11,
+          "max": 11,
+          "text": "Poslední vlk výhružně zavrčel, naposledy zavyl a zmizel v houští.\nTen už se v toto kraji neukáže!",
+          "target": {
+            "type": "scene",
+            "id": "navrat_pasti"
+          }
+        },
+        {
+          "result": "success",
+          "min": 12,
+          "max": null,
+          "text": "Čistá práce. Bezpečný les. Vlci jsou zde minulostí.",
+          "target": {
+            "type": "scene",
+            "id": "navrat_pasti"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "Nepodařilo se ti proniknout hustým lesem.\nZkus to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "lov_vlku"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
+      }
+    },
+    {
+      "id": "navrat_pasti",
+      "name": "Návrat do vesnice",
+      "introText": "Vracíš se lesem zpět do vesnice.\nMusíš dát ale pozor na pasti, které jste při lovu nakladli!",
+      "themes": {
+        "tile": "les",
+        "token": "leky_pasti",
+        "door": "lesni_pruchod"
+      },
+      "board": {
+        "width": 13,
+        "height": 9
+      },
+      "entrance": {
+        "position": 5
+      },
+      "exits": [
+        {
+          "id": "exit_5",
+          "position": 5
+        }
+      ],
+      "pieces": {
+        "count": 20,
+        "passablePercent": 75,
+        "reward": {
+          "count": 2,
+          "score": 2,
+          "placement": {
+            "pieces": 0,
+            "random": 0,
+            "fixed": [
+              {
+                "x": 7,
+                "y": 9
+              },
+              {
+                "x": 7,
+                "y": 1
+              }
+            ]
+          }
+        },
+        "penalty": {
+          "count": 10,
+          "score": -1,
+          "placement": {
+            "pieces": 6,
+            "random": 0,
+            "fixed": [
+              {
+                "x": 4,
+                "y": 7
+              },
+              {
+                "x": 4,
+                "y": 3
+              },
+              {
+                "x": 10,
+                "y": 3
+              },
+              {
+                "x": 10,
+                "y": 7
+              }
+            ]
+          }
+        }
+      },
+      "obstacles": {
+        "fixed": [],
+        "randomCount": 8
+      },
+      "pointsOfInterest": [],
+      "discard": {
+        "mode": "free",
+        "piecePenalty": -1,
+        "negativeTokenPenalty": -1
+      },
+      "success": {
+        "minimumScore": 0,
+        "useReserve": false
+      },
+      "results": [
+        {
+          "min": null,
+          "max": -1,
+          "result": "fail",
+          "text": "Nepodařilo se ti bezpečně projít lesem zpět.\nZkus to znovu",
+          "target": {
+            "type": "scene",
+            "id": "navrat_pasti"
+          }
+        },
+        {
+          "min": 0,
+          "max": null,
+          "result": "success",
+          "text": "Všichni slaví tvůj návrat a děkuji ti za zlikvidování vlčí hrozby.",
+          "target": {
+            "type": "ending",
+            "result": "success"
+          }
+        }
+      ],
+      "failTargets": {
+        "base": {
+          "type": "ending",
+          "result": "fail"
+        },
+        "forbidden": null,
+        "required": null
+      },
+      "failureOutcomes": {
+        "noPath": {
+          "text": "Najít cestu zpět je těžší, než se zdálo.\nZkus to znovu.",
+          "target": {
+            "type": "scene",
+            "id": "navrat_pasti"
+          }
+        },
+        "required": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        },
+        "forbidden": {
+          "text": "",
+          "target": {
+            "type": "ending",
+            "result": "fail"
+          }
+        }
+      }
+    }
+  ],
+  "dialogs": [],
+  "assets": {
+    "files": [
+      {
+        "id": "forest_barrier",
+        "path": "assets/tile/forest_barrier.webp",
+        "category": "tile"
+      },
+      {
+        "id": "forest_corridor",
+        "path": "assets/tile/forest_corridor.webp",
+        "category": "tile"
+      },
+      {
+        "id": "forest_default",
+        "path": "assets/tile/forest_default.webp",
+        "category": "tile"
+      },
+      {
+        "id": "forest_path",
+        "path": "assets/tile/forest_path.webp",
+        "category": "tile"
+      },
+      {
+        "id": "token_arrowpos_off",
+        "path": "assets/token/token_arrowpos_off.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_arrowpos_on",
+        "path": "assets/token/token_arrowpos_on.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_potionpos_off",
+        "path": "assets/token/token_potionpos_off.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_potionpos_on",
+        "path": "assets/token/token_potionpos_on.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_trap_off",
+        "path": "assets/token/token_trap_off.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_trap_on",
+        "path": "assets/token/token_trap_on.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_wolffootprint_off",
+        "path": "assets/token/token_wolffootprint_off.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_wolffootprint_on",
+        "path": "assets/token/token_wolffootprint_on.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_wolfneg_off",
+        "path": "assets/token/token_wolfneg_off.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_wolfneg_on",
+        "path": "assets/token/token_wolfneg_on.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_wolfpos_off",
+        "path": "assets/token/token_wolfpos_off.webp",
+        "category": "token"
+      },
+      {
+        "id": "token_wolfpos_on",
+        "path": "assets/token/token_wolfpos_on.webp",
+        "category": "token"
+      },
+      {
+        "id": "poi_wolfden_off",
+        "path": "assets/poi/poi_wolfden_off.webp",
+        "category": "poi"
+      },
+      {
+        "id": "poi_wolfden_on",
+        "path": "assets/poi/poi_wolfden_on.webp",
+        "category": "poi"
+      },
+      {
+        "id": "door_woods1_closed",
+        "path": "assets/door/door_woods1_closed.webp",
+        "category": "door"
+      },
+      {
+        "id": "door_woods1_open",
+        "path": "assets/door/door_woods1_open.webp",
+        "category": "door"
+      }
+    ],
+    "tileThemes": [
+      {
+        "id": "les",
+        "name": "Les",
+        "images": {
+          "default": "forest_default",
+          "corridor": "forest_corridor",
+          "path": "forest_path",
+          "barrier": "forest_barrier"
+        }
+      }
+    ],
+    "tokenThemes": [
+      {
+        "id": "stopy_vlci",
+        "name": "Vlčí stopy / Vlci",
+        "images": {
+          "reward.available": "token_wolffootprint_off",
+          "reward.active": "token_wolffootprint_on",
+          "penalty.available": "token_wolfneg_off",
+          "penalty.active": "token_wolfneg_on"
+        }
+      },
+      {
+        "id": "sipy_pasti",
+        "name": "sipy_pasti",
+        "images": {
+          "reward.available": "token_arrowpos_off",
+          "reward.active": "token_arrowpos_on",
+          "penalty.available": "token_trap_off",
+          "penalty.active": "token_trap_on"
+        }
+      },
+      {
+        "id": "vlci_nic",
+        "name": "Vlci / nic",
+        "images": {
+          "reward.available": "token_wolfpos_off",
+          "reward.active": "token_wolfpos_on"
+        }
+      },
+      {
+        "id": "leky_pasti",
+        "name": "Léky / Pasti",
+        "images": {
+          "reward.available": "token_potionpos_off",
+          "reward.active": "token_potionpos_on",
+          "penalty.available": "token_trap_off",
+          "penalty.active": "token_trap_on"
+        }
+      }
+    ],
+    "doorThemes": [
+      {
+        "id": "lesni_pruchod",
+        "name": "Lesní průchod",
+        "images": {
+          "entrance.active": "door_woods1_open",
+          "exit.available": "door_woods1_closed",
+          "exit.active": "door_woods1_open"
+        }
+      }
+    ],
+    "poiItems": [
+      {
+        "id": "vlci_doupe",
+        "name": "Vlčí doupě",
+        "images": {
+          "available": "poi_wolfden_off",
+          "active": "poi_wolfden_on"
+        }
+      }
+    ]
+  },
+  "endings": {
+    "success": [],
+    "fail": []
+  },
+  "authorNotes": ""
+}

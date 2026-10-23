@@ -52,7 +52,7 @@
       ],
       "pieces": {
         "count": 18,
-        "passablePercent": 70,
+        "passablePercent": 75,
         "reward": {
           "count": 10,
           "score": 1,
@@ -197,7 +197,7 @@
       ],
       "pieces": {
         "count": 16,
-        "passablePercent": 70,
+        "passablePercent": 75,
         "reward": {
           "count": 0,
           "score": 1,
@@ -379,14 +379,31 @@
       ],
       "pieces": {
         "count": 18,
-        "passablePercent": 70,
+        "passablePercent": 75,
         "reward": {
-          "count": 6,
+          "count": 10,
           "score": 1,
           "placement": {
             "pieces": 6,
             "random": 0,
-            "fixed": []
+            "fixed": [
+              {
+                "x": 2,
+                "y": 6
+              },
+              {
+                "x": 13,
+                "y": 2
+              },
+              {
+                "x": 13,
+                "y": 6
+              },
+              {
+                "x": 2,
+                "y": 2
+              }
+            ]
           }
         },
         "penalty": {
@@ -403,76 +420,7 @@
         "fixed": [],
         "randomCount": 0
       },
-      "pointsOfInterest": [
-        {
-          "id": "poi_mys1",
-          "name": "poi_mys",
-          "tooltip": "",
-          "themeItemId": "poi_mys",
-          "mode": "optional",
-          "placement": {
-            "mode": "fixed",
-            "x": 2,
-            "y": 2
-          },
-          "score": {
-            "found": 1,
-            "missed": 0
-          },
-          "foundText": ""
-        },
-        {
-          "id": "poi_mys2",
-          "name": "poi_mys2",
-          "tooltip": "",
-          "themeItemId": "poi_mys",
-          "mode": "optional",
-          "placement": {
-            "mode": "fixed",
-            "x": 2,
-            "y": 6
-          },
-          "score": {
-            "found": 1,
-            "missed": 0
-          },
-          "foundText": ""
-        },
-        {
-          "id": "poi_mys3",
-          "name": "poi_mys3",
-          "tooltip": "",
-          "themeItemId": "poi_mys",
-          "mode": "optional",
-          "placement": {
-            "mode": "fixed",
-            "x": 13,
-            "y": 2
-          },
-          "score": {
-            "found": 1,
-            "missed": 0
-          },
-          "foundText": ""
-        },
-        {
-          "id": "poi_mys4",
-          "name": "poi_mys4",
-          "tooltip": "",
-          "themeItemId": "poi_mys",
-          "mode": "optional",
-          "placement": {
-            "mode": "fixed",
-            "x": 13,
-            "y": 6
-          },
-          "score": {
-            "found": 1,
-            "missed": 0
-          },
-          "foundText": ""
-        }
-      ],
+      "pointsOfInterest": [],
       "discard": {
         "mode": "penalty",
         "piecePenalty": -1,
