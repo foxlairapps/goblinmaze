@@ -328,3 +328,71 @@ button{transition:background-color .18s,border-color .18s,box-shadow .18s}button
 
 /* MT.058 — uzamčené nabídky */
 .offerCard.offerLocked{position:relative;filter:grayscale(1);opacity:.58;cursor:pointer}.offerCard.offerLocked:hover{filter:grayscale(1);opacity:.72}.offerPadlock{position:absolute;bottom:3px;left:50%;transform:translateX(-50%);font-size:clamp(14px,1.4vw,22px);pointer-events:none}.lockedRequirement{text-align:center;font-size:1.5em;font-weight:700}
+
+
+/* MT.063 – jednotné, rozměrné dialogy na dotykových zařízeních na šířku.
+   Hlavička a tlačítka jsou pevné; posouvá se pouze obsah. */
+@media (pointer:coarse) and (orientation:landscape) {
+  #detailPanel, #finishPanel, .storyOverlay { padding: 0; }
+  #detailPanel .detailCard, #finishPanel .finishCard, .storyOverlay .storyCard,
+  #detailPanel:has(.mtSceneOpening) .detailCard {
+    width: 82vw;
+    max-width: 82vw;
+    height: 82dvh;
+    max-height: 82dvh;
+    min-height: 0;
+    padding: clamp(12px, 2.6vh, 25px) clamp(17px, 2.5vw, 35px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    text-align: left;
+    border-radius: 16px;
+  }
+  #detailPanel .detailCard h2, #finishPanel .finishCard h2, .storyOverlay .storyCard h2 {
+    flex: 0 0 auto;
+    margin: 0 0 clamp(7px, 1.8vh, 18px);
+    font-size: clamp(22px, 2.5vw, 34px);
+    line-height: 1.18;
+  }
+  #detailBody, #finishText, #offerDescription {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    font-size: clamp(18px, 2vw, 27px);
+    line-height: 1.48;
+    scrollbar-width: thin;
+  }
+  #detailBody p, #finishText p, #offerDescription {font-size: inherit;line-height: inherit;}
+  #detailPanel .detailCard > #detailClose {
+    flex: 0 0 auto;
+    align-self: flex-start;
+    margin-top: clamp(9px, 2vh, 18px);
+  }
+  #detailPanel .detailCard > #detailClose,
+  #finishPanel .finishActions button, .storyOverlay .storyActions button {
+    min-width: clamp(130px, 18vw, 210px);
+    min-height: clamp(44px, 8.5vh, 65px);
+    padding: 8px 18px;
+    font-size: clamp(17px, 1.9vw, 25px);
+    line-height: 1.15;
+  }
+  #finishPanel .finishActions, .storyOverlay .storyActions {
+    flex: 0 0 auto;
+    margin-top: auto;
+    padding-top: clamp(7px, 1.5vh, 15px);
+    border-top: 1px solid #83785e70;
+  }
+  #finishPanel .finishActions {display: flex;justify-content: flex-end;gap: 12px;}
+  .storyOverlay .storyCard > #offerInfo {flex: 0 0 auto;}
+  #detailPanel:has(.mtSceneOpening) .mtSceneIntroText {
+    font-size: clamp(18px, 1.9vw, 25px);
+    max-height: none;
+  }
+  #detailPanel:has(.mtSceneOpening) .mtSceneOpening {font-size: clamp(16px, 1.7vw, 23px);}
+  #detailPanel:has(.mtSceneOpening) #detailClose {align-self: flex-start;}
+  /* Potvrzovací dialog má vlastní dvojici tlačítek uvnitř obsahu. */
+  #detailBody:has(.storyActions) {display:flex;flex-direction:column;}
+  #detailBody > .storyActions {margin-top:auto;flex-shrink:0;}
+  #detailBody > .storyActions button {min-height:clamp(44px,8vh,62px);font-size:clamp(17px,1.9vw,25px);}
+}

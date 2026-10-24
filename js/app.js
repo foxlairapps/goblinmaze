@@ -701,14 +701,11 @@ async function loadCatalog(){
   const world=await loadJSON('world.json');
   const issuers=Array.isArray(world.categories)?world.categories:(Array.isArray(world.issuers)?world.issuers:[]);
   if(!issuers.length)throw Error('world.json: chybí categories');
-  const index=await loadJSON('stories-index.json');
-  const discovered=new Set((Array.isArray(index)?index:index.stories||[]).map(x=>typeof x==='string'?x:x.id));
   const refs=[];const unique=new Set();
   for(const issuer of issuers){
    if(!issuer.id||!issuer.name||!Array.isArray(issuer.stories))throw Error('world.json: neplatný zadavatel');
    for(const id of issuer.stories){
     if(unique.has(id)){console.warn('Příběh je uveden vícekrát:',id);continue;}unique.add(id);
-    if(!discovered.has(id)){console.warn('Příběh chybí ve stories/:',id);continue;}
     refs.push({id,issuerId:issuer.id});
    }
   }
