@@ -396,3 +396,56 @@ button{transition:background-color .18s,border-color .18s,box-shadow .18s}button
   #detailBody > .storyActions {margin-top:auto;flex-shrink:0;}
   #detailBody > .storyActions button {min-height:clamp(44px,8vh,62px);font-size:clamp(17px,1.9vw,25px);}
 }
+
+
+/* MT.065 – jednotné, snadno nastavitelné mobilní dialogy.
+   Uprav pouze následující proměnné pro změnu typografie všech dialogů. */
+:root {
+  --mt-dialog-title-size: clamp(24px, 3vw, 38px);
+  --mt-dialog-text-size: clamp(22px, 2.8vw, 36px);
+  --mt-dialog-button-size: clamp(19px, 2.1vw, 29px);
+  --mt-dialog-line-height: 1.35;
+}
+@media (pointer:coarse) and (orientation:landscape) {
+  #detailPanel .detailCard h2,
+  #finishPanel .finishCard h2,
+  .storyOverlay .storyCard h2 {
+    font-size: var(--mt-dialog-title-size);
+  }
+  #detailPanel #detailBody,
+  #finishPanel #finishText,
+  .storyOverlay #offerDescription,
+  #detailPanel .mtSceneIntroText,
+  #detailPanel:has(.mtSceneOpening) .mtSceneIntroText,
+  #detailPanel .mtSceneOpening,
+  #detailPanel:has(.mtSceneOpening) .mtSceneOpening {
+    font-size: var(--mt-dialog-text-size);
+    line-height: var(--mt-dialog-line-height);
+  }
+  #detailPanel #detailBody p,
+  #finishPanel #finishText p,
+  .storyOverlay #offerDescription {font-size: inherit;line-height: inherit;}
+  /* Stejný odsazovací princip jako u bočních okrajů vnitřku dialogu. */
+  .storyOverlay .storyActions,
+  #finishPanel .finishActions,
+  #detailPanel #detailBody > .storyActions {
+    display: flex;
+    width: 100%;
+    gap: clamp(17px, 2.5vw, 35px);
+    justify-content: stretch;
+    flex: 0 0 auto;
+  }
+  .storyOverlay .storyActions button,
+  #finishPanel .finishActions button,
+  #detailPanel #detailBody > .storyActions button,
+  #detailPanel .detailCard > #detailClose {
+    flex: 1 1 0;
+    width: 100%;
+    min-width: 0;
+    font-size: var(--mt-dialog-button-size);
+  }
+  #detailPanel .detailCard > #detailClose {align-self: stretch;}
+  #detailPanel:has(.mtSceneOpening) #detailClose {align-self: stretch;}
+  /* Větší úvodní popis nemá být přebitý pravidlem pro nízký displej. */
+  #detailPanel .mtSceneIntroText {max-height: none;}
+}

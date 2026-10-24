@@ -799,6 +799,7 @@ function renderWorld(){const progress=readProgress();$('crownTotal').textContent
 function openOffer(c){selectedOffer=c;const done=(readProgress().completed||{})[c.id]||0;
  $('offerTitle').textContent=c.name;
  $('offerDescription').textContent=done?(c.completedText||c.startText||''):(c.startText||c.offerText||'');
+ $('offerAccept').textContent=String(c.startButtonText||'').trim()||'Spustit';
  $('offerInfo').textContent='';$('offerInfo').hidden=true;$('offerOverlay').hidden=false;
 }
 $('offerCancel').onclick=()=>{$('offerOverlay').hidden=true};
